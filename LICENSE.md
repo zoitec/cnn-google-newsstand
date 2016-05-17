@@ -241,7 +241,7 @@ __node_dependencies/*__
 
 Generated with [license-checker](https://www.npmjs.com/package/license-checker)
 
-
+```
 ├─ JSV@4.0.2
 │  ├─ licenses: FreeBSD
 │  └─ repository: https://github.com/garycourt/JSV
@@ -2540,3 +2540,4 @@ Generated with [license-checker](https://www.npmjs.com/package/license-checker)
    ├─ licenses: MIT
    ├─ repository: https://github.com/zaggino/z-schema
    └─ licenseFile: node_modules/z-schema/LICENSE
+```
