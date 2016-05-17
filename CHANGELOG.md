@@ -1,0 +1,2 @@
+# CNN Google Newsstand Changelog
+

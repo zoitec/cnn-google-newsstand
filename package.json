@@ -1,0 +1,51 @@
+{
+  "name": "cnn-google-newsstand",
+  "version": "0.1.0",
+  "description": "CNN Google Newsstand",
+  "main": "server.js",
+  "directories": {
+    "docs": "./docs",
+    "lib": "./lib",
+    "test": "./test"
+  },
+  "scripts": {
+    "generate-authors": "tools/generate-authors.sh",
+    "generate-changelog": "changelog-maker --group",
+    "generate-docs": "rm -rf docs && esdoc -c .esdoc.json",
+    "test": "eslint . && test/validate-json-files.sh",
+    "update-apply": "ncu -u",
+    "update-check": "ncu",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jamsyoung/cnn-google-newsstand.git"
+  },
+  "homepage": "https://github.com/jamsyoung/cnn-google-newsstand#readme",
+  "engines": {
+    "node": "6.1.0"
+  },
+  "dependencies": {
+    "cnn-hapi": "0.5.5"
+  },
+  "devDependencies": {
+    "changelog-maker": "2.2.3",
+    "esdoc": "0.4.7",
+    "eslint": "2.10.2",
+    "jq-cli-wrapper": "0.3.0",
+    "jsonlint": "1.6.2",
+    "npm-check-updates": "2.6.5"
+  },
+  "keywords": [
+    "cnn",
+    "cnnlabs",
+    "google-newsstand",
+    "google-play-newsstand",
+    "google",
+    "newsstand"
+  ],
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/jamsyoung/cnn-google-newsstand/issues"
+  }
+}
