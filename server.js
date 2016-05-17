@@ -1,32 +1,58 @@
-'use strict';
-
 /*
- * Example application that uses cnn-hapi as a dependency to provide a basic
- * Hapi server with built in features that this example doesn't need to care
- * about.
+ * Copyright 2016 Turner Broadcasting System, Inc.
  *
- * See the comments inline for changes that would be typical in an external app
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
-const hapi = require('cnn-hapi');
+'use strict';
 
-let app = module.exports = hapi({
+const hapi = require('cnn-hapi'),
+    pkg = require('./package');
+
+let server = module.exports = hapi({
     directory: __dirname,
     port: process.env.PORT,
     withSwagger: true,
-    withNavigation: false,
-    metrics: {provider: require('cnn-metrics'), options: {flushEvery: 1000 * 20}},
-    layoutsDir: `${__dirname}/views/`
+    name: 'CNN Google Newsstand',
+    description: 'Google Newsstand feed generator',
+    version: pkg.version
 });
 
-app.route({
+process.on('unhandledRejection', function (error, promise) {
+    console.error(`Possible unhandled rejection at: Promise ${JSON.stringify(promise)} reason: ${error.stack}`);
+});
+
+server.route({
     method: 'GET',
     path: '/',
     handler: function (request, reply) {
-        reply('Hello router');
+        reply.redirect('/documentation');
     }
 });
 
-app.start(function () {
-    console.log('App Starting');
+server.route({
+    method: 'GET',
+    path: '/healthcheck',
+    handler: function healthcheckHandler(request, reply) {
+        reply(pkg);
+    },
+    config: {
+        description: 'Healthcheck',
+        notes: 'Health of the app',
+        tags: ['api', 'healthcheck']
+    }
+});
+
+server.start(function () {
+    console.log(`Server running at ${JSON.stringify(server.info.uri)}`);
 });

@@ -11,11 +11,13 @@
   "scripts": {
     "generate-authors": "tools/generate-authors.sh",
     "generate-changelog": "changelog-maker --group",
+    "generate-coverage": "ENVIRONMENT=local PORT=5000 istanbul cover _mocha -- test/unit -r test/mocha-setup.js && open coverage/lcov-report/index.html",
+    "generate-dockerfile": "tools/generate-dockerfile.sh",
     "generate-docs": "rm -rf docs && esdoc -c .esdoc.json",
-    "test": "eslint . && test/validate-json-files.sh",
+    "start": "ENVIRONMENT=local PORT=5000 node $(jq -r .main package.json)",
+    "test": "eslint . && test/validate-json-files.sh && ENVIRONMENT=local PORT=5000 mocha test/unit -r test/mocha-setup.js",
     "update-apply": "ncu -u",
-    "update-check": "ncu",
-    "start": "node server.js"
+    "update-check": "ncu"
   },
   "repository": {
     "type": "git",
@@ -29,11 +31,17 @@
     "cnn-hapi": "0.5.5"
   },
   "devDependencies": {
+    "chai": "3.5.0",
+    "chai-as-promised": "5.3.0",
     "changelog-maker": "2.2.3",
     "esdoc": "0.4.7",
     "eslint": "2.10.2",
+    "inject-then": "2.0.5",
+    "istanbul": "0.4.3",
     "jq-cli-wrapper": "0.3.0",
     "jsonlint": "1.6.2",
+    "mocha": "2.4.5",
+    "nock": "8.0.0",
     "npm-check-updates": "2.6.5"
   },
   "keywords": [
@@ -44,7 +52,7 @@
     "google",
     "newsstand"
   ],
-  "license": "MIT",
+  "license": "Apache-2.0",
   "bugs": {
     "url": "https://github.com/jamsyoung/cnn-google-newsstand/issues"
   }
