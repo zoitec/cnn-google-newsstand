@@ -1,5 +1,6 @@
 .c9
 .idea
+.ignore
 coverage
 Dockerfile
 docs
