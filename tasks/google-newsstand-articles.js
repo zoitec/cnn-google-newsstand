@@ -105,4 +105,5 @@ setInterval(() => {
     } else {
         debugLog('no updates');
     }
-}, config.get('defaultTaskInterval'));
+}, 1000 * 60 * 30);
+// }, config.get('defaultTaskInterval'));
