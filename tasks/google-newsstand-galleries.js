@@ -82,6 +82,14 @@ function postToLSD(data) {
 
 setInterval(() => {
     debugLog('Generate Feed interval fired');
+
+    // for bypassing the rabbit queue to test content
+    // fg.urls = [
+    //     'http://www.cnn.com/2016/06/26/arts/gallery/alexa-meade-breathing-art/index.html',
+    //     'http://www.cnn.com/2016/07/18/travel/gallery/new-unesco-world-heritage-sites-2016/index.html',
+    //
+    // ];
+
     debugLog(fg.urls);
 
     if (fg.urls && fg.urls.length > 0) {
@@ -105,4 +113,4 @@ setInterval(() => {
     } else {
         debugLog('no updates');
     }
-}, config.get('defaultTaskInterval'));
+}, 1000 * 60 * 30);
