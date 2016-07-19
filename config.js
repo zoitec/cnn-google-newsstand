@@ -25,6 +25,7 @@ const nconf = require('nconf');
 nconf.env([
     'CLOUDAMQP_AUTH',
     'ENVIRONMENT',
+    'GNS_TASK_INTERVAL_MS',
     'PORT'
 ]);
 
@@ -41,7 +42,7 @@ if (!nconf.get('ENVIRONMENT') || !nconf.get('PORT') || !nconf.get('CLOUDAMQP_AUT
 let config = {
     default: {
         cloudamqpConnectionString: `amqp://${nconf.get('CLOUDAMQP_AUTH')}@red-rhino.rmq.cloudamqp.com/cnn-towncrier`,
-        defaultTaskInterval: 1000 * 60 * 1,
+        gnsTaskIntervalMS: (nconf.get('GNS_TASK_INTERVAL_MS')) ? parseInt(nconf.get('GNS_TASK_INTERVAL_MS')) : 1000 * 60 * 30, // 30 minutes
         lsdHosts: 'lsd-prod-pub-cop.turner.com,lsd-prod-pub-56m.turner.com'
     },
     prod: {
