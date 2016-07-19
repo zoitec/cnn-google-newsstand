@@ -42,7 +42,7 @@ server.route({
 
 server.route({
     method: 'GET',
-    path: '/healthcheck',
+    path: '/_healthcheck',
     handler: function healthcheckHandler(request, reply) {
         reply(pkg);
     },
@@ -57,6 +57,6 @@ server.start(function () {
     console.log(`Server running at ${JSON.stringify(server.info.uri)}`);
 
     require('./tasks/google-newsstand-articles.js');
-    require('./tasks/google-newsstand-galleries.js');
+    // require('./tasks/google-newsstand-galleries.js');
     // require('./tasks/google-newsstand-videos.js');
 });
