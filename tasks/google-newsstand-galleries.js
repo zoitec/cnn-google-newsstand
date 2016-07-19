@@ -113,4 +113,4 @@ setInterval(() => {
     } else {
         debugLog('no updates');
     }
-}, 1000 * 60 * 30);
+}, config.get('gnsTaskIntervalMS'));

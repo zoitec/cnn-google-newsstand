@@ -82,6 +82,12 @@ function postToLSD(data) {
 
 setInterval(() => {
     debugLog('Generate Feed interval fired');
+
+    // for bypassing the rabbit queue to test content
+    // fg.urls = [
+    //     'http://www.cnn.com/videos/politics/2016/07/18/rnc-anti-trump-mark-preston-hala-gorani.cnn'
+    // ];
+
     debugLog(fg.urls);
 
     if (fg.urls && fg.urls.length > 0) {
@@ -105,4 +111,4 @@ setInterval(() => {
     } else {
         debugLog('no updates');
     }
-}, config.get('defaultTaskInterval'));
+}, config.get('gnsTaskIntervalMS'));
