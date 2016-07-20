@@ -29,6 +29,7 @@ EXIT_CODE=0
 JSON_FILES=(`find . \
                   -name "*.json"\
                   -not -path "./.c9/*"\
+                  -not -path "./.ignore/*"\
                   -not -path "./coverage/*"\
                   -not -path "./docs/*"\
                   -not -path "./node_modules/*"\

@@ -32,7 +32,7 @@ describe('Hapi Server', function () {
     it('should serve a /healthcheck in a valid JSON format with, at minimum, a version property', function () {
         const expectedVersion = require('../../package.json').version;
 
-        return this.server.injectThen('/healthcheck').then(function (response) {
+        return this.server.injectThen('/_healthcheck').then(function (response) {
             response.statusCode.should.equal(200);
             response.result.should.be.an('object');
             response.result.version.should.be.a('string');
