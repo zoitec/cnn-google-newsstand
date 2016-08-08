@@ -17,7 +17,8 @@
 'use strict';
 
 const hapi = require('cnn-hapi'),
-    pkg = require('./package');
+    config = require('./config.js'),
+    pkg = require('./package.json');
 
 let server = module.exports = hapi({
     directory: __dirname,
@@ -55,8 +56,12 @@ server.route({
 
 server.start(function () {
     console.log(`Server running at ${JSON.stringify(server.info.uri)}`);
+    console.log('Configuration:');
+    console.log(`    ENVIRONMENT: ${config.get('ENVIRONMENT')}`);
+    console.log(`    PORT: ${config.get('PORT')}`);
+    console.log(`    GNS_TASK_INTERVAL_MS: ${config.get('GNS_TASK_INTERVAL_MS')}`);
 
     require('./tasks/google-newsstand-articles.js');
-    require('./tasks/google-newsstand-galleries.js');
-    require('./tasks/google-newsstand-videos.js');
+    // require('./tasks/google-newsstand-galleries.js');
+    // require('./tasks/google-newsstand-videos.js');
 });

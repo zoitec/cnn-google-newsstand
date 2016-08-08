@@ -26,12 +26,12 @@ const request = require('request'),
 
 amqp.connect(cloudamqpConnectionString, (error, connection) => {
     connection.createChannel((error, channel) => {
-        const exchangeName = 'cnn-town-crier-ref';
+        const exchangeName = config.get('exchangeName');
 
         channel.assertExchange(exchangeName, 'topic', {durable: true});
 
-        channel.assertQueue('cnn-google-newsstand-articles-ref', {durable: true}, (error, queueName) => {
-            const routingKeys = ['cnn.article'];
+        channel.assertQueue(config.get('queueNameArticles'), {durable: true}, (error, queueName) => {
+            const routingKeys = config.get('routingKeysArticles');
 
             routingKeys.forEach((routingKey) => {
                 channel.bindQueue(queueName.queue, exchangeName, routingKey);
@@ -55,7 +55,7 @@ amqp.connect(cloudamqpConnectionString, (error, connection) => {
 
 
 function postToLSD(data) {
-    let endpoint = '/cnn/content/google-newsstand/articles.xml',
+    let endpoint = '/cnn/content/google-newsstand/articles2.xml',
         hosts = config.get('lsdHosts');
 
     debugLog('postToLSD() called');
