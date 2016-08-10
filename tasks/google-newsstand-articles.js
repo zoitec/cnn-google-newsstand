@@ -55,7 +55,7 @@ amqp.connect(cloudamqpConnectionString, (error, connection) => {
 
 
 function postToLSD(data) {
-    let endpoint = '/cnn/content/google-newsstand/articles2.xml',
+    let endpoint = '/cnn/content/google-newsstand/articles.xml',
         hosts = config.get('lsdHosts');
 
     debugLog('postToLSD() called');
