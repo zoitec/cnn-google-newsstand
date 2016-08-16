@@ -37,7 +37,7 @@ const request = require('request'),
 
 
 function postToLSD(data) {
-    let endpoint = '/cnn/content/google-newsstand/articles6.xml',  // TODO - SET THIS TO THE CORRECT ENDPOINT BEFORE RUNNING
+    let endpoint = '/cnn/content/google-newsstand/articles7.xml',  // TODO - SET THIS TO THE CORRECT ENDPOINT BEFORE RUNNING
         hosts = config.get('lsdHosts');
 
     debugLog('postToLSD() called');
@@ -67,11 +67,15 @@ fg.urls = [
     // 'http://www.cnn.com/2016/08/08/sport/aly-raisman-parents-olympics-trnd/index.html' // page top image
     // 'http://www.cnn.com/2016/08/08/sport/office-olympics-for-the-rest-of-us-trnd/index.html' // page top video
     // 'http://www.cnn.com/2016/08/09/health/parent-acts-teaching-kids-empathy/index.html' // page top video collection
-    'http://www.cnn.com/2016/07/27/us/freddie-gray-verdict-baltimore-officers/index.html' // page top video collection / inline video / inline images
+    // 'http://www.cnn.com/2016/07/27/us/freddie-gray-verdict-baltimore-officers/index.html' // page top video collection / inline video / inline images
+    // 'http://www.cnn.com/2016/08/15/opinions/is-trump-getting-ready-to-lose-stanley/index.html'
+    // 'http://www.cnn.com/2016/08/15/health/parents-life-expectancy-heart-health/index.html' //
     // 'http://www.cnn.com/2016/08/10/politics/trump-second-amendment/index.html'//
     // 'http://www.cnn.com/2016/07/22/architecture/leaning-house-jakarta-architecture/index.html'
     // 'http://www.cnn.com/2016/07/19/sport/jockey-horse-diets/index.html',
     // 'http://www.cnn.com/2016/07/18/travel/national-seashore-lakeshore-towns-nps100/index.html'
+    // 'http://www.cnn.com/2016/08/15/us/gabby-douglas-natalie-hawkins-new-day/index.html' // twitter embeds
+    'http://www.cnn.com/2015/10/13/politics/democratic-debate-2016-instagram/index.html' // ig embeds
 ];
 
 if (fg.urls && fg.urls.length > 0) {
@@ -80,7 +84,7 @@ if (fg.urls && fg.urls.length > 0) {
         (rssFeed) => {
             console.log(rssFeed);
 
-            postToLSD(rssFeed);
+//            postToLSD(rssFeed);
 
             // post to LSD endpoint
             fg.urls = 'clear';
