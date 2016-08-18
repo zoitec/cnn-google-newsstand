@@ -1,5 +1,3 @@
-// http://www.cnn.com/2016/07/19/sport/jockey-horse-diets/index.html
-
 /*
  * Copyright 2016 Turner Broadcasting System, Inc.
  *
@@ -75,7 +73,8 @@ fg.urls = [
     // 'http://www.cnn.com/2016/07/19/sport/jockey-horse-diets/index.html',
     // 'http://www.cnn.com/2016/07/18/travel/national-seashore-lakeshore-towns-nps100/index.html'
     // 'http://www.cnn.com/2016/08/15/us/gabby-douglas-natalie-hawkins-new-day/index.html' // twitter embeds
-    'http://www.cnn.com/2015/10/13/politics/democratic-debate-2016-instagram/index.html' // ig embeds
+    // 'http://www.cnn.com/2015/10/13/politics/democratic-debate-2016-instagram/index.html' // ig embeds
+    'http://www.cnn.com/2016/08/16/opinions/larry-wilmore-cancellation-obeidallah/index.html' // editors note  / image / video
 ];
 
 if (fg.urls && fg.urls.length > 0) {
