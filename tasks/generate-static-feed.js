@@ -26,16 +26,17 @@
 
 'use strict';
 
-const request = require('request'),
+const  request = require('request'),
     FeedGenerator = require('../lib/feed-generator.js'),
     debugLog = require('debug')('cnn-google-newsstand:Task:generate-static-feed'),
     config = require('../config.js'),
-    fg = new FeedGenerator();
+    fg = new FeedGenerator(),
+    POST_TO_LSD = true; // <---- TODO - SET THIS TO THE PROPER VALUE BASED ON WHAT YOU ARE WANTING TO DO
 
 
 
 function postToLSD(data) {
-    let endpoint = '/cnn/content/google-newsstand/articles7.xml',  // TODO - SET THIS TO THE CORRECT ENDPOINT BEFORE RUNNING
+    let endpoint = '/cnn/content/google-newsstand/articles8.xml',  // <---- TODO - SET THIS TO THE CORRECT ENDPOINT BEFORE RUNNING
         hosts = config.get('lsdHosts');
 
     debugLog('postToLSD() called');
@@ -74,7 +75,9 @@ fg.urls = [
     // 'http://www.cnn.com/2016/07/18/travel/national-seashore-lakeshore-towns-nps100/index.html'
     // 'http://www.cnn.com/2016/08/15/us/gabby-douglas-natalie-hawkins-new-day/index.html' // twitter embeds
     // 'http://www.cnn.com/2015/10/13/politics/democratic-debate-2016-instagram/index.html' // ig embeds
-    'http://www.cnn.com/2016/08/16/opinions/larry-wilmore-cancellation-obeidallah/index.html' // editors note  / image / video
+    // 'http://www.cnn.com/2016/08/16/opinions/larry-wilmore-cancellation-obeidallah/index.html' // editors note  / image / video
+    'http://www.cnn.com/2016/08/19/entertainment/amy-schumer-charlie-rose/index.html', // youtube
+    'http://www.cnn.com/2015/10/14/politics/democratic-debate-in-gifs-vines-clinton-sanders-reaction/index.html' // vine
 ];
 
 if (fg.urls && fg.urls.length > 0) {
@@ -83,7 +86,9 @@ if (fg.urls && fg.urls.length > 0) {
         (rssFeed) => {
             console.log(rssFeed);
 
-//            postToLSD(rssFeed);
+            if (POST_TO_LSD) {
+                postToLSD(rssFeed);
+            }
 
             // post to LSD endpoint
             fg.urls = 'clear';

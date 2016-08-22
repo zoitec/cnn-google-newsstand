@@ -24,6 +24,9 @@ const request = require('request'),
     cloudamqpConnectionString = config.get('cloudamqpConnectionString'),
     fg = new FeedGenerator();
 
+
+
+// connect to CloudAMQP and use/create the queue to subscribe to
 amqp.connect(cloudamqpConnectionString, (error, connection) => {
     connection.createChannel((error, channel) => {
         const exchangeName = config.get('exchangeName');
@@ -52,6 +55,7 @@ amqp.connect(cloudamqpConnectionString, (error, connection) => {
         });
     });
 });
+
 
 
 function postToLSD(data) {
