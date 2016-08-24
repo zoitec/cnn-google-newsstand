@@ -31,7 +31,7 @@ const  request = require('request'),
     debugLog = require('debug')('cnn-google-newsstand:Task:generate-static-feed'),
     config = require('../config.js'),
     fg = new FeedGenerator(),
-    POST_TO_LSD = true; // <---- TODO - SET THIS TO THE PROPER VALUE BASED ON WHAT YOU ARE WANTING TO DO
+    POST_TO_LSD = false; // <---- TODO - SET THIS TO THE PROPER VALUE BASED ON WHAT YOU ARE WANTING TO DO
 
 
 
@@ -78,6 +78,7 @@ fg.urls = [
     // 'http://www.cnn.com/2016/08/16/opinions/larry-wilmore-cancellation-obeidallah/index.html' // editors note  / image / video
     'http://www.cnn.com/2016/08/19/entertainment/amy-schumer-charlie-rose/index.html', // youtube
     'http://www.cnn.com/2015/10/14/politics/democratic-debate-in-gifs-vines-clinton-sanders-reaction/index.html' // vine
+//    'http://www.cnn.com/2016/01/05/politics/primary-conflicts-2016/index.html' // vimeo
 ];
 
 if (fg.urls && fg.urls.length > 0) {
