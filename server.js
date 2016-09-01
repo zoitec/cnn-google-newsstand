@@ -61,7 +61,7 @@ server.start(function () {
     console.log(`    PORT: ${config.get('PORT')}`);
     console.log(`    GNS_TASK_INTERVAL_MS: ${config.get('GNS_TASK_INTERVAL_MS')}`);
 
-    require('./tasks/google-newsstand-articles.js');
+//    require('./tasks/google-newsstand-articles.js');
+    require('./tasks/google-newsstand-videos.js');
     // require('./tasks/google-newsstand-galleries.js');
-    // require('./tasks/google-newsstand-videos.js');
 });

@@ -24,14 +24,17 @@ const request = require('request'),
     cloudamqpConnectionString = config.get('cloudamqpConnectionString'),
     fg = new FeedGenerator();
 
+
+
+// connect to CloudAMQP and use/create teh queue to subscribe to
 amqp.connect(cloudamqpConnectionString, (error, connection) => {
     connection.createChannel((error, channel) => {
-        const exchangeName = 'cnn-town-crier-ref';
+        const exchangeName = config.get('exchangeName');
 
         channel.assertExchange(exchangeName, 'topic', {durable: true});
 
-        channel.assertQueue('cnn-google-newsstand-videos-ref', {durable: true}, (error, queueName) => {
-            const routingKeys = ['cnn.video'];
+        channel.assertQueue(config.get('queueNameVideos'), {durable: true}, (error, queueName) => {
+            const routingKeys = config.get('routingKeysVideos');
 
             routingKeys.forEach((routingKey) => {
                 channel.bindQueue(queueName.queue, exchangeName, routingKey);
@@ -52,6 +55,7 @@ amqp.connect(cloudamqpConnectionString, (error, connection) => {
         });
     });
 });
+
 
 
 function postToLSD(data) {

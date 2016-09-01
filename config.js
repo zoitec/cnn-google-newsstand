@@ -46,7 +46,9 @@ let config = {
         lsdHosts: 'lsd-prod-pub-cop.turner.com,lsd-prod-pub-56m.turner.com',
         exchangeName: 'cnn-town-crier-ref',
         queueNameArticles: `cnn-google-newsstand-articles-${nconf.get('ENVIRONMENT').toLowerCase()}`,
-        routingKeysArticles: ['cnn.article']
+        queueNameVideos: `cnn-google-newsstand-videos-${nconf.get('ENVIRONMENT').toLowerCase()}`,
+        routingKeysArticles: ['cnn.article'],
+        routingKeysVideos: ['cnn.video']
     },
     prod: {
         cloudamqpConnectionString: `amqp://${nconf.get('CLOUDAMQP_AUTH')}@red-rhino.rmq.cloudamqp.com/cnn-towncrier`,

@@ -75,10 +75,14 @@ fg.urls = [
     // 'http://www.cnn.com/2016/07/18/travel/national-seashore-lakeshore-towns-nps100/index.html'
     // 'http://www.cnn.com/2016/08/15/us/gabby-douglas-natalie-hawkins-new-day/index.html' // twitter embeds
     // 'http://www.cnn.com/2015/10/13/politics/democratic-debate-2016-instagram/index.html' // ig embeds
-    // 'http://www.cnn.com/2016/08/16/opinions/larry-wilmore-cancellation-obeidallah/index.html' // editors note  / image / video
-    'http://www.cnn.com/2016/08/19/entertainment/amy-schumer-charlie-rose/index.html', // youtube
-    'http://www.cnn.com/2015/10/14/politics/democratic-debate-in-gifs-vines-clinton-sanders-reaction/index.html' // vine
+//     'http://www.cnn.com/2016/08/16/opinions/larry-wilmore-cancellation-obeidallah/index.html' // editors note  / image / video
+//    'http://www.cnn.com/2016/08/19/entertainment/amy-schumer-charlie-rose/index.html', // youtube
+//    'http://www.cnn.com/2015/10/14/politics/democratic-debate-in-gifs-vines-clinton-sanders-reaction/index.html' // vine
 //    'http://www.cnn.com/2016/01/05/politics/primary-conflicts-2016/index.html' // vimeo
+    // videos
+    'http://www.cnn.com/videos/us/2016/09/01/midway-atoll-plastic-island-obama-visits-wildlife-refuge-marine-reserve-orig.cnn',
+    'http://www.cnn.com/videos/entertainment/2016/08/30/chance-the-rapper-beyonce-mtv-vma-orig-vstan.cnn',
+    'http://www.cnn.com/videos/us/2016/09/01/houston-crosswalks-vandalized-pkg.ktrk'
 ];
 
 if (fg.urls && fg.urls.length > 0) {
