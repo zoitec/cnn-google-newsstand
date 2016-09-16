@@ -27,7 +27,7 @@
   },
   "homepage": "https://github.com/jamsyoung/cnn-google-newsstand#readme",
   "engines": {
-    "node": "6.4.0"
+    "node": "6.6.0"
   },
   "dependencies": {
     "amqplib": "0.4.2",

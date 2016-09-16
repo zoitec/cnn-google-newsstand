@@ -63,5 +63,4 @@ server.start(function () {
 
     require('./tasks/google-newsstand-articles.js');
     require('./tasks/google-newsstand-videos.js');
-    // require('./tasks/google-newsstand-galleries.js');
 });

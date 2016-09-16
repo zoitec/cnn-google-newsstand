@@ -19,10 +19,17 @@
 const request = require('request'),
     FeedGenerator = require('../lib/feed-generator.js'),
     amqp = require('amqplib/callback_api'),
-    debugLog = require('debug')('cnn-google-newsstand:Task:google-newsstand-articles'),
+    debugLog = require('debug')('cnn-google-newsstand:Task:google-newsstand-latest'),
     config = require('../config.js'),
     cloudamqpConnectionString = config.get('cloudamqpConnectionString'),
-    fg = new FeedGenerator();
+    latestFG = new FeedGenerator(),
+    entertainmentFG = new FeedGenerator(),
+    healthFG = new FeedGenerator(),
+    opinionsFG = new FeedGenerator(),
+    politicsFG = new FeedGenerator(),
+    techFG = new FeedGenerator(),
+    usFG = new FeedGenerator(),
+    worldFG = new FeedGenerator();
 
 
 
@@ -46,8 +53,44 @@ amqp.connect(cloudamqpConnectionString, (error, connection) => {
                 queueName.queue,
                 (message) => {
                     debugLog(`AMQP Message: ${message.fields.routingKey}: ${message.content.toString()}`);
-                    debugLog(`Adding url to fg: ${JSON.parse(message.content.toString()).url} -> ${fg.urls}`);
-                    fg.urls = JSON.parse(message.content.toString()).url;
+                    debugLog(`Adding url to latest feed: ${JSON.parse(message.content.toString()).url}`);
+                    latestFG.urls = JSON.parse(message.content.toString()).url;
+
+                    if (/\/entertainment\//.test(JSON.parse(message.content.toString()).url)) {
+                        debugLog(`Adding url to entertainment feed: ${JSON.parse(message.content.toString()).url}`);
+                        entertainmentFG.urls = JSON.parse(message.content.toString()).url;
+                    }
+
+                    if (/\/politics\//.test(JSON.parse(message.content.toString()).url)) {
+                        debugLog(`Adding url to politics feed: ${JSON.parse(message.content.toString()).url}`);
+                        politicsFG.urls = JSON.parse(message.content.toString()).url;
+                    }
+
+                    if (/\/health\//.test(JSON.parse(message.content.toString()).url)) {
+                        debugLog(`Adding url to health feed: ${JSON.parse(message.content.toString()).url}`);
+                        healthFG.urls = JSON.parse(message.content.toString()).url;
+                    }
+
+                    if (/\/opinions|opinion\//.test(JSON.parse(message.content.toString()).url)) {
+                        debugLog(`Adding url to opinions feed: ${JSON.parse(message.content.toString()).url}`);
+                        opinionsFG.urls = JSON.parse(message.content.toString()).url;
+                    }
+
+                    if (/\/tech\//.test(JSON.parse(message.content.toString()).url)) {
+                        debugLog(`Adding url to tech feed: ${JSON.parse(message.content.toString()).url}`);
+                        techFG.urls = JSON.parse(message.content.toString()).url;
+                    }
+
+                    if (/\/us\//.test(JSON.parse(message.content.toString()).url)) {
+                        debugLog(`Adding url to us feed: ${JSON.parse(message.content.toString()).url}`);
+                        usFG.urls = JSON.parse(message.content.toString()).url;
+                    }
+
+                    if (/\/world\//.test(JSON.parse(message.content.toString()).url)) {
+                        debugLog(`Adding url to world feed: ${JSON.parse(message.content.toString()).url}`);
+                        worldFG.urls = JSON.parse(message.content.toString()).url;
+                    }
+
                     channel.ack(message);
                 },
                 {noAck: false, exclusive: true}
@@ -58,8 +101,8 @@ amqp.connect(cloudamqpConnectionString, (error, connection) => {
 
 
 
-function postToLSD(data) {
-    let endpoint = '/cnn/content/google-newsstand/articles.xml',
+function postToLSD(data, feedName) {
+    let endpoint = `/cnn/content/google-newsstand/${feedName}.xml`,
         hosts = config.get('lsdHosts');
 
     debugLog('postToLSD() called');
@@ -83,22 +126,203 @@ function postToLSD(data) {
 }
 
 
-
+// brute force.  This is not the final solution, but it works just fine
 setInterval(() => {
-    debugLog('Generate Feed interval fired');
-    debugLog(fg.urls);
+    debugLog('Generate latest Feed interval fired');
 
-    if (fg.urls && fg.urls.length > 0) {
-        fg.processContent().then(
+    if (latestFG.urls && latestFG.urls.length > 0) {
+        latestFG.processContent().then(
             // success
             (rssFeed) => {
                 console.log(rssFeed);
 
-                postToLSD(rssFeed);
+                postToLSD(rssFeed, 'latest');
 
                 // post to LSD endpoint
-                fg.urls = 'clear';
-                debugLog(fg.urls);
+                latestFG.urls = 'clear';
+                debugLog(latestFG.urls);
+            },
+
+            // failure
+            (error) => {
+                console.log(error);
+            }
+        );
+    } else {
+        debugLog('no updates');
+    }
+}, config.get('gnsTaskIntervalMS'));
+
+setInterval(() => {
+    debugLog('Generate entertainment Feed interval fired');
+
+    if (entertainmentFG.urls && entertainmentFG.urls.length > 0) {
+        entertainmentFG.processContent().then(
+            // success
+            (rssFeed) => {
+                console.log(rssFeed);
+
+                postToLSD(rssFeed, 'entertainment');
+
+                // post to LSD endpoint
+                entertainmentFG.urls = 'clear';
+                debugLog(entertainmentFG.urls);
+            },
+
+            // failure
+            (error) => {
+                console.log(error);
+            }
+        );
+    } else {
+        debugLog('no updates');
+    }
+}, config.get('gnsTaskIntervalMS'));
+
+setInterval(() => {
+    debugLog('Generate health Feed interval fired');
+
+    if (healthFG.urls && healthFG.urls.length > 0) {
+        healthFG.processContent().then(
+            // success
+            (rssFeed) => {
+                console.log(rssFeed);
+
+                postToLSD(rssFeed, 'health');
+
+                // post to LSD endpoint
+                healthFG.urls = 'clear';
+                debugLog(healthFG.urls);
+            },
+
+            // failure
+            (error) => {
+                console.log(error);
+            }
+        );
+    } else {
+        debugLog('no updates');
+    }
+}, config.get('gnsTaskIntervalMS'));
+
+setInterval(() => {
+    debugLog('Generate opinions Feed interval fired');
+
+    if (opinionsFG.urls && opinionsFG.urls.length > 0) {
+        opinionsFG.processContent().then(
+            // success
+            (rssFeed) => {
+                console.log(rssFeed);
+
+                postToLSD(rssFeed, 'opinions');
+
+                // post to LSD endpoint
+                opinionsFG.urls = 'clear';
+                debugLog(opinionsFG.urls);
+            },
+
+            // failure
+            (error) => {
+                console.log(error);
+            }
+        );
+    } else {
+        debugLog('no updates');
+    }
+}, config.get('gnsTaskIntervalMS'));
+
+setInterval(() => {
+    debugLog('Generate politics Feed interval fired');
+
+    if (politicsFG.urls && politicsFG.urls.length > 0) {
+        politicsFG.processContent().then(
+            // success
+            (rssFeed) => {
+                console.log(rssFeed);
+
+                postToLSD(rssFeed, 'politics');
+
+                // post to LSD endpoint
+                politicsFG.urls = 'clear';
+                debugLog(politicsFG.urls);
+            },
+
+            // failure
+            (error) => {
+                console.log(error);
+            }
+        );
+    } else {
+        debugLog('no updates');
+    }
+}, config.get('gnsTaskIntervalMS'));
+
+setInterval(() => {
+    debugLog('Generate tech Feed interval fired');
+
+    if (techFG.urls && techFG.urls.length > 0) {
+        techFG.processContent().then(
+            // success
+            (rssFeed) => {
+                console.log(rssFeed);
+
+                postToLSD(rssFeed, 'tech');
+
+                // post to LSD endpoint
+                techFG.urls = 'clear';
+                debugLog(latestFG.urls);
+            },
+
+            // failure
+            (error) => {
+                console.log(error);
+            }
+        );
+    } else {
+        debugLog('no updates');
+    }
+}, config.get('gnsTaskIntervalMS'));
+
+setInterval(() => {
+    debugLog('Generate us Feed interval fired');
+
+    if (usFG.urls && usFG.urls.length > 0) {
+        usFG.processContent().then(
+            // success
+            (rssFeed) => {
+                console.log(rssFeed);
+
+                postToLSD(rssFeed, 'us');
+
+                // post to LSD endpoint
+                usFG.urls = 'clear';
+                debugLog(usFG.urls);
+            },
+
+            // failure
+            (error) => {
+                console.log(error);
+            }
+        );
+    } else {
+        debugLog('no updates');
+    }
+}, config.get('gnsTaskIntervalMS'));
+
+setInterval(() => {
+    debugLog('Generate world Feed interval fired');
+
+    if (worldFG.urls && worldFG.urls.length > 0) {
+        worldFG.processContent().then(
+            // success
+            (rssFeed) => {
+                console.log(rssFeed);
+
+                postToLSD(rssFeed, 'world');
+
+                // post to LSD endpoint
+                worldFG.urls = 'clear';
+                debugLog(worldFG.urls);
             },
 
             // failure
