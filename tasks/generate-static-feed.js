@@ -36,7 +36,7 @@ const  request = require('request'),
 
 
 function postToLSD(data) {
-    let endpoint = '/cnn/content/google-newsstand/articles8.xml',  // <---- TODO - SET THIS TO THE CORRECT ENDPOINT BEFORE RUNNING
+    let endpoint = '/cnn/content/google-newsstand/test-not-public.xml',  // <---- TODO - SET THIS TO THE CORRECT ENDPOINT BEFORE RUNNING
         hosts = config.get('lsdHosts');
 
     debugLog('postToLSD() called');
@@ -73,9 +73,9 @@ fg.urls = [
     // 'http://www.cnn.com/2016/07/22/architecture/leaning-house-jakarta-architecture/index.html'
     // 'http://www.cnn.com/2016/07/19/sport/jockey-horse-diets/index.html',
     // 'http://www.cnn.com/2016/07/18/travel/national-seashore-lakeshore-towns-nps100/index.html'
-    // 'http://www.cnn.com/2016/08/15/us/gabby-douglas-natalie-hawkins-new-day/index.html' // twitter embeds
+    'http://www.cnn.com/2016/08/15/us/gabby-douglas-natalie-hawkins-new-day/index.html' // twitter embeds
     // 'http://www.cnn.com/2015/10/13/politics/democratic-debate-2016-instagram/index.html' // ig embeds
-    'http://www.cnn.com/2016/09/05/hotels/presidential-hotel-suites/index.html' // page top gallery
+    // 'http://www.cnn.com/2016/09/05/hotels/presidential-hotel-suites/index.html' // page top gallery
 //     'http://www.cnn.com/2016/08/16/opinions/larry-wilmore-cancellation-obeidallah/index.html' // editors note  / image / video
 //    'http://www.cnn.com/2016/08/19/entertainment/amy-schumer-charlie-rose/index.html', // youtube
 //    'http://www.cnn.com/2015/10/14/politics/democratic-debate-in-gifs-vines-clinton-sanders-reaction/index.html' // vine
