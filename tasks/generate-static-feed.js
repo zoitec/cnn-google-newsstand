@@ -31,7 +31,7 @@ const  request = require('request'),
     debugLog = require('debug')('cnn-google-newsstand:Task:generate-static-feed'),
     config = require('../config.js'),
     fg = new FeedGenerator(),
-    POST_TO_LSD = false; // <---- TODO - SET THIS TO THE PROPER VALUE BASED ON WHAT YOU ARE WANTING TO DO
+    POST_TO_LSD = true; // <---- TODO - SET THIS TO THE PROPER VALUE BASED ON WHAT YOU ARE WANTING TO DO
 
 
 
@@ -81,9 +81,11 @@ fg.urls = [
 //    'http://www.cnn.com/2015/10/14/politics/democratic-debate-in-gifs-vines-clinton-sanders-reaction/index.html' // vine
 //    'http://www.cnn.com/2016/01/05/politics/primary-conflicts-2016/index.html' // vimeo
     // videos
+    // 'http://www.cnn.com/videos/politics/2016/09/20/who-stole-naked-trump-moos-pkg-erin.cnn'
 //    'http://www.cnn.com/videos/us/2016/09/01/midway-atoll-plastic-island-obama-visits-wildlife-refuge-marine-reserve-orig.cnn'
 //    'http://www.cnn.com/videos/entertainment/2016/08/30/chance-the-rapper-beyonce-mtv-vma-orig-vstan.cnn',
 //    'http://www.cnn.com/videos/us/2016/09/01/houston-crosswalks-vandalized-pkg.ktrk'
+    // 'http://www.cnn.com/2016/09/20/politics/gun-control-law-court/index.html'
 ];
 
 if (fg.urls && fg.urls.length > 0) {
