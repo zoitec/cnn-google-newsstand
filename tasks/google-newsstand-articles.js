@@ -52,6 +52,8 @@ amqp.connect(cloudamqpConnectionString, (error, connection) => {
             channel.consume(
                 queueName.queue,
                 (message) => {
+                    let mappedToASection = false;
+
                     debugLog(`AMQP Message: ${message.fields.routingKey}: ${message.content.toString()}`);
                     debugLog(`Adding url to latest feed: ${JSON.parse(message.content.toString()).url}`);
                     latestFG.urls = JSON.parse(message.content.toString()).url;
@@ -59,35 +61,47 @@ amqp.connect(cloudamqpConnectionString, (error, connection) => {
                     if (/\/entertainment\//.test(JSON.parse(message.content.toString()).url)) {
                         debugLog(`Adding url to entertainment feed: ${JSON.parse(message.content.toString()).url}`);
                         entertainmentFG.urls = JSON.parse(message.content.toString()).url;
+                        mappedToASection = true;
                     }
 
                     if (/\/politics\//.test(JSON.parse(message.content.toString()).url)) {
                         debugLog(`Adding url to politics feed: ${JSON.parse(message.content.toString()).url}`);
                         politicsFG.urls = JSON.parse(message.content.toString()).url;
+                        mappedToASection = true;
                     }
 
                     if (/\/health\//.test(JSON.parse(message.content.toString()).url)) {
                         debugLog(`Adding url to health feed: ${JSON.parse(message.content.toString()).url}`);
                         healthFG.urls = JSON.parse(message.content.toString()).url;
+                        mappedToASection = true;
                     }
 
                     if (/\/opinions|opinion\//.test(JSON.parse(message.content.toString()).url)) {
                         debugLog(`Adding url to opinions feed: ${JSON.parse(message.content.toString()).url}`);
                         opinionsFG.urls = JSON.parse(message.content.toString()).url;
+                        mappedToASection = true;
                     }
 
                     if (/\/tech\//.test(JSON.parse(message.content.toString()).url)) {
                         debugLog(`Adding url to tech feed: ${JSON.parse(message.content.toString()).url}`);
                         techFG.urls = JSON.parse(message.content.toString()).url;
+                        mappedToASection = true;
                     }
 
-                    if (/\/us\//.test(JSON.parse(message.content.toString()).url)) {
+                    if (/\/us|crime|justice\//.test(JSON.parse(message.content.toString()).url)) {
                         debugLog(`Adding url to us feed: ${JSON.parse(message.content.toString()).url}`);
                         usFG.urls = JSON.parse(message.content.toString()).url;
+                        mappedToASection = true;
                     }
 
                     if (/\/world\//.test(JSON.parse(message.content.toString()).url)) {
                         debugLog(`Adding url to world feed: ${JSON.parse(message.content.toString()).url}`);
+                        worldFG.urls = JSON.parse(message.content.toString()).url;
+                        mappedToASection = true;
+                    }
+
+                    if (!mappedToASection) {
+                        debugLog(`${JSON.parse(message.content.toString()).url} - DEFAULTING to world feed`);
                         worldFG.urls = JSON.parse(message.content.toString()).url;
                     }
 
