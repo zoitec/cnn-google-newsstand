@@ -1,6 +1,24 @@
 # CNN Google Newsstand Changelog
 
 
+## 2016-09-26, Version 1.0.2, @jamsyoung
+
+### Notable changes
+
+- Fix a leading space in a request url.
+
+### Known issues
+
+See https://github.com/cnnlabs/cnn-google-newsstand/labels/defect for complete and
+current list of known issues.
+
+### Commits
+
+* [[`fb997262b6`](https://github.com/jamsyoung/cnn-google-newsstand/commit/fb997262b6)] - **feed-processor**: fix space in url (James Young)
+
+
+
+
 ## 2016-09-26, Version 1.0.1, @jamsyoung
 
 ### Notable changes
