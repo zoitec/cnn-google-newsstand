@@ -1,6 +1,24 @@
 # CNN Google Newsstand Changelog
 
 
+## 2016-09-26, Version 1.0.3, @jamsyoung
+
+### Notable changes
+
+- Fix defect with dynaimge urls queueing
+
+### Known issues
+
+See https://github.com/cnnlabs/cnn-google-newsstand/labels/defect for complete and
+current list of known issues.
+
+### Commits
+
+* [[`66e7730b9c`](https://github.com/jamsyoung/cnn-google-newsstand/commit/66e7730b9c)] - **feed-generator**: clear out dynaimageUrlsToProcess after a POST (James Young)
+
+
+
+
 ## 2016-09-26, Version 1.0.2, @jamsyoung
 
 ### Notable changes
