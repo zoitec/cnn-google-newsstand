@@ -31,7 +31,7 @@ const  request = require('request'),
     debugLog = require('debug')('cnn-google-newsstand:Task:generate-static-feed'),
     config = require('../config.js'),
     fg = new FeedGenerator(),
-    POST_TO_LSD = true; // <---- TODO - SET THIS TO THE PROPER VALUE BASED ON WHAT YOU ARE WANTING TO DO
+    POST_TO_LSD = false; // <---- TODO - SET THIS TO THE PROPER VALUE BASED ON WHAT YOU ARE WANTING TO DO
 
 
 
@@ -73,7 +73,7 @@ fg.urls = [
     // 'http://www.cnn.com/2016/07/22/architecture/leaning-house-jakarta-architecture/index.html'
     // 'http://www.cnn.com/2016/07/19/sport/jockey-horse-diets/index.html',
     // 'http://www.cnn.com/2016/07/18/travel/national-seashore-lakeshore-towns-nps100/index.html'
-    'http://www.cnn.com/2016/08/15/us/gabby-douglas-natalie-hawkins-new-day/index.html' // twitter embeds
+    // 'http://www.cnn.com/2016/08/15/us/gabby-douglas-natalie-hawkins-new-day/index.html' // twitter embeds
     // 'http://www.cnn.com/2015/10/13/politics/democratic-debate-2016-instagram/index.html' // ig embeds
     // 'http://www.cnn.com/2016/09/05/hotels/presidential-hotel-suites/index.html' // page top gallery
 //     'http://www.cnn.com/2016/08/16/opinions/larry-wilmore-cancellation-obeidallah/index.html' // editors note  / image / video
@@ -86,6 +86,7 @@ fg.urls = [
 //    'http://www.cnn.com/videos/entertainment/2016/08/30/chance-the-rapper-beyonce-mtv-vma-orig-vstan.cnn',
 //    'http://www.cnn.com/videos/us/2016/09/01/houston-crosswalks-vandalized-pkg.ktrk'
     // 'http://www.cnn.com/2016/09/20/politics/gun-control-law-court/index.html'
+    'http://www.cnn.com/2016/09/26/opinions/clinton-needs-obama-bernstein-opinion/index.html'
 ];
 
 if (fg.urls && fg.urls.length > 0) {
