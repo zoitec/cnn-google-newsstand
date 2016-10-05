@@ -25,6 +25,7 @@ const nconf = require('nconf');
 nconf.env([
     'CLOUDAMQP_AUTH',
     'ENVIRONMENT',
+    'GNS_BLACK_LIST',
     'GNS_TASK_INTERVAL_MS',
     'PORT'
 ]);
@@ -38,24 +39,30 @@ if (!nconf.get('ENVIRONMENT') || !nconf.get('PORT') || !nconf.get('CLOUDAMQP_AUT
 }
 
 
-
-let config = {
-    default: {
-        cloudamqpConnectionString: `amqp://${nconf.get('CLOUDAMQP_AUTH')}@red-rhino.rmq.cloudamqp.com/cnn-towncrier`,
-        gnsTaskIntervalMS: (nconf.get('GNS_TASK_INTERVAL_MS')) ? parseInt(nconf.get('GNS_TASK_INTERVAL_MS')) : 1000 * 60 * 30, // 30 minutes
-        lsdHosts: 'lsd-prod-pub-cop.turner.com,lsd-prod-pub-56m.turner.com',
-        exchangeName: 'cnn-town-crier-ref',
-        queueNameArticles: `cnn-google-newsstand-articles-${nconf.get('ENVIRONMENT').toLowerCase()}`,
-        queueNameVideos: `cnn-google-newsstand-videos-${nconf.get('ENVIRONMENT').toLowerCase()}`,
-        routingKeysArticles: ['cnn.article'],
-        routingKeysVideos: ['cnn.video']
-    },
-    prod: {
-        cloudamqpConnectionString: `amqp://${nconf.get('CLOUDAMQP_AUTH')}@red-rhino.rmq.cloudamqp.com/cnn-towncrier`,
-        exchangeName: 'cnn-town-crier-prod',
-        queueNameArticles: 'cnn-google-newsstand-articles-prod'
-    }
-};
+let blackList = [
+        /\/studentnews\//,
+        /\/videos\/spanish\//,
+        /fast-facts\/index.html$/,
+        /cnn.com\/\d{4}\/\d{2}\/\d{2}\/cnn-info/ // https://regex101.com/r/yT0jX6/1
+    ],
+    config = {
+        default: {
+            cloudamqpConnectionString: `amqp://${nconf.get('CLOUDAMQP_AUTH')}@red-rhino.rmq.cloudamqp.com/cnn-towncrier`,
+            gnsBlackList: (nconf.get('GNS_BLACK_LIST')) ? JSON.parse(nconf.get('GNS_BLACK_LIST')) :blackList,
+            gnsTaskIntervalMS: (nconf.get('GNS_TASK_INTERVAL_MS')) ? parseInt(nconf.get('GNS_TASK_INTERVAL_MS')) : 1000 * 60 * 30, // 30 minutes
+            lsdHosts: 'lsd-prod-pub-cop.turner.com,lsd-prod-pub-56m.turner.com',
+            exchangeName: 'cnn-town-crier-ref',
+            queueNameArticles: `cnn-google-newsstand-articles-${nconf.get('ENVIRONMENT').toLowerCase()}`,
+            queueNameVideos: `cnn-google-newsstand-videos-${nconf.get('ENVIRONMENT').toLowerCase()}`,
+            routingKeysArticles: ['cnn.article'],
+            routingKeysVideos: ['cnn.video']
+        },
+        prod: {
+            cloudamqpConnectionString: `amqp://${nconf.get('CLOUDAMQP_AUTH')}@red-rhino.rmq.cloudamqp.com/cnn-towncrier`,
+            exchangeName: 'cnn-town-crier-prod',
+            queueNameArticles: 'cnn-google-newsstand-articles-prod'
+        }
+    };
 
 
 
