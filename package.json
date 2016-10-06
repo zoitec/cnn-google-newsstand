@@ -1,6 +1,6 @@
 {
   "name": "cnn-google-newsstand",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "CNN Google Newsstand",
   "main": "server.js",
   "directories": {
