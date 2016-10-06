@@ -86,7 +86,8 @@ fg.urls = [
 //    'http://www.cnn.com/videos/entertainment/2016/08/30/chance-the-rapper-beyonce-mtv-vma-orig-vstan.cnn',
 //    'http://www.cnn.com/videos/us/2016/09/01/houston-crosswalks-vandalized-pkg.ktrk'
     // 'http://www.cnn.com/2016/09/20/politics/gun-control-law-court/index.html'
-    'http://www.cnn.com/2016/09/26/opinions/clinton-needs-obama-bernstein-opinion/index.html'
+    // 'http://www.cnn.com/2016/09/26/opinions/clinton-needs-obama-bernstein-opinion/index.html'
+    'http://www.cnn.com/2014/06/09/world/boko-haram-fast-facts/index.html'
 ];
 
 if (fg.urls && fg.urls.length > 0) {
