@@ -90,7 +90,7 @@ function getImagesFromAWS() {
         let awsConfig = {accessKeyId: config.get('aws').accessKeyId, secretAccessKey: config.get('aws').secretAccessKey, region: 'us-east-1'},
             bucket = config.get('aws').bucket,
             s3obj,
-            prefixStr = `assets/img/opp/ksa/${config.get('ENVIRONMENT')}/gns/`,
+            prefixStr = `assets/img/opp/ksa/${config.get('gnsElectiomImgEnv')}/gns/`,
             params = {Bucket: bucket, Prefix: prefixStr};
 
         AWS.config.update(awsConfig);
