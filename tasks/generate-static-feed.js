@@ -27,16 +27,18 @@
 'use strict';
 
 const  request = require('request'),
+    AWS = require('aws-sdk'),
     FeedGenerator = require('../lib/feed-generator.js'),
     debugLog = require('debug')('cnn-google-newsstand:Task:generate-static-feed'),
     config = require('../config.js'),
     fg = new FeedGenerator(),
+    enableElectionStory = config.get('gnsTurnOnElectionModule'),
     POST_TO_LSD = false; // <---- TODO - SET THIS TO THE PROPER VALUE BASED ON WHAT YOU ARE WANTING TO DO
 
-
+let s3Images = undefined;
 
 function postToLSD(data) {
-    let endpoint = '/cnn/content/google-newsstand/test-not-public.xml',  // <---- TODO - SET THIS TO THE CORRECT ENDPOINT BEFORE RUNNING
+    let endpoint = '/cnn/content/google-newsstand/test-not-public-9.xml',  // <---- TODO - SET THIS TO THE CORRECT ENDPOINT BEFORE RUNNING
         hosts = config.get('lsdHosts');
 
     debugLog('postToLSD() called');
@@ -59,21 +61,84 @@ function postToLSD(data) {
     });
 }
 
+function filterImages(data) {
+    let filteredImages = [],
+        contents = data.Contents,
+        image,
+        i;
+    for (i in contents) {
+        image = contents[i];
+        if (image.Key.includes('.png')) {
+            filteredImages.push({
+                time: image.LastModified,
+                url: `http://registry.api.cnn.io/${image.Key}`
+            });
+        }
+    }
 
+    filteredImages = filteredImages.sort(function (a, b) {
+        return new Date(b.time) - new Date(a.time);
+    });
+
+    return filteredImages;
+}
+
+
+function getImagesFromAWS() {
+    return new Promise(function (fulfill) {
+
+        let awsConfig = {accessKeyId: config.get('aws').accessKeyId, secretAccessKey: config.get('aws').secretAccessKey, region: 'us-east-1'},
+            bucket = config.get('aws').bucket,
+            s3obj,
+            prefixStr = `assets/img/opp/ksa/${config.get('ENVIRONMENT')}/gns/`,
+            params = {Bucket: bucket, Prefix: prefixStr};
+
+        AWS.config.update(awsConfig);
+        s3obj = new AWS.S3();
+
+        s3obj.listObjects(params, (err, data) => {
+            if (err) {
+                console.log('Error retrieving images from s3', err);
+                fulfill({error: 'Error retrieving images from s3'});
+            } else {
+                console.log('Successfully retrieved images from s3');
+                fulfill(filterImages(data));
+            }
+        });
+    });
+}
+
+function isConstantPublishedAlreadyThere(urls, electionStoryUrl) {
+    let isStoryThere = false;
+
+    urls.some((url) => {
+        if (electionStoryUrl === url) {
+            isStoryThere = true;
+        }
+    });
+
+    return isStoryThere;
+}
+
+if (enableElectionStory === true || enableElectionStory === 'true') {
+    s3Images = getImagesFromAWS();
+}
 
 fg.urls = [
     // 'http://www.cnn.com/2016/08/08/opinions/mcmullin-mormon-hope-for-conservatives-stanley/index.html'
-    'http://www.cnn.com/2016/08/08/sport/aly-raisman-parents-olympics-trnd/index.html' // page top image
+ //   'http://www.cnn.com/2016/08/08/sport/aly-raisman-parents-olympics-trnd/index.html' // page top image
     // 'http://www.cnn.com/2016/08/08/sport/office-olympics-for-the-rest-of-us-trnd/index.html' // page top video
+    // 'http://www.cnn.com/2016/08/08/sport/aly-raisman-parents-olympics-trnd/index.html' // page top image
+//    'http://www.cnn.com/2016/08/08/sport/office-olympics-for-the-rest-of-us-trnd/index.html', // page top video
     // 'http://www.cnn.com/2016/08/09/health/parent-acts-teaching-kids-empathy/index.html' // page top video collection
     // 'http://www.cnn.com/2016/07/27/us/freddie-gray-verdict-baltimore-officers/index.html' // page top video collection / inline video / inline images
     // 'http://www.cnn.com/2016/08/15/opinions/is-trump-getting-ready-to-lose-stanley/index.html'
     // 'http://www.cnn.com/2016/08/15/health/parents-life-expectancy-heart-health/index.html' //
     // 'http://www.cnn.com/2016/08/10/politics/trump-second-amendment/index.html'//
-    // 'http://www.cnn.com/2016/07/22/architecture/leaning-house-jakarta-architecture/index.html'
+    //  'http://www.cnn.com/2016/07/22/architecture/leaning-house-jakarta-architecture/index.html',
     // 'http://www.cnn.com/2016/07/19/sport/jockey-horse-diets/index.html',
     // 'http://www.cnn.com/2016/07/18/travel/national-seashore-lakeshore-towns-nps100/index.html'
-    // 'http://www.cnn.com/2016/08/15/us/gabby-douglas-natalie-hawkins-new-day/index.html' // twitter embeds
+    // 'http://www.cnn.com/2016/08/15/us/gabby-douglas-natalie-hawkins-new-day/index.html', // twitter embeds
     // 'http://www.cnn.com/2015/10/13/politics/democratic-debate-2016-instagram/index.html' // ig embeds
     // 'http://www.cnn.com/2016/09/05/hotels/presidential-hotel-suites/index.html' // page top gallery
 //     'http://www.cnn.com/2016/08/16/opinions/larry-wilmore-cancellation-obeidallah/index.html' // editors note  / image / video
@@ -88,27 +153,68 @@ fg.urls = [
     // 'http://www.cnn.com/2016/09/20/politics/gun-control-law-court/index.html'
     // 'http://www.cnn.com/2016/09/26/opinions/clinton-needs-obama-bernstein-opinion/index.html'
 //    'http://www.cnn.com/2014/06/09/world/boko-haram-fast-facts/index.html'
+   // 'http://www.cnn.com/videos/us/2016/09/01/houston-crosswalks-vandalized-pkg.ktrk'
+   // 'http://www.cnn.com/2016/09/20/politics/gun-control-law-court/index.html',
+   // 'http://ref.next.cnn.com/2016/10/12/politics/test-election-day-2016-highlights/index.html'
+    // 'http://www.cnn.com/2016/09/26/opinions/clinton-needs-obama-bernstein-opinion/index.html',
+    'http://www.cnn.com/2016/10/28/politics/donald-trump-election-2016/index.html'
 ];
 
 if (fg.urls && fg.urls.length > 0) {
-    fg.processContent().then(
-        // success
-        (rssFeed) => {
-            console.log(rssFeed);
 
-            if (POST_TO_LSD) {
-                postToLSD(rssFeed);
+
+    if (s3Images) {
+
+        s3Images.then(function (data) {
+
+            let constantElectionStoryUpdate = config.get('gnsElectionStoryConstantUpdate'),
+                constantElectionStoryUpdateURL = config.get('gnsElectionStoryConstantUpdateURL');
+
+            if ((constantElectionStoryUpdate === 'true' || constantElectionStoryUpdate === true) && constantElectionStoryUpdateURL) {
+                if (!isConstantPublishedAlreadyThere(fg.urls, constantElectionStoryUpdateURL)) {
+                    fg.urls.unshift(constantElectionStoryUpdateURL);
+                }
             }
 
-            // post to LSD endpoint
-            fg.urls = 'clear';
-        },
+            fg.processContent({s3Data: data}).then(
+                // success
+                (rssFeed) => {
+                    console.log(rssFeed);
 
-        // failure
-        (error) => {
-            console.log(`Error: ${error}`);
-        }
-    );
+                    if (POST_TO_LSD) {
+                        postToLSD(rssFeed);
+                    }
+
+                    // post to LSD endpoint
+                    fg.urls = 'clear';
+                },
+
+                // failure
+                (error) => {
+                    console.log(`Error: ${error}`);
+                }
+            );
+        });
+    } else {
+        fg.processContent().then(
+            // success
+            (rssFeed) => {
+                console.log(rssFeed);
+
+                if (POST_TO_LSD) {
+                    postToLSD(rssFeed);
+                }
+
+                // post to LSD endpoint
+                fg.urls = 'clear';
+            },
+
+            // failure
+            (error) => {
+                console.log(`Error: ${error}`);
+            }
+        );
+    }
 } else {
     debugLog('no updates');
 }

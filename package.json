@@ -1,6 +1,6 @@
 {
   "name": "cnn-google-newsstand",
-  "version": "1.0.5",
+  "version": "1.1.0",
   "description": "CNN Google Newsstand",
   "main": "server.js",
   "directories": {
@@ -32,6 +32,7 @@
   "dependencies": {
     "amqplib": "0.4.2",
     "async": "2.0.0",
+    "aws-sdk": "2.6.12",
     "cnn-content-retriever": "1.2.0",
     "cnn-hapi": "0.6.4",
     "debug": "2.2.0",
