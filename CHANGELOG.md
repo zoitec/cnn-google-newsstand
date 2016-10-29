@@ -1,5 +1,23 @@
 # CNN Google Newsstand Changelog
 
+## 2016-10-29, Version 1.1.0, @jamsyoung
+
+### Notable changes
+
+- Eletions
+
+### Known issues
+
+See https://github.com/cnnlabs/cnn-google-newsstand/labels/defect for complete and
+current list of known issues.
+
+### Commits
+
+* [[`e4548b8d9b`](https://github.com/jamsyoung/cnn-google-newsstand/commit/e4548b8d9b)] - CNNGNS-53 CNNGNS-54  Election Module and Election Sections (#7) (sean joseph)
+* [[`ff6184bc31`](https://github.com/jamsyoung/cnn-google-newsstand/commit/ff6184bc31)] - **feed-generator**: fix typo (James Young)
+
+
+
 
 ## 2016-09-26, Version 1.0.3, @jamsyoung
 
