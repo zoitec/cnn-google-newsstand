@@ -125,7 +125,7 @@ if (enableElectionStory === true || enableElectionStory === 'true') {
 }
 
 fg.urls = [
-'http://www.cnn.com/2016/10/29/asia/south-korea-reshuffle/index.html'
+    'http://www.cnn.com/2016/10/29/asia/south-korea-reshuffle/index.html'
     // 'http://www.cnn.com/2016/08/08/opinions/mcmullin-mormon-hope-for-conservatives-stanley/index.html'
  //   'http://www.cnn.com/2016/08/08/sport/aly-raisman-parents-olympics-trnd/index.html' // page top image
     // 'http://www.cnn.com/2016/08/08/sport/office-olympics-for-the-rest-of-us-trnd/index.html' // page top video
