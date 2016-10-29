@@ -17,20 +17,22 @@
 'use strict';
 
 const request = require('request'),
+    AWS = require('aws-sdk'),
     FeedGenerator = require('../lib/feed-generator.js'),
     amqp = require('amqplib/callback_api'),
     debugLog = require('debug')('cnn-google-newsstand:Task:google-newsstand-latest'),
     config = require('../config.js'),
     cloudamqpConnectionString = config.get('cloudamqpConnectionString'),
     latestFG = new FeedGenerator(),
+    electionsFG = new FeedGenerator(),
     entertainmentFG = new FeedGenerator(),
     healthFG = new FeedGenerator(),
     opinionsFG = new FeedGenerator(),
     politicsFG = new FeedGenerator(),
     techFG = new FeedGenerator(),
     usFG = new FeedGenerator(),
-    worldFG = new FeedGenerator();
-
+    worldFG = new FeedGenerator(),
+    enableElectionStory = config.get('gnsTurnOnElectionModule');
 
 
 // connect to CloudAMQP and use/create the queue to subscribe to
@@ -100,6 +102,12 @@ amqp.connect(cloudamqpConnectionString, (error, connection) => {
                         mappedToASection = true;
                     }
 
+                    if (JSON.parse(message.content.toString()).branding && JSON.parse(message.content.toString()).branding === '2016-elections') {
+                        debugLog(`Adding url to election feed: ${JSON.parse(message.content.toString()).url}`);
+                        electionsFG.urls = JSON.parse(message.content.toString()).url;
+                        mappedToASection = true;
+                    }
+
                     if (!mappedToASection) {
                         debugLog(`${JSON.parse(message.content.toString()).url} - DEFAULTING to world feed`);
                         worldFG.urls = JSON.parse(message.content.toString()).url;
@@ -113,7 +121,71 @@ amqp.connect(cloudamqpConnectionString, (error, connection) => {
     });
 });
 
+let s3Images = undefined;
 
+function filterImages(data) {
+    let filteredImages = [],
+        contents = data.Contents,
+        image,
+        i;
+    for (i in contents) {
+        image = contents[i];
+        if (image.Key.includes('.png')) {
+            filteredImages.push({
+                time: image.LastModified,
+                url: `http://registry.api.cnn.io/${image.Key}`
+            });
+        }
+    }
+
+    filteredImages = filteredImages.sort(function (a, b) {
+        return new Date(b.time) - new Date(a.time);
+    });
+
+    return filteredImages;
+}
+
+
+function getImagesFromAWS() {
+    return new Promise(function (fulfill) {
+
+        let awsConfig = {accessKeyId: config.get('aws').accessKeyId, secretAccessKey: config.get('aws').secretAccessKey, region: 'us-east-1'},
+            bucket = config.get('aws').bucket,
+            s3obj,
+            prefixStr = `assets/img/opp/ksa/${config.get('ENVIRONMENT')}/gns/`,
+            params = {Bucket: bucket, Prefix: prefixStr};
+
+        AWS.config.update(awsConfig);
+        s3obj = new AWS.S3();
+
+        s3obj.listObjects(params, (err, data) => {
+            if (err) {
+                console.log('Error retrieving images from s3');
+                fulfill({error: 'Error retrieving images from s3'});
+            } else {
+                console.log('Successfully retrieved images from s3');
+                fulfill(filterImages(data));
+            }
+        });
+    });
+}
+
+function isConstantPublishedAlreadyThere(urls, electionStoryUrl) {
+    let isStoryThere = false;
+
+    urls.some((url) => {
+        if (electionStoryUrl === url) {
+            isStoryThere = true;
+        }
+    });
+
+    return isStoryThere;
+}
+
+
+if (enableElectionStory === true || enableElectionStory === 'true') {
+    s3Images = getImagesFromAWS();
+}
 
 function postToLSD(data, feedName) {
     let endpoint = `/cnn/content/google-newsstand/${feedName}.xml`,
@@ -145,23 +217,56 @@ setInterval(() => {
     debugLog('Generate latest Feed interval fired');
 
     if (latestFG.urls && latestFG.urls.length > 0) {
-        latestFG.processContent().then(
-            // success
-            (rssFeed) => {
-                console.log(rssFeed);
 
-                postToLSD(rssFeed, 'latest');
+        if (s3Images) {
+            s3Images.then(function (data) {
 
-                // post to LSD endpoint
-                latestFG.urls = 'clear';
-                debugLog(latestFG.urls);
-            },
+                let constantElectionStoryUpdate = config.get('gnsElectionStoryConstantUpdate'),
+                    constantElectionStoryUpdateURL = config.get('gnsElectionStoryConstantUpdateURL');
 
-            // failure
-            (error) => {
-                console.log(error);
-            }
-        );
+                if ((constantElectionStoryUpdate === 'true' || constantElectionStoryUpdate === true) && constantElectionStoryUpdateURL) {
+                    if (!isConstantPublishedAlreadyThere(latestFG.urls, constantElectionStoryUpdateURL)) {
+                        latestFG.urls.unshift(constantElectionStoryUpdateURL);
+                    }
+                }
+
+                latestFG.processContent({s3Data: data}).then(
+                    // success
+                    (rssFeed) => {
+                        console.log(rssFeed);
+
+                        postToLSD(rssFeed, 'latest');
+
+                        // post to LSD endpoint
+                        latestFG.urls = 'clear';
+                        debugLog(latestFG.urls);
+                    },
+
+                    // failure
+                    (error) => {
+                        console.log(error);
+                    }
+                );
+            });
+        } else {
+            latestFG.processContent().then(
+                // success
+                (rssFeed) => {
+                    console.log(rssFeed);
+
+                    postToLSD(rssFeed, 'latest');
+
+                    // post to LSD endpoint
+                    latestFG.urls = 'clear';
+                    debugLog(latestFG.urls);
+                },
+
+                // failure
+                (error) => {
+                    console.log(error);
+                }
+            );
+        }
     } else {
         debugLog('no updates');
     }
@@ -249,23 +354,55 @@ setInterval(() => {
     debugLog('Generate politics Feed interval fired');
 
     if (politicsFG.urls && politicsFG.urls.length > 0) {
-        politicsFG.processContent().then(
-            // success
-            (rssFeed) => {
-                console.log(rssFeed);
 
-                postToLSD(rssFeed, 'politics');
+        if (s3Images) {
+            s3Images.then(function (data) {
+                let constantElectionStoryUpdate = config.get('gnsElectionStoryConstantUpdate'),
+                    constantElectionStoryUpdateURL = config.get('gnsElectionStoryConstantUpdateURL');
 
-                // post to LSD endpoint
-                politicsFG.urls = 'clear';
-                debugLog(politicsFG.urls);
-            },
+                if ((constantElectionStoryUpdate === 'true' || constantElectionStoryUpdate === true) && constantElectionStoryUpdateURL) {
+                    if (!isConstantPublishedAlreadyThere(politicsFG.urls, constantElectionStoryUpdateURL)) {
+                        politicsFG.urls.unshift(constantElectionStoryUpdateURL);
+                    }
+                }
 
-            // failure
-            (error) => {
-                console.log(error);
-            }
-        );
+                politicsFG.processContent({s3Data: data}).then(
+                    // success
+                    (rssFeed) => {
+                        console.log(rssFeed);
+
+                        postToLSD(rssFeed, 'politics');
+
+                        // post to LSD endpoint
+                        politicsFG.urls = 'clear';
+                        debugLog(politicsFG.urls);
+                    },
+
+                    // failure
+                    (error) => {
+                        console.log(error);
+                    }
+                );
+            });
+        } else {
+            politicsFG.processContent().then(
+                // success
+                (rssFeed) => {
+                    console.log(rssFeed);
+
+                    postToLSD(rssFeed, 'politics');
+
+                    // post to LSD endpoint
+                    politicsFG.urls = 'clear';
+                    debugLog(politicsFG.urls);
+                },
+
+                // failure
+                (error) => {
+                    console.log(error);
+                }
+            );
+        }
     } else {
         debugLog('no updates');
     }
@@ -284,7 +421,7 @@ setInterval(() => {
 
                 // post to LSD endpoint
                 techFG.urls = 'clear';
-                debugLog(latestFG.urls);
+                debugLog(techFG.urls);
             },
 
             // failure
@@ -344,6 +481,63 @@ setInterval(() => {
                 console.log(error);
             }
         );
+    } else {
+        debugLog('no updates');
+    }
+}, config.get('gnsTaskIntervalMS'));
+
+setInterval(() => {
+    debugLog('Generate election Feed interval fired');
+
+    if (electionsFG.urls && electionsFG.urls.length > 0) {
+        if (s3Images) {
+            s3Images.then(function (data) {
+                let constantElectionStoryUpdate = config.get('gnsElectionStoryConstantUpdate'),
+                    constantElectionStoryUpdateURL = config.get('gnsElectionStoryConstantUpdateURL');
+
+                if ((constantElectionStoryUpdate === 'true' || constantElectionStoryUpdate === true) && constantElectionStoryUpdateURL) {
+                    if (!isConstantPublishedAlreadyThere(electionsFG.urls, constantElectionStoryUpdateURL)) {
+                        electionsFG.urls.unshift(constantElectionStoryUpdateURL);
+                    }
+                }
+
+                electionsFG.processContent({s3Data: data}).then(
+                    // success
+                    (rssFeed) => {
+                        console.log(rssFeed);
+
+                        postToLSD(rssFeed, '2016-election');
+
+                        // post to LSD endpoint
+                        electionsFG.urls = 'clear';
+                        debugLog(electionsFG.urls);
+                    },
+
+                    // failure
+                    (error) => {
+                        console.log(error);
+                    }
+                );
+            });
+        } else {
+            electionsFG.processContent().then(
+                // success
+                (rssFeed) => {
+                    console.log(rssFeed);
+
+                    postToLSD(rssFeed, '2016-elections');
+
+                    // post to LSD endpoint
+                    electionsFG.urls = 'clear';
+                    debugLog(electionsFG.urls);
+                },
+
+                // failure
+                (error) => {
+                    console.log(error);
+                }
+            );
+        }
     } else {
         debugLog('no updates');
     }

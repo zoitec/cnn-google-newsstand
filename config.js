@@ -27,17 +27,27 @@ nconf.env([
     'ENVIRONMENT',
     'GNS_BLACK_LIST',
     'GNS_TASK_INTERVAL_MS',
+    'GNS_ENABLE_ELECTION_STORY',
+    'GNS_ELECTION_TITLE',
+    'GNS_ELECTION_SLUG',
+    'GNS_ELECTION_CAPTION',
+    'GNS_ELECTION_STORY_CONSTANT_UPDATE',
+    'GNS_ELECTION_STORY_CONSTANT_UPDATE_URL',
+    'GNS_ELECTION_LOWER_HEADER',
+    'GNS_ELECTION_MODULE_LINK_1',
+    'GNS_ELECTION_MODULE_LINK_2',
+    'ACCESS_KEY_ID',
+    'SECRET_ACCESS_KEY',
     'PORT'
 ]);
 
 
 
 // These are required to be set to start up
-if (!nconf.get('ENVIRONMENT') || !nconf.get('PORT') || !nconf.get('CLOUDAMQP_AUTH')) {
-    console.error('ENVIRONMENT, PORT, and/or CLOUDAMQP_AUTH are not set');
+if (!nconf.get('ENVIRONMENT') || !nconf.get('PORT') || !nconf.get('CLOUDAMQP_AUTH') || !nconf.get('ACCESS_KEY_ID') || !nconf.get('SECRET_ACCESS_KEY')) {
+    console.error('ENVIRONMENT, PORT, CLOUDAMQP_AUTH, ACCESS_KEY_ID and/or SECRET_ACCESS_KEY are not set');
     process.exit(1);
 }
-
 
 let blackList = [
         /\/studentnews\//,
@@ -56,7 +66,21 @@ let blackList = [
             queueNameArticles: `cnn-google-newsstand-articles-${nconf.get('ENVIRONMENT').toLowerCase()}`,
             queueNameVideos: `cnn-google-newsstand-videos-${nconf.get('ENVIRONMENT').toLowerCase()}`,
             routingKeysArticles: ['cnn.article'],
-            routingKeysVideos: ['cnn.video']
+            routingKeysVideos: ['cnn.video'],
+            gnsTurnOnElectionModule: (nconf.get('GNS_ENABLE_ELECTION_STORY')) ? nconf.get('GNS_ENABLE_ELECTION_STORY') : false,
+            gnsElectionSlug: (nconf.get('GNS_ELECTION_SLUG')) ? nconf.get('GNS_ELECTION_SLUG') : 'trump-bus-denmark-trnd',
+            gnsElectionCaption: (nconf.get('GNS_ELECTION_CAPTION')) ? nconf.get('GNS_ELECTION_CAPTION') : 'A candidate needs 270 Electoral College votes to win the presidency. These modules show the total Electoral College votes and when a state has a projected winner (Maine and Nebraska allow Electoral College votes to be split). Not all candidates are listed. All party representation can be seen in the full results. CNN will broadcast a projected winner only after an extensive review of data from a number of sources.',
+            gnsElectionTitle: (nconf.get('GNS_ELECTION_TITLE')) ? nconf.get('GNS_ELECTION_TITLE') : 'Presidential Results',
+            gnsElectionStoryConstantUpdate: (nconf.get('GNS_ELECTION_STORY_CONSTANT_UPDATE')) ? nconf.get('GNS_ELECTION_STORY_CONSTANT_UPDATE') : false,
+            gnsElectionStoryConstantUpdateURL: (nconf.get('GNS_ELECTION_STORY_CONSTANT_UPDATE_URL')) ? nconf.get('GNS_ELECTION_STORY_CONSTANT_UPDATE_URL') : 'http://www.cnn.com/2016/10/28/politics/trump-bus-denmark-trnd/index.html',
+            gnsElectionModuleLowerHeader: (nconf.get('GNS_ELECTION_LOWER_HEADER')) ? nconf.get('GNS_ELECTION_LOWER_HEADER') : 'Election Day Highlights',
+            gnsElectionModuleLink1: (nconf.get('GNS_ELECTION_MODULE_LINK_1')) ? nconf.get('GNS_ELECTION_MODULE_LINK_1') : '<p class="style-id:electionLinks"><a class="style-id:electionLink" href="http://www.cnn.com">Full&nbsp;Election&nbsp;Results</a> | <a class="style-id:electionLink" href="http://www.cnn.com">Presidential</a> | <a class="style-id:electionLink" href="http://www.cnn.com">Senate</a> | <a class="style-id:electionLink" href="http://www.cnn.com">House</a> | <a class="style-id:electionLink" href="http://www.cnn.com">Governer</a> | <a class="style-id:electionLink" href="http://www.cnn.com">Ballot&nbsp;Measures</a> | <a class="style-id:electionLink" href="http://www.cnn.com">Exit&nbsp;Polls</a></p>',
+            gnsElectionModuleLink2: (nconf.get('GNS_ELECTION_MODULE_LINK_2')) ? nconf.get('GNS_ELECTION_MODULE_LINK_2') : '',
+                accessKeyId: nconf.get('ACCESS_KEY_ID'),
+                secretAccessKey: nconf.get('SECRET_ACCESS_KEY'),
+                region: 'us-east-1',
+                bucket: 'registry.api.cnn.io'
+            }
         },
         prod: {
             cloudamqpConnectionString: `amqp://${nconf.get('CLOUDAMQP_AUTH')}@red-rhino.rmq.cloudamqp.com/cnn-towncrier`,
@@ -64,8 +88,6 @@ let blackList = [
             queueNameArticles: 'cnn-google-newsstand-articles-prod'
         }
     };
-
-
 
 // load the correct config based on environment
 switch (nconf.get('ENVIRONMENT').toLowerCase()) {
