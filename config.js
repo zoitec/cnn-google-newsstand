@@ -76,6 +76,7 @@ let blackList = [
             gnsElectionModuleLowerHeader: (nconf.get('GNS_ELECTION_LOWER_HEADER')) ? nconf.get('GNS_ELECTION_LOWER_HEADER') : 'Election Day Highlights',
             gnsElectionModuleLink1: (nconf.get('GNS_ELECTION_MODULE_LINK_1')) ? nconf.get('GNS_ELECTION_MODULE_LINK_1') : '<p class="style-id:electionLinks"><a class="style-id:electionLink" href="http://www.cnn.com">Full&nbsp;Election&nbsp;Results</a> | <a class="style-id:electionLink" href="http://www.cnn.com">Presidential</a> | <a class="style-id:electionLink" href="http://www.cnn.com">Senate</a> | <a class="style-id:electionLink" href="http://www.cnn.com">House</a> | <a class="style-id:electionLink" href="http://www.cnn.com">Governer</a> | <a class="style-id:electionLink" href="http://www.cnn.com">Ballot&nbsp;Measures</a> | <a class="style-id:electionLink" href="http://www.cnn.com">Exit&nbsp;Polls</a></p>',
             gnsElectionModuleLink2: (nconf.get('GNS_ELECTION_MODULE_LINK_2')) ? nconf.get('GNS_ELECTION_MODULE_LINK_2') : '',
+            aws: {
                 accessKeyId: nconf.get('ACCESS_KEY_ID'),
                 secretAccessKey: nconf.get('SECRET_ACCESS_KEY'),
                 region: 'us-east-1',
