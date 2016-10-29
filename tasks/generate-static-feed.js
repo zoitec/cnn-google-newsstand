@@ -125,6 +125,7 @@ if (enableElectionStory === true || enableElectionStory === 'true') {
 }
 
 fg.urls = [
+'http://www.cnn.com/2016/10/29/asia/south-korea-reshuffle/index.html'
     // 'http://www.cnn.com/2016/08/08/opinions/mcmullin-mormon-hope-for-conservatives-stanley/index.html'
  //   'http://www.cnn.com/2016/08/08/sport/aly-raisman-parents-olympics-trnd/index.html' // page top image
     // 'http://www.cnn.com/2016/08/08/sport/office-olympics-for-the-rest-of-us-trnd/index.html' // page top video
@@ -157,7 +158,7 @@ fg.urls = [
    // 'http://www.cnn.com/2016/09/20/politics/gun-control-law-court/index.html',
    // 'http://ref.next.cnn.com/2016/10/12/politics/test-election-day-2016-highlights/index.html'
     // 'http://www.cnn.com/2016/09/26/opinions/clinton-needs-obama-bernstein-opinion/index.html',
-    'http://www.cnn.com/2016/10/28/politics/donald-trump-election-2016/index.html'
+//    'http://www.cnn.com/2016/10/28/politics/donald-trump-election-2016/index.html'
 ];
 
 if (fg.urls && fg.urls.length > 0) {
