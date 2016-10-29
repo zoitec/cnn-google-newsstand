@@ -506,7 +506,7 @@ setInterval(() => {
                     (rssFeed) => {
                         console.log(rssFeed);
 
-                        postToLSD(rssFeed, '2016-election');
+                        postToLSD(rssFeed, '2016-elections');
 
                         // post to LSD endpoint
                         electionsFG.urls = 'clear';
