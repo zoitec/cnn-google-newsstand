@@ -218,7 +218,8 @@ setInterval(() => {
 
     if (latestFG.urls && latestFG.urls.length > 0) {
 
-        if (s3Images) {
+        if (config.get('gnsTurnOnElectionModule') === true || config.get('gnsTurnOnElectionModule') === 'true') {
+            s3Images = getImagesFromAWS();
             s3Images.then(function (data) {
 
                 let constantElectionStoryUpdate = config.get('gnsElectionStoryConstantUpdate'),
@@ -355,7 +356,8 @@ setInterval(() => {
 
     if (politicsFG.urls && politicsFG.urls.length > 0) {
 
-        if (s3Images) {
+        if (config.get('gnsTurnOnElectionModule') === true || config.get('gnsTurnOnElectionModule') === 'true') {
+            s3Images = getImagesFromAWS();
             s3Images.then(function (data) {
                 let constantElectionStoryUpdate = config.get('gnsElectionStoryConstantUpdate'),
                     constantElectionStoryUpdateURL = config.get('gnsElectionStoryConstantUpdateURL');
@@ -490,7 +492,8 @@ setInterval(() => {
     debugLog('Generate election Feed interval fired');
 
     if (electionsFG.urls && electionsFG.urls.length > 0) {
-        if (s3Images) {
+        if (config.get('gnsTurnOnElectionModule') === true || config.get('gnsTurnOnElectionModule') === 'true') {
+            s3Images = getImagesFromAWS();
             s3Images.then(function (data) {
                 let constantElectionStoryUpdate = config.get('gnsElectionStoryConstantUpdate'),
                     constantElectionStoryUpdateURL = config.get('gnsElectionStoryConstantUpdateURL');
