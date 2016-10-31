@@ -173,11 +173,13 @@ function getImagesFromAWS() {
 function isConstantPublishedAlreadyThere(urls, electionStoryUrl) {
     let isStoryThere = false;
 
-    urls.some((url) => {
-        if (electionStoryUrl === url) {
-            isStoryThere = true;
-        }
-    });
+    if (urls && urls.length && urls.length > 0) {
+        urls.some((url) => {
+            if (electionStoryUrl === url) {
+                isStoryThere = true;
+            }
+        });
+    }
 
     return isStoryThere;
 }
