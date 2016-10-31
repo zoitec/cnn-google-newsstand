@@ -183,7 +183,7 @@ function isConstantPublishedAlreadyThere(urls, electionStoryUrl) {
 }
 
 
-if (enableElectionStory === true || enableElectionStory === 'true') {
+if ((enableElectionStory === true || enableElectionStory === 'true') || (config.get('gnsElectionModuleTest') === true || config.get('gnsElectionModuleTest') === 'true')) {
     s3Images = getImagesFromAWS();
 }
 
@@ -492,11 +492,15 @@ setInterval(() => {
     debugLog('Generate election Feed interval fired');
 
     if (electionsFG.urls && electionsFG.urls.length > 0) {
-        if (config.get('gnsTurnOnElectionModule') === true || config.get('gnsTurnOnElectionModule') === 'true') {
+        if ((enableElectionStory === true || enableElectionStory === 'true') || (config.get('gnsElectionModuleTest') === true || config.get('gnsElectionModuleTest') === 'true') && s3Images) {
             s3Images = getImagesFromAWS();
             s3Images.then(function (data) {
                 let constantElectionStoryUpdate = config.get('gnsElectionStoryConstantUpdate'),
-                    constantElectionStoryUpdateURL = config.get('gnsElectionStoryConstantUpdateURL');
+                    constantElectionStoryUpdateURL = config.get('gnsElectionStoryConstantUpdateURL'),
+                    electionData = {
+                        s3Data: data,
+                        electionTest: config.get('gnsElectionModuleTest')
+                    };
 
                 if ((constantElectionStoryUpdate === 'true' || constantElectionStoryUpdate === true) && constantElectionStoryUpdateURL) {
                     if (!isConstantPublishedAlreadyThere(electionsFG.urls, constantElectionStoryUpdateURL)) {
@@ -504,7 +508,7 @@ setInterval(() => {
                     }
                 }
 
-                electionsFG.processContent({s3Data: data}).then(
+                electionsFG.processContent(electionData).then(
                     // success
                     (rssFeed) => {
                         console.log(rssFeed);
