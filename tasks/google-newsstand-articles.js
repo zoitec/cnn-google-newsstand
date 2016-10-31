@@ -520,7 +520,7 @@ setInterval(() => {
             && constantElectionStoryUpdateURL) {
             if (!isConstantPublishedAlreadyThere(electionsFG.urls, constantElectionStoryUpdateURL)) {
                 electionsFG.urls.unshift(constantElectionStoryUpdateURL);
-                console.log('constent election story update added for: ', constantElectionStoryUpdateURL);
+                console.log('constant election story update added for: ', constantElectionStoryUpdateURL);
             }
         }
     }
