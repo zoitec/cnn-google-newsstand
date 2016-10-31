@@ -226,7 +226,7 @@ setInterval(() => {
         if ((constantElectionStoryUpdate === 'true' || constantElectionStoryUpdate === true)
             && constantElectionStoryUpdateURL) {
             if (!isConstantPublishedAlreadyThere(latestFG.urls, constantElectionStoryUpdateURL)) {
-                latestFG.urls.unshift(constantElectionStoryUpdateURL);
+                latestFG.urls = constantElectionStoryUpdateURL;
             }
         }
     }
@@ -372,7 +372,7 @@ setInterval(() => {
         if ((constantElectionStoryUpdate === 'true' || constantElectionStoryUpdate === true)
             && constantElectionStoryUpdateURL) {
             if (!isConstantPublishedAlreadyThere(politicsFG.urls, constantElectionStoryUpdateURL)) {
-                politicsFG.urls.unshift(constantElectionStoryUpdateURL);
+                politicsFG.urls = constantElectionStoryUpdateURL;
             }
         }
     }
@@ -521,8 +521,8 @@ setInterval(() => {
             (config.get('gnsElectionModuleTest') === true || config.get('gnsElectionModuleTest') === 'true')
             && constantElectionStoryUpdateURL) {
             if (!isConstantPublishedAlreadyThere(electionsFG.urls, constantElectionStoryUpdateURL)) {
-                electionsFG.urls.unshift(constantElectionStoryUpdateURL);
-                console.log('constant election story update added for: ', constantElectionStoryUpdateURL);
+                electionsFG.urls = constantElectionStoryUpdateURL;
+                console.log('constant election story update added for: ', constantElectionStoryUpdateURL, 'election URL array: ', electionsFG.urls);
             }
         }
     }
