@@ -191,7 +191,8 @@ if ((enableElectionStory === true || enableElectionStory === 'true')
 }
 
 function postToLSD(data, feedName) {
-    let endpoint = `/cnn/content/google-newsstand/${feedName}.xml`,
+    let suffix = (config.get('ENVIRONMENT') === 'prod') ? '' : `-${config.get('ENVIRONMENT')}`,
+        endpoint = `/cnn/content/google-newsstand/${feedName}${suffix}.xml`,
         hosts = config.get('lsdHosts');
 
     debugLog('postToLSD() called');

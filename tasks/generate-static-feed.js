@@ -38,7 +38,9 @@ const  request = require('request'),
 let s3Images = undefined;
 
 function postToLSD(data) {
-    let endpoint = '/cnn/content/google-newsstand/test-not-public-9.xml',  // <---- TODO - SET THIS TO THE CORRECT ENDPOINT BEFORE RUNNING
+
+    let suffix = (config.get('ENVIRONMENT') === 'prod') ? '' : `-${config.get('ENVIRONMENT')}`,
+        endpoint = `/cnn/content/google-newsstand/test-not-public${suffix}.xml`,  // <---- TODO - SET THIS TO THE CORRECT ENDPOINT BEFORE RUNNING
         hosts = config.get('lsdHosts');
 
     debugLog('postToLSD() called');
@@ -125,7 +127,7 @@ if (enableElectionStory === true || enableElectionStory === 'true') {
 }
 
 fg.urls = [
-    'http://www.cnn.com/2016/10/29/asia/south-korea-reshuffle/index.html'
+    'http://www.cnn.com/2016/11/01/opinions/2016-and-the-return-of-the-double-standard-robbins/index.html'
     // 'http://www.cnn.com/2016/08/08/opinions/mcmullin-mormon-hope-for-conservatives-stanley/index.html'
  //   'http://www.cnn.com/2016/08/08/sport/aly-raisman-parents-olympics-trnd/index.html' // page top image
     // 'http://www.cnn.com/2016/08/08/sport/office-olympics-for-the-rest-of-us-trnd/index.html' // page top video

@@ -69,6 +69,7 @@ let blackList = [
             queueNameVideos: `cnn-google-newsstand-videos-${nconf.get('ENVIRONMENT').toLowerCase()}`,
             routingKeysArticles: ['cnn.article'],
             routingKeysVideos: ['cnn.video'],
+            adbpTrackingURL: 'https://smetrics.cnn.com/b/ss/cnnoffsitedev',
             gnsTurnOnElectionModule: (nconf.get('GNS_ENABLE_ELECTION_STORY')) ? nconf.get('GNS_ENABLE_ELECTION_STORY') : false,
             gnsElectionModuleTest: (nconf.get('GNS_ELECTION_MODULE_TEST')) ? nconf.get('GNS_ELECTION_MODULE_TEST') : false,
             gnsElectionSlug: (nconf.get('GNS_ELECTION_SLUG')) ? nconf.get('GNS_ELECTION_SLUG') : 'what-is-the-hatch-act',
@@ -90,15 +91,19 @@ let blackList = [
         prod: {
             cloudamqpConnectionString: `amqp://${nconf.get('CLOUDAMQP_AUTH')}@red-rhino.rmq.cloudamqp.com/cnn-towncrier`,
             exchangeName: 'cnn-town-crier-prod',
-            queueNameArticles: 'cnn-google-newsstand-articles-prod'
+            queueNameArticles: 'cnn-google-newsstand-articles-prod',
+            queueNameVideos: 'cnn-google-newsstand-videos-prod',
+            adbpTrackingURL: 'https://smetrics.cnn.com/b/ss/cnn-adbp-offsite-domestic'
         }
     };
+
 
 // load the correct config based on environment
 switch (nconf.get('ENVIRONMENT').toLowerCase()) {
     case 'prod':
         nconf.defaults(config.prod);
         break;
+
 
     default:
         nconf.defaults(config.default);
