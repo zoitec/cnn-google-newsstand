@@ -1,5 +1,22 @@
 # CNN Google Newsstand Changelog
 
+## 2016-11-02, Version 1.3.0, @jamsyoung
+
+### Notable changes
+
+- Block the election module image from being set as a thumbnail for the article
+
+### Known issues
+
+See https://github.com/cnnlabs/cnn-google-newsstand/labels/defect for complete and
+current list of known issues.
+
+### Commits
+
+* [[`eb4a607eb8`](https://github.com/jamsyoung/cnn-google-newsstand/commit/eb4a607eb8)] - CNNGNS-53 - Block selection  of election module image to be card thumbnail (#8) (sean joseph)
+
+
+
 
 ## 2016-11-01, Version 1.2.0, @jamsyoung
 
