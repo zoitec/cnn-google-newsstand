@@ -1,5 +1,23 @@
 # CNN Google Newsstand Changelog
 
+## 2016-11-03, Version 1.4.0, @zoitec
+
+### Notable changes
+
+- s3 fix ,  minor style fix, and config links update
+
+### Known issues
+
+See https://github.com/cnnlabs/cnn-google-newsstand/labels/defect for complete and
+current list of known issues.
+
+### Commits
+
+* [[`548b7e0070`](https://github.com/jamsyoung/cnn-google-newsstand/commit/548b7e0070)] - CNNGNS-53 s3 fix ,  minor style fix, and config links update (#9) (sean joseph)
+
+
+
+
 ## 2016-11-02, Version 1.3.0, @jamsyoung
 
 ### Notable changes
