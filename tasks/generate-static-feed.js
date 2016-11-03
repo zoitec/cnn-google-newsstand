@@ -28,6 +28,8 @@
 
 const  request = require('request'),
     AWS = require('aws-sdk'),
+    _ = require('underscore'),
+    maxKeys = 1000,
     FeedGenerator = require('../lib/feed-generator.js'),
     debugLog = require('debug')('cnn-google-newsstand:Task:generate-static-feed'),
     config = require('../config.js'),
@@ -65,7 +67,7 @@ function postToLSD(data) {
 
 function filterImages(data) {
     let filteredImages = [],
-        contents = data.Contents,
+        contents = data,
         image,
         i;
     for (i in contents) {
@@ -78,34 +80,161 @@ function filterImages(data) {
         }
     }
 
-    filteredImages = filteredImages.sort(function (a, b) {
-        return new Date(b.time) - new Date(a.time);
+    filteredImages = _.sortBy(filteredImages, function (o) {
+        return new Date(o.time).getTime();
     });
 
     return filteredImages;
+}
+
+/**
+ * List keys from the specified bucket.
+ *
+ * If providing a prefix, only keys matching the prefix will be returned.
+ *
+ * If providing a delimiter, then a set of distinct path segments will be
+ * returned from the keys to be listed. This is a way of listing "folders"
+ * present given the keys that are there.
+ *
+ * @param {Object} options
+ * @param {String} options.bucket - The bucket name.
+ * @param {String} [options.prefix] - If set only return keys beginning with
+ *   the prefix value.
+ * @param {String} [options.delimiter] - If set return a list of distinct
+ *   folders based on splitting keys by the delimiter.
+ * @param {Function} callback - Callback of the form function (error, string[]).
+ */
+function listKeys(options, callback) {
+    var keys = [];
+
+    /**
+    * Recursively list keys.
+    *
+    * @param {String|undefined} marker - A value provided by the S3 API
+    *   to enable paging of large lists of keys. The result set requested
+    *   starts from the marker. If not provided, then the list starts
+    *   from the first key.
+    */
+    function listKeysRecusively(marker) {
+
+        options.marker = marker;
+
+        listKeyPage(options, function (error, nextMarker, keyset) {
+            if (error) {
+                return callback(error, keys);
+            }
+
+            keys = keys.concat(keyset);
+
+            if (nextMarker) {
+                listKeysRecusively(nextMarker);
+            } else {
+                callback(null, keys);
+            }
+        });
+    }
+
+    // Start the recursive listing at the beginning, with no marker.
+    listKeysRecusively();
+}
+
+/**
+ * List one page of a set of keys from the specified bucket.
+ *
+ * If providing a prefix, only keys matching the prefix will be returned.
+ *
+ * If providing a delimiter, then a set of distinct path segments will be
+ * returned from the keys to be listed. This is a way of listing "folders"
+ * present given the keys that are there.
+ *
+ * If providing a marker, list a page of keys starting from the marker
+ * position. Otherwise return the first page of keys.
+ *
+ * @param {Object} options
+ * @param {String} options.bucket - The bucket name.
+ * @param {String} [options.prefix] - If set only return keys beginning with
+ *   the prefix value.
+ * @param {String} [options.delimiter] - If set return a list of distinct
+ *   folders based on splitting keys by the delimiter.
+ * @param {String} [options.marker] - If set the list only a paged set of keys
+ *   starting from the marker.
+ * @param {Function} callback - Callback of the form
+    function (error, nextMarker, keys).
+ */
+function listKeyPage(options, callback) {
+    let params = {
+            Bucket: options.bucket,
+            Delimiter: options.delimiter,
+            Marker: options.marker,
+            MaxKeys: maxKeys,
+            Prefix: options.prefix
+        },
+        s3Client,
+        awsConfig = {accessKeyId: config.get('aws').accessKeyId, secretAccessKey: config.get('aws').secretAccessKey, region: 'us-east-1'};
+
+
+    AWS.config.update(awsConfig);
+    s3Client = new AWS.S3();
+
+    s3Client.listObjects(params, function (error, response) {
+        if (error) {
+            return callback(error);
+        } else if (response.err) {
+            return callback(new Error(response.err));
+        }
+
+        // Convert the results into an array of key strings, or
+        // common prefixes if we're using a delimiter.
+        var keys, nextMarker, lastKey;
+        if (options.delimiter) {
+          // Note that if you set MaxKeys to 1 you can see some interesting
+          // behavior in which the first response has no response.CommonPrefix
+          // values, and so we have to skip over that and move on to the
+          // next page.
+            keys = _.map(response.CommonPrefixes, function (item) {
+                return item.Prefix;
+            });
+        } else {
+            keys = _.map(response.Contents, function (item) {
+                return item;
+            });
+        }
+
+        // Check to see if there are yet more keys to be obtained, and if so
+        // return the marker for use in the next request.
+        if (response.IsTruncated) {
+            if (options.delimiter) {
+                // If specifying a delimiter, the response.NextMarker field exists.
+                nextMarker = response.NextMarker;
+            } else {
+                // For normal listing, there is no response.NextMarker
+                // and we must use the last key instead.
+                lastKey = keys[keys.length - 1];
+
+
+                nextMarker = lastKey.Key;
+            }
+        }
+
+        callback(null, nextMarker, keys);
+    });
 }
 
 
 function getImagesFromAWS() {
     return new Promise(function (fulfill) {
 
-        let awsConfig = {accessKeyId: config.get('aws').accessKeyId, secretAccessKey: config.get('aws').secretAccessKey, region: 'us-east-1'},
-            bucket = config.get('aws').bucket,
-            s3obj,
-            prefixStr = `assets/img/opp/ksa/${config.get('gnsElectiomImgEnv')}/gns/`,
-            params = {Bucket: bucket, Prefix: prefixStr};
-
-        AWS.config.update(awsConfig);
-        s3obj = new AWS.S3();
-
-        s3obj.listObjects(params, (err, data) => {
-            if (err) {
-                console.log('Error retrieving images from s3', err);
+        listKeys({
+            bucket: config.get('aws').bucket,
+            prefix: `assets/img/opp/ksa/${config.get('gnsElectiomImgEnv')}/gns/`
+        }, function (error, keys) {
+            if (error) {
+                console.log('Error retrieving images from s3', error);
                 fulfill({error: 'Error retrieving images from s3'});
-            } else {
-                console.log('Successfully retrieved images from s3');
-                fulfill(filterImages(data));
             }
+
+            console.log('Successfully retrieved images from s3, about to fulfill.. keys.length: ', keys.length );
+            fulfill(filterImages(keys));
         });
     });
 }
@@ -127,7 +256,7 @@ if (enableElectionStory === true || enableElectionStory === 'true') {
 }
 
 fg.urls = [
-    'http://www.cnn.com/2016/11/01/opinions/2016-and-the-return-of-the-double-standard-robbins/index.html'
+    'http://www.cnn.com/2016/10/31/politics/donald-trump-huma-abedin-hillary-clinton-emails/index.html'
     // 'http://www.cnn.com/2016/08/08/opinions/mcmullin-mormon-hope-for-conservatives-stanley/index.html'
  //   'http://www.cnn.com/2016/08/08/sport/aly-raisman-parents-olympics-trnd/index.html' // page top image
     // 'http://www.cnn.com/2016/08/08/sport/office-olympics-for-the-rest-of-us-trnd/index.html' // page top video
