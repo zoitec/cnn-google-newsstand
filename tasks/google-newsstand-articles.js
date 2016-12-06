@@ -17,20 +17,24 @@
 'use strict';
 
 const request = require('request'),
+    AWS = require('aws-sdk'),
+    _ = require('underscore'),
+    maxKeys = 1000,
     FeedGenerator = require('../lib/feed-generator.js'),
     amqp = require('amqplib/callback_api'),
     debugLog = require('debug')('cnn-google-newsstand:Task:google-newsstand-latest'),
     config = require('../config.js'),
     cloudamqpConnectionString = config.get('cloudamqpConnectionString'),
     latestFG = new FeedGenerator(),
+    electionsFG = new FeedGenerator(),
     entertainmentFG = new FeedGenerator(),
     healthFG = new FeedGenerator(),
     opinionsFG = new FeedGenerator(),
     politicsFG = new FeedGenerator(),
     techFG = new FeedGenerator(),
     usFG = new FeedGenerator(),
-    worldFG = new FeedGenerator();
-
+    worldFG = new FeedGenerator(),
+    enableElectionStory = config.get('gnsTurnOnElectionModule');
 
 
 // connect to CloudAMQP and use/create the queue to subscribe to
@@ -100,6 +104,12 @@ amqp.connect(cloudamqpConnectionString, (error, connection) => {
                         mappedToASection = true;
                     }
 
+                    if (JSON.parse(message.content.toString()).branding && JSON.parse(message.content.toString()).branding === '2016-elections') {
+                        debugLog(`Adding url to election feed: ${JSON.parse(message.content.toString()).url}`);
+                        electionsFG.urls = JSON.parse(message.content.toString()).url;
+                        mappedToASection = true;
+                    }
+
                     if (!mappedToASection) {
                         debugLog(`${JSON.parse(message.content.toString()).url} - DEFAULTING to world feed`);
                         worldFG.urls = JSON.parse(message.content.toString()).url;
@@ -113,10 +123,205 @@ amqp.connect(cloudamqpConnectionString, (error, connection) => {
     });
 });
 
+let s3Images = undefined;
 
+function filterImages(data) {
+    let filteredImages = [],
+        contents = data,
+        image,
+        i;
+    for (i in contents) {
+        image = contents[i];
+        if (image.Key.includes('.png')) {
+            filteredImages.push({
+                time: image.LastModified,
+                url: `http://registry.api.cnn.io/${image.Key}`
+            });
+        }
+    }
+
+    filteredImages = _.sortBy(filteredImages, function (o) {
+        return new Date(o.time).getTime();
+    });
+
+    return filteredImages;
+}
+
+/**
+ * List keys from the specified bucket.
+ *
+ * If providing a prefix, only keys matching the prefix will be returned.
+ *
+ * If providing a delimiter, then a set of distinct path segments will be
+ * returned from the keys to be listed. This is a way of listing "folders"
+ * present given the keys that are there.
+ *
+ * @param {Object} options
+ * @param {String} options.bucket - The bucket name.
+ * @param {String} [options.prefix] - If set only return keys beginning with
+ *   the prefix value.
+ * @param {String} [options.delimiter] - If set return a list of distinct
+ *   folders based on splitting keys by the delimiter.
+ * @param {Function} callback - Callback of the form function (error, string[]).
+ */
+function listKeys(options, callback) {
+    var keys = [];
+
+    /**
+    * Recursively list keys.
+    *
+    * @param {String|undefined} marker - A value provided by the S3 API
+    *   to enable paging of large lists of keys. The result set requested
+    *   starts from the marker. If not provided, then the list starts
+    *   from the first key.
+    */
+    function listKeysRecusively(marker) {
+
+        options.marker = marker;
+
+        listKeyPage(options, function (error, nextMarker, keyset) {
+            if (error) {
+                return callback(error, keys);
+            }
+
+            keys = keys.concat(keyset);
+
+            if (nextMarker) {
+                listKeysRecusively(nextMarker);
+            } else {
+                callback(null, keys);
+            }
+        });
+    }
+
+    // Start the recursive listing at the beginning, with no marker.
+    listKeysRecusively();
+}
+
+/**
+ * List one page of a set of keys from the specified bucket.
+ *
+ * If providing a prefix, only keys matching the prefix will be returned.
+ *
+ * If providing a delimiter, then a set of distinct path segments will be
+ * returned from the keys to be listed. This is a way of listing "folders"
+ * present given the keys that are there.
+ *
+ * If providing a marker, list a page of keys starting from the marker
+ * position. Otherwise return the first page of keys.
+ *
+ * @param {Object} options
+ * @param {String} options.bucket - The bucket name.
+ * @param {String} [options.prefix] - If set only return keys beginning with
+ *   the prefix value.
+ * @param {String} [options.delimiter] - If set return a list of distinct
+ *   folders based on splitting keys by the delimiter.
+ * @param {String} [options.marker] - If set the list only a paged set of keys
+ *   starting from the marker.
+ * @param {Function} callback - Callback of the form
+    function (error, nextMarker, keys).
+ */
+function listKeyPage(options, callback) {
+    let params = {
+            Bucket: options.bucket,
+            Delimiter: options.delimiter,
+            Marker: options.marker,
+            MaxKeys: maxKeys,
+            Prefix: options.prefix
+        },
+        s3Client,
+        awsConfig = {accessKeyId: config.get('aws').accessKeyId, secretAccessKey: config.get('aws').secretAccessKey, region: 'us-east-1'};
+
+
+    AWS.config.update(awsConfig);
+    s3Client = new AWS.S3();
+
+    s3Client.listObjects(params, function (error, response) {
+        if (error) {
+            return callback(error);
+        } else if (response.err) {
+            return callback(new Error(response.err));
+        }
+
+        // Convert the results into an array of key strings, or
+        // common prefixes if we're using a delimiter.
+        var keys, nextMarker, lastKey;
+        if (options.delimiter) {
+          // Note that if you set MaxKeys to 1 you can see some interesting
+          // behavior in which the first response has no response.CommonPrefix
+          // values, and so we have to skip over that and move on to the
+          // next page.
+            keys = _.map(response.CommonPrefixes, function (item) {
+                return item.Prefix;
+            });
+        } else {
+            keys = _.map(response.Contents, function (item) {
+                return item;
+            });
+        }
+
+        // Check to see if there are yet more keys to be obtained, and if so
+        // return the marker for use in the next request.
+        if (response.IsTruncated) {
+            if (options.delimiter) {
+                // If specifying a delimiter, the response.NextMarker field exists.
+                nextMarker = response.NextMarker;
+            } else {
+                // For normal listing, there is no response.NextMarker
+                // and we must use the last key instead.
+                lastKey = keys[keys.length - 1];
+
+
+                nextMarker = lastKey.Key;
+            }
+        }
+
+        callback(null, nextMarker, keys);
+    });
+}
+
+
+function getImagesFromAWS() {
+    return new Promise(function (fulfill) {
+
+        listKeys({
+            bucket: config.get('aws').bucket,
+            prefix: `assets/img/opp/ksa/${config.get('gnsElectiomImgEnv')}/gns/`
+        }, function (error, keys) {
+            if (error) {
+                console.log('Error retrieving images from s3', error);
+                fulfill({error: 'Error retrieving images from s3'});
+            }
+
+            console.log('Successfully retrieved images from s3, about to fulfill.. keys.length: ', keys.length );
+            fulfill(filterImages(keys));
+        });
+    });
+}
+
+function isConstantPublishedAlreadyThere(urls, electionStoryUrl) {
+    let isStoryThere = false;
+
+    if (urls && urls.length && urls.length > 0) {
+        urls.some((url) => {
+            if (electionStoryUrl === url) {
+                isStoryThere = true;
+            }
+        });
+    }
+
+    return isStoryThere;
+}
+
+
+if ((enableElectionStory === true || enableElectionStory === 'true')
+    || (config.get('gnsElectionModuleTest') === true || config.get('gnsElectionModuleTest') === 'true')) {
+    s3Images = getImagesFromAWS();
+}
 
 function postToLSD(data, feedName) {
-    let endpoint = `/cnn/content/google-newsstand/${feedName}.xml`,
+    let suffix = (config.get('ENVIRONMENT') === 'prod') ? '' : `-${config.get('ENVIRONMENT')}`,
+        endpoint = `/cnn/content/google-newsstand/${feedName}${suffix}.xml`,
         hosts = config.get('lsdHosts');
 
     debugLog('postToLSD() called');
@@ -144,24 +349,65 @@ function postToLSD(data, feedName) {
 setInterval(() => {
     debugLog('Generate latest Feed interval fired');
 
-    if (latestFG.urls && latestFG.urls.length > 0) {
-        latestFG.processContent().then(
-            // success
-            (rssFeed) => {
-                console.log(rssFeed);
+    if ((enableElectionStory === true || enableElectionStory === 'true')  && s3Images) {
+        let constantElectionStoryUpdate = config.get('gnsElectionStoryConstantUpdate'),
+            constantElectionStoryUpdateURL = config.get('gnsElectionStoryConstantUpdateURL');
 
-                postToLSD(rssFeed, 'latest');
-
-                // post to LSD endpoint
-                latestFG.urls = 'clear';
-                debugLog(latestFG.urls);
-            },
-
-            // failure
-            (error) => {
-                console.log(error);
+        if ((constantElectionStoryUpdate === 'true' || constantElectionStoryUpdate === true)
+            && constantElectionStoryUpdateURL) {
+            if (!isConstantPublishedAlreadyThere(latestFG.urls, constantElectionStoryUpdateURL)) {
+                latestFG.urls = constantElectionStoryUpdateURL;
             }
-        );
+        }
+    }
+
+    if (latestFG.urls && latestFG.urls.length > 0) {
+
+        if (config.get('gnsTurnOnElectionModule') === true || config.get('gnsTurnOnElectionModule') === 'true') {
+            s3Images = getImagesFromAWS();
+            s3Images.then(function (data) {
+
+                let electionData = {
+                    s3Data: data
+                };
+
+                latestFG.processContent(electionData).then(
+                    // success
+                    (rssFeed) => {
+                        console.log(rssFeed);
+
+                        postToLSD(rssFeed, 'latest');
+
+                        // post to LSD endpoint
+                        latestFG.urls = 'clear';
+                        debugLog(latestFG.urls);
+                    },
+
+                    // failure
+                    (error) => {
+                        console.log(error);
+                    }
+                );
+            });
+        } else {
+            latestFG.processContent().then(
+                // success
+                (rssFeed) => {
+                    console.log(rssFeed);
+
+                    postToLSD(rssFeed, 'latest');
+
+                    // post to LSD endpoint
+                    latestFG.urls = 'clear';
+                    debugLog(latestFG.urls);
+                },
+
+                // failure
+                (error) => {
+                    console.log(error);
+                }
+            );
+        }
     } else {
         debugLog('no updates');
     }
@@ -248,24 +494,66 @@ setInterval(() => {
 setInterval(() => {
     debugLog('Generate politics Feed interval fired');
 
-    if (politicsFG.urls && politicsFG.urls.length > 0) {
-        politicsFG.processContent().then(
-            // success
-            (rssFeed) => {
-                console.log(rssFeed);
+    if ((enableElectionStory === true || enableElectionStory === 'true')  && s3Images) {
+        let constantElectionStoryUpdate = config.get('gnsElectionStoryConstantUpdate'),
+            constantElectionStoryUpdateURL = config.get('gnsElectionStoryConstantUpdateURL');
 
-                postToLSD(rssFeed, 'politics');
 
-                // post to LSD endpoint
-                politicsFG.urls = 'clear';
-                debugLog(politicsFG.urls);
-            },
-
-            // failure
-            (error) => {
-                console.log(error);
+        if ((constantElectionStoryUpdate === 'true' || constantElectionStoryUpdate === true)
+            && constantElectionStoryUpdateURL) {
+            if (!isConstantPublishedAlreadyThere(politicsFG.urls, constantElectionStoryUpdateURL)) {
+                politicsFG.urls = constantElectionStoryUpdateURL;
             }
-        );
+        }
+    }
+
+    if (politicsFG.urls && politicsFG.urls.length > 0) {
+
+        if (config.get('gnsTurnOnElectionModule') === true || config.get('gnsTurnOnElectionModule') === 'true') {
+            s3Images = getImagesFromAWS();
+            s3Images.then(function (data) {
+
+                let electionData = {
+                    s3Data: data
+                };
+
+                politicsFG.processContent(electionData).then(
+                    // success
+                    (rssFeed) => {
+                        console.log(rssFeed);
+
+                        postToLSD(rssFeed, 'politics');
+
+                        // post to LSD endpoint
+                        politicsFG.urls = 'clear';
+                        debugLog(politicsFG.urls);
+                    },
+
+                    // failure
+                    (error) => {
+                        console.log(error);
+                    }
+                );
+            });
+        } else {
+            politicsFG.processContent().then(
+                // success
+                (rssFeed) => {
+                    console.log(rssFeed);
+
+                    postToLSD(rssFeed, 'politics');
+
+                    // post to LSD endpoint
+                    politicsFG.urls = 'clear';
+                    debugLog(politicsFG.urls);
+                },
+
+                // failure
+                (error) => {
+                    console.log(error);
+                }
+            );
+        }
     } else {
         debugLog('no updates');
     }
@@ -284,7 +572,7 @@ setInterval(() => {
 
                 // post to LSD endpoint
                 techFG.urls = 'clear';
-                debugLog(latestFG.urls);
+                debugLog(techFG.urls);
             },
 
             // failure
@@ -344,6 +632,78 @@ setInterval(() => {
                 console.log(error);
             }
         );
+    } else {
+        debugLog('no updates');
+    }
+}, config.get('gnsTaskIntervalMS'));
+
+setInterval(() => {
+    debugLog('Generate election Feed interval fired');
+
+    if ((enableElectionStory === true || enableElectionStory === 'true')
+        || (config.get('gnsElectionModuleTest') === true || config.get('gnsElectionModuleTest') === 'true')
+        && s3Images) {
+        let constantElectionStoryUpdate = config.get('gnsElectionStoryConstantUpdate'),
+            constantElectionStoryUpdateURL = config.get('gnsElectionStoryConstantUpdateURL');
+
+
+        if ((constantElectionStoryUpdate === 'true' || constantElectionStoryUpdate === true) ||
+            (config.get('gnsElectionModuleTest') === true || config.get('gnsElectionModuleTest') === 'true')
+            && constantElectionStoryUpdateURL) {
+            if (!isConstantPublishedAlreadyThere(electionsFG.urls, constantElectionStoryUpdateURL)) {
+                electionsFG.urls = constantElectionStoryUpdateURL;
+                console.log('constant election story update added for: ', constantElectionStoryUpdateURL, 'election URL array: ', electionsFG.urls);
+            }
+        }
+    }
+
+    if (electionsFG.urls && electionsFG.urls.length > 0) {
+        if ((enableElectionStory === true || enableElectionStory === 'true') || (config.get('gnsElectionModuleTest') === true || config.get('gnsElectionModuleTest') === 'true') && s3Images) {
+            s3Images = getImagesFromAWS();
+            s3Images.then(function (data) {
+
+                let electionData = {
+                    s3Data: data,
+                    electionTest: config.get('gnsElectionModuleTest')
+                };
+
+                electionsFG.processContent(electionData).then(
+                    // success
+                    (rssFeed) => {
+                        console.log(rssFeed);
+
+                        postToLSD(rssFeed, '2016-elections');
+
+                        // post to LSD endpoint
+                        electionsFG.urls = 'clear';
+                        debugLog(electionsFG.urls);
+                    },
+
+                    // failure
+                    (error) => {
+                        console.log(error);
+                    }
+                );
+            });
+        } else {
+            electionsFG.processContent().then(
+                // success
+                (rssFeed) => {
+                    console.log(rssFeed);
+
+                    postToLSD(rssFeed, '2016-elections');
+
+                    // post to LSD endpoint
+                    electionsFG.urls = 'clear';
+                    debugLog(electionsFG.urls);
+                },
+
+                // failure
+                (error) => {
+                    console.log(error);
+                }
+            );
+        }
     } else {
         debugLog('no updates');
     }
