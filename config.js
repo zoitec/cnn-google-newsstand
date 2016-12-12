@@ -68,7 +68,7 @@ let blackList = [
             exchangeName: 'cnn-town-crier-ref',
             queueNameArticles: `cnn-google-newsstand-articles-${nconf.get('ENVIRONMENT').toLowerCase()}`,
             queueNameVideos: `cnn-google-newsstand-videos-${nconf.get('ENVIRONMENT').toLowerCase()}`,
-            routingKeysArticles: ['cnn.article'],
+            routingKeysArticles: ['cnn.article', 'money.article'],
             routingKeysVideos: ['cnn.video'],
             adbpTrackingURL: 'https://smetrics.cnn.com/b/ss/cnnoffsitedev',
             gnsTurnOnElectionModule: (nconf.get('GNS_ENABLE_ELECTION_STORY')) ? nconf.get('GNS_ENABLE_ELECTION_STORY') : false,
