@@ -34,7 +34,9 @@ const request = require('request'),
     techFG = new FeedGenerator(),
     usFG = new FeedGenerator(),
     worldFG = new FeedGenerator(),
-    enableElectionStory = config.get('gnsTurnOnElectionModule');
+    enableElectionStory = config.get('gnsTurnOnElectionModule'),
+    logConfig = config.get('logConfig'),
+    log = require('cnn-logger')(logConfig);
 
 
 // connect to CloudAMQP and use/create the queue to subscribe to
@@ -59,59 +61,70 @@ amqp.connect(cloudamqpConnectionString, (error, connection) => {
                     let mappedToASection = false;
 
                     debugLog(`AMQP Message: ${message.fields.routingKey}: ${message.content.toString()}`);
+                    log.debug(`AMQP Message: ${message.fields.routingKey}: ${message.content.toString()}`);
                     debugLog(`Adding url to latest feed: ${JSON.parse(message.content.toString()).url}`);
+                    log.debug(`Adding url to latest feed: ${JSON.parse(message.content.toString()).url}`);
                     latestFG.urls = JSON.parse(message.content.toString()).url;
 
                     if (/\/entertainment\//.test(JSON.parse(message.content.toString()).url)) {
                         debugLog(`Adding url to entertainment feed: ${JSON.parse(message.content.toString()).url}`);
+                        log.debug(`Adding url to entertainment feed: ${JSON.parse(message.content.toString()).url}`);
                         entertainmentFG.urls = JSON.parse(message.content.toString()).url;
                         mappedToASection = true;
                     }
 
                     if (/\/politics\//.test(JSON.parse(message.content.toString()).url)) {
                         debugLog(`Adding url to politics feed: ${JSON.parse(message.content.toString()).url}`);
+                        log.debug(`Adding url to politics feed: ${JSON.parse(message.content.toString()).url}`);
                         politicsFG.urls = JSON.parse(message.content.toString()).url;
                         mappedToASection = true;
                     }
 
                     if (/\/health\//.test(JSON.parse(message.content.toString()).url)) {
                         debugLog(`Adding url to health feed: ${JSON.parse(message.content.toString()).url}`);
+                        log.debug(`Adding url to health feed: ${JSON.parse(message.content.toString()).url}`);
                         healthFG.urls = JSON.parse(message.content.toString()).url;
                         mappedToASection = true;
                     }
 
                     if (/\/opinions|opinion\//.test(JSON.parse(message.content.toString()).url)) {
                         debugLog(`Adding url to opinions feed: ${JSON.parse(message.content.toString()).url}`);
+                        log.debug(`Adding url to opinions feed: ${JSON.parse(message.content.toString()).url}`);
                         opinionsFG.urls = JSON.parse(message.content.toString()).url;
                         mappedToASection = true;
                     }
 
                     if (/\/tech\//.test(JSON.parse(message.content.toString()).url)) {
                         debugLog(`Adding url to tech feed: ${JSON.parse(message.content.toString()).url}`);
+                        log.debug(`Adding url to tech feed: ${JSON.parse(message.content.toString()).url}`);
                         techFG.urls = JSON.parse(message.content.toString()).url;
                         mappedToASection = true;
                     }
 
                     if (/\/us|crime|justice\//.test(JSON.parse(message.content.toString()).url)) {
                         debugLog(`Adding url to us feed: ${JSON.parse(message.content.toString()).url}`);
+                        log.debug(`Adding url to us feed: ${JSON.parse(message.content.toString()).url}`);
                         usFG.urls = JSON.parse(message.content.toString()).url;
                         mappedToASection = true;
                     }
 
                     if (/\/world\//.test(JSON.parse(message.content.toString()).url)) {
                         debugLog(`Adding url to world feed: ${JSON.parse(message.content.toString()).url}`);
+                        log.debug(`Adding url to world feed: ${JSON.parse(message.content.toString()).url}`);
                         worldFG.urls = JSON.parse(message.content.toString()).url;
                         mappedToASection = true;
                     }
 
                     if (JSON.parse(message.content.toString()).branding && JSON.parse(message.content.toString()).branding === '2016-elections') {
                         debugLog(`Adding url to election feed: ${JSON.parse(message.content.toString()).url}`);
+                        log.debug(`Adding url to election feed: ${JSON.parse(message.content.toString()).url}`);
                         electionsFG.urls = JSON.parse(message.content.toString()).url;
                         mappedToASection = true;
                     }
 
                     if (!mappedToASection) {
                         debugLog(`${JSON.parse(message.content.toString()).url} - DEFAULTING to world feed`);
+                        log.debug(`${JSON.parse(message.content.toString()).url} - DEFAULTING to world feed`);
                         worldFG.urls = JSON.parse(message.content.toString()).url;
                     }
 
@@ -290,10 +303,12 @@ function getImagesFromAWS() {
         }, function (error, keys) {
             if (error) {
                 console.log('Error retrieving images from s3', error);
+                log.error(`Error retrieving images from s3': ${error}`);
                 fulfill({error: 'Error retrieving images from s3'});
             }
 
-            console.log('Successfully retrieved images from s3, about to fulfill.. keys.length: ', keys.length );
+            console.log('Successfully retrieved images from s3, about to fulfill... keys.length: ', keys.length);
+            log.debug(`Successfully retrieved images from s3, about to fulfill... keys.length: ${keys.length}`);
             fulfill(filterImages(keys));
         });
     });
@@ -325,6 +340,7 @@ function postToLSD(data, feedName) {
         hosts = config.get('lsdHosts');
 
     debugLog('postToLSD() called');
+    log.debug('postToLSD() called');
     // debugLog(data);
 
     hosts.split(',').forEach((host) => {
@@ -336,8 +352,10 @@ function postToLSD(data, feedName) {
         (error/* , response, body*/) => {
             if (error) {
                 debugLog(error.stack);
+                log.error(error.stack);
             } else {
                 debugLog(`Successfully uploaded data to ${hosts} at ${endpoint}`);
+                log.debug(`Successfully uploaded data to ${hosts} at ${endpoint}`);
                 // debugLog(body);
             }
         });
@@ -348,6 +366,7 @@ function postToLSD(data, feedName) {
 // brute force.  This is not the final solution, but it works just fine
 setInterval(() => {
     debugLog('Generate latest Feed interval fired');
+    log.debug('Generate latest Feed interval fired');
 
     if ((enableElectionStory === true || enableElectionStory === 'true')  && s3Images) {
         let constantElectionStoryUpdate = config.get('gnsElectionStoryConstantUpdate'),
@@ -386,6 +405,7 @@ setInterval(() => {
                     // failure
                     (error) => {
                         console.log(error);
+                        log.error(error);
                     }
                 );
             });
@@ -405,16 +425,19 @@ setInterval(() => {
                 // failure
                 (error) => {
                     console.log(error);
+                    log.error(error);
                 }
             );
         }
     } else {
         debugLog('no updates');
+        log.debug('Generate latest Feed: no updates');
     }
 }, config.get('gnsTaskIntervalMS'));
 
 setInterval(() => {
     debugLog('Generate entertainment Feed interval fired');
+    log.debug('Generate entertainment Feed interval fired');
 
     if (entertainmentFG.urls && entertainmentFG.urls.length > 0) {
         entertainmentFG.processContent().then(
@@ -432,15 +455,18 @@ setInterval(() => {
             // failure
             (error) => {
                 console.log(error);
+                log.error(error);
             }
         );
     } else {
         debugLog('no updates');
+        log.debug('Generate entertainment Feed: no updates');
     }
 }, config.get('gnsTaskIntervalMS'));
 
 setInterval(() => {
     debugLog('Generate health Feed interval fired');
+    log.debug('Generate health Feed interval fired');
 
     if (healthFG.urls && healthFG.urls.length > 0) {
         healthFG.processContent().then(
@@ -458,15 +484,18 @@ setInterval(() => {
             // failure
             (error) => {
                 console.log(error);
+                log.error(error);
             }
         );
     } else {
         debugLog('no updates');
+        log.debug('Generate health Feed: no updates');
     }
 }, config.get('gnsTaskIntervalMS'));
 
 setInterval(() => {
     debugLog('Generate opinions Feed interval fired');
+    log.debug('Generate opinions Feed interval fired');
 
     if (opinionsFG.urls && opinionsFG.urls.length > 0) {
         opinionsFG.processContent().then(
@@ -484,15 +513,18 @@ setInterval(() => {
             // failure
             (error) => {
                 console.log(error);
+                log.error(error);
             }
         );
     } else {
         debugLog('no updates');
+        log.debug('Generate opinions Feed: no updates');
     }
 }, config.get('gnsTaskIntervalMS'));
 
 setInterval(() => {
     debugLog('Generate politics Feed interval fired');
+    log.debug('Generate politics Feed interval fired');
 
     if ((enableElectionStory === true || enableElectionStory === 'true')  && s3Images) {
         let constantElectionStoryUpdate = config.get('gnsElectionStoryConstantUpdate'),
@@ -532,6 +564,7 @@ setInterval(() => {
                     // failure
                     (error) => {
                         console.log(error);
+                        log.error(error);
                     }
                 );
             });
@@ -551,16 +584,19 @@ setInterval(() => {
                 // failure
                 (error) => {
                     console.log(error);
+                    log.error(error);
                 }
             );
         }
     } else {
         debugLog('no updates');
+        log.debug('Generate politics Feed: no updates');
     }
 }, config.get('gnsTaskIntervalMS'));
 
 setInterval(() => {
     debugLog('Generate tech Feed interval fired');
+    log.debug('Generate tech Feed interval fired');
 
     if (techFG.urls && techFG.urls.length > 0) {
         techFG.processContent().then(
@@ -578,15 +614,18 @@ setInterval(() => {
             // failure
             (error) => {
                 console.log(error);
+                log.error(error);
             }
         );
     } else {
         debugLog('no updates');
+        log.debug('Generate tech Feed: no updates');
     }
 }, config.get('gnsTaskIntervalMS'));
 
 setInterval(() => {
     debugLog('Generate us Feed interval fired');
+    log.debug('Generate us Feed interval fired');
 
     if (usFG.urls && usFG.urls.length > 0) {
         usFG.processContent().then(
@@ -604,15 +643,18 @@ setInterval(() => {
             // failure
             (error) => {
                 console.log(error);
+                log.error(error);
             }
         );
     } else {
         debugLog('no updates');
+        log.debug('Generate us Feed: no updates');
     }
 }, config.get('gnsTaskIntervalMS'));
 
 setInterval(() => {
     debugLog('Generate world Feed interval fired');
+    log.debug('Generate world Feed interval fired');
 
     if (worldFG.urls && worldFG.urls.length > 0) {
         worldFG.processContent().then(
@@ -630,15 +672,18 @@ setInterval(() => {
             // failure
             (error) => {
                 console.log(error);
+                log.error(error);
             }
         );
     } else {
         debugLog('no updates');
+        log.debug('Generate world Feed: no updates');
     }
 }, config.get('gnsTaskIntervalMS'));
 
 setInterval(() => {
     debugLog('Generate election Feed interval fired');
+    log.debug('Generate election Feed interval fired');
 
     if ((enableElectionStory === true || enableElectionStory === 'true')
         || (config.get('gnsElectionModuleTest') === true || config.get('gnsElectionModuleTest') === 'true')
@@ -652,7 +697,8 @@ setInterval(() => {
             && constantElectionStoryUpdateURL) {
             if (!isConstantPublishedAlreadyThere(electionsFG.urls, constantElectionStoryUpdateURL)) {
                 electionsFG.urls = constantElectionStoryUpdateURL;
-                console.log('constant election story update added for: ', constantElectionStoryUpdateURL, 'election URL array: ', electionsFG.urls);
+                console.log('Constant election story update added for: ', constantElectionStoryUpdateURL, 'election URL array: ', electionsFG.urls);
+                log.debug(`Constant election story update added for: ${constantElectionStoryUpdateURL} | election URL array: ${electionsFG.urls}`);
             }
         }
     }
@@ -682,6 +728,7 @@ setInterval(() => {
                     // failure
                     (error) => {
                         console.log(error);
+                        log.error(error);
                     }
                 );
             });
@@ -701,10 +748,12 @@ setInterval(() => {
                 // failure
                 (error) => {
                     console.log(error);
+                    log.error(error);
                 }
             );
         }
     } else {
         debugLog('no updates');
+        log.debug('Generate election Feed: no updates');
     }
 }, config.get('gnsTaskIntervalMS'));

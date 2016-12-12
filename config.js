@@ -41,14 +41,15 @@ nconf.env([
     'HYPATIA_TIMEOUT',
     'ACCESS_KEY_ID',
     'SECRET_ACCESS_KEY',
-    'PORT'
+    'PORT',
+    'LOGZIO_TOKEN'
 ]);
 
 
 
 // These are required to be set to start up
-if (!nconf.get('ENVIRONMENT') || !nconf.get('PORT') || !nconf.get('CLOUDAMQP_AUTH') || !nconf.get('ACCESS_KEY_ID') || !nconf.get('SECRET_ACCESS_KEY')) {
-    console.error('ENVIRONMENT, PORT, CLOUDAMQP_AUTH, ACCESS_KEY_ID and/or SECRET_ACCESS_KEY are not set');
+if (!nconf.get('ENVIRONMENT') || !nconf.get('PORT') || !nconf.get('CLOUDAMQP_AUTH') || !nconf.get('LOGZIO_TOKEN') || !nconf.get('ACCESS_KEY_ID') || !nconf.get('SECRET_ACCESS_KEY')) {
+    console.error('ENVIRONMENT, PORT, CLOUDAMQP_AUTH, LOGZIO_TOKEN, ACCESS_KEY_ID and/or SECRET_ACCESS_KEY are not set');
     process.exit(1);
 }
 
@@ -90,7 +91,8 @@ let blackList = [
                 secretAccessKey: nconf.get('SECRET_ACCESS_KEY'),
                 region: 'us-east-1',
                 bucket: 'registry.api.cnn.io'
-            }
+            },
+            logConfig: (typeof process.env.CUSTOMER === 'undefined') ? null : {logzio: {tag: `cnn-google-newsstand-${nconf.get('ENVIRONMENT').toLowerCase()}`}}
         },
         prod: {
             cloudamqpConnectionString: `amqp://${nconf.get('CLOUDAMQP_AUTH')}@red-rhino.rmq.cloudamqp.com/cnn-towncrier`,

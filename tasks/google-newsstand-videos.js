@@ -22,7 +22,9 @@ const request = require('request'),
     debugLog = require('debug')('cnn-google-newsstand:Task:google-newsstand-videos'),
     config = require('../config.js'),
     cloudamqpConnectionString = config.get('cloudamqpConnectionString'),
-    fg = new FeedGenerator();
+    fg = new FeedGenerator(),
+    logConfig = config.get('logConfig'),
+    log = require('cnn-logger')(logConfig);
 
 
 
@@ -46,7 +48,9 @@ amqp.connect(cloudamqpConnectionString, (error, connection) => {
                 queueName.queue,
                 (message) => {
                     debugLog(`AMQP Message: ${message.fields.routingKey}: ${message.content.toString()}`);
+                    log.debug(`AMQP Message: ${message.fields.routingKey}: ${message.content.toString()}`);
                     debugLog(`Adding url to fg: ${JSON.parse(message.content.toString()).url} -> ${fg.urls}`);
+                    log.debug(`Adding url to fg: ${JSON.parse(message.content.toString()).url} -> ${fg.urls}`);
                     fg.urls = JSON.parse(message.content.toString()).url;
                     channel.ack(message);
                 },
@@ -64,6 +68,7 @@ function postToLSD(data) {
         hosts = config.get('lsdHosts');
 
     debugLog('postToLSD() called');
+    log.debug('postToLSD() called');
     // debugLog(data);
 
     hosts.split(',').forEach((host) => {
@@ -75,8 +80,10 @@ function postToLSD(data) {
         (error/* , response, body*/) => {
             if (error) {
                 debugLog(error.stack);
+                log.error(error.stack);
             } else {
                 debugLog(`Successfully uploaded data to ${hosts} at ${endpoint}`);
+                log.debug(`Successfully uploaded data to ${hosts} at ${endpoint}`);
                 // debugLog(body);
             }
         });
@@ -86,7 +93,8 @@ function postToLSD(data) {
 
 
 setInterval(() => {
-    debugLog('Generate Feed interval fired');
+    debugLog('Generate videos Feed interval fired');
+    log.debug('Generate videos Feed interval fired');
     debugLog(fg.urls);
 
     if (fg.urls && fg.urls.length > 0) {
@@ -105,9 +113,11 @@ setInterval(() => {
             // failure
             (error) => {
                 console.log(error);
+                log.error(error);
             }
         );
     } else {
         debugLog('no updates');
+        log.debug('Generate videos Feed: no updates');
     }
 }, config.get('gnsTaskIntervalMS'));
