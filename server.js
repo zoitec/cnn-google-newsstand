@@ -18,7 +18,8 @@
 
 const hapi = require('cnn-hapi'),
     config = require('./config.js'),
-    pkg = require('./package.json');
+    pkg = require('./package.json'),
+    healthCheck = require('./tasks/healthcheck.js');
 
 let server = module.exports = hapi({
     directory: __dirname,
@@ -45,7 +46,9 @@ server.route({
     method: 'GET',
     path: '/_healthcheck',
     handler: function healthcheckHandler(request, reply) {
-        reply(pkg);
+        let checks = healthCheck.getStatus();
+        checks.version = pkg.version;
+        reply(checks);
     },
     config: {
         description: 'Healthcheck',
@@ -61,6 +64,6 @@ server.start(function () {
     console.log(`    PORT: ${config.get('PORT')}`);
     console.log(`    GNS_TASK_INTERVAL_MS: ${config.get('GNS_TASK_INTERVAL_MS')}`);
 
-    require('./tasks/google-newsstand-articles.js');
-    require('./tasks/google-newsstand-videos.js');
+    // require('./tasks/google-newsstand-articles.js');
+    // require('./tasks/google-newsstand-videos.js');
 });
