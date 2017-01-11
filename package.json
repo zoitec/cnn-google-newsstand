@@ -1,6 +1,6 @@
 {
   "name": "cnn-google-newsstand",
-  "version": "1.5.0",
+  "version": "1.5.1",
   "description": "CNN Google Newsstand",
   "main": "server.js",
   "directories": {
@@ -37,6 +37,7 @@
     "cnn-content-retriever": "1.2.0",
     "cnn-hapi": "0.6.4",
     "cnn-health": "0.2.0",
+    "cnn-logger": "1.0.0",
     "debug": "2.2.0",
     "moment": "2.14.1",
     "moment-timezone": "0.5.4",
