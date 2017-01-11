@@ -22,7 +22,8 @@ const request = require('request'),
     debugLog = require('debug')('cnn-google-newsstand:Task:google-newsstand-galleries'),
     config = require('../config.js'),
     cloudamqpConnectionString = config.get('cloudamqpConnectionString'),
-    fg = new FeedGenerator();
+    fg = new FeedGenerator(),
+    log = require('cnn-logger')({logzio: {tag: 'cnn-google-newsstand'}});
 
 amqp.connect(cloudamqpConnectionString, (error, connection) => {
     connection.createChannel((error, channel) => {
@@ -43,7 +44,9 @@ amqp.connect(cloudamqpConnectionString, (error, connection) => {
                 queueName.queue,
                 (message) => {
                     debugLog(`AMQP Message: ${message.fields.routingKey}: ${message.content.toString()}`);
+                    log.debug(`AMQP Message: ${message.fields.routingKey}: ${message.content.toString()}`);
                     debugLog(`Adding url to fg: ${JSON.parse(message.content.toString()).url} -> ${fg.urls}`);
+                    log.debug(`Adding url to fg: ${JSON.parse(message.content.toString()).url} -> ${fg.urls}`);
                     fg.urls = JSON.parse(message.content.toString()).url;
                     channel.ack(message);
                 },
@@ -55,10 +58,12 @@ amqp.connect(cloudamqpConnectionString, (error, connection) => {
 
 
 function postToLSD(data) {
-    let endpoint = '/cnn/content/google-newsstand/galleries.xml',
+    let suffix = (config.get('ENVIRONMENT') === 'prod') ? '' : `-${config.get('ENVIRONMENT')}`,
+        endpoint = `/cnn/content/google-newsstand/galleries${suffix}.xml`,
         hosts = config.get('lsdHosts');
 
     debugLog('postToLSD() called');
+    log.debug('postToLSD() called');
     // debugLog(data);
 
     hosts.split(',').forEach((host) => {
@@ -70,8 +75,10 @@ function postToLSD(data) {
         (error/* , response, body*/) => {
             if (error) {
                 debugLog(error.stack);
+                log.error(error.stack);
             } else {
                 debugLog(`Successfully uploaded data to ${hosts} at ${endpoint}`);
+                log.debug(`Successfully uploaded data to ${hosts} at ${endpoint}`);
                 // debugLog(body);
             }
         });
@@ -81,7 +88,8 @@ function postToLSD(data) {
 
 
 setInterval(() => {
-    debugLog('Generate Feed interval fired');
+    debugLog('Generate galleries Feed interval fired');
+    log.debug('Generate galleries Feed interval fired');
 
     // for bypassing the rabbit queue to test content
     // fg.urls = [
@@ -108,9 +116,11 @@ setInterval(() => {
             // failure
             (error) => {
                 console.log(error);
+                log.error(error);
             }
         );
     } else {
         debugLog('no updates');
+        log.debug('Generate galleries Feed: no updates');
     }
 }, config.get('gnsTaskIntervalMS'));

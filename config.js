@@ -25,38 +25,83 @@ const nconf = require('nconf');
 nconf.env([
     'CLOUDAMQP_AUTH',
     'ENVIRONMENT',
+    'GNS_BLACK_LIST',
     'GNS_TASK_INTERVAL_MS',
-    'PORT'
+    'GNS_ENABLE_ELECTION_STORY',
+    'GNS_ELECTION_MODULE_TEST',
+    'GNS_ELECTION_TITLE',
+    'GNS_ELECTION_IMG_ENV',
+    'GNS_ELECTION_SLUG',
+    'GNS_ELECTION_CAPTION',
+    'GNS_ELECTION_STORY_CONSTANT_UPDATE',
+    'GNS_ELECTION_STORY_CONSTANT_UPDATE_URL',
+    'GNS_ELECTION_LOWER_HEADER',
+    'GNS_ELECTION_MODULE_LINK_1',
+    'GNS_ELECTION_MODULE_LINK_2',
+    'HYPATIA_TIMEOUT',
+    'ACCESS_KEY_ID',
+    'SECRET_ACCESS_KEY',
+    'PORT',
+    'LOGZIO_TOKEN'
 ]);
 
 
 
 // These are required to be set to start up
-if (!nconf.get('ENVIRONMENT') || !nconf.get('PORT') || !nconf.get('CLOUDAMQP_AUTH')) {
-    console.error('ENVIRONMENT, PORT, and/or CLOUDAMQP_AUTH are not set');
+if (!nconf.get('ENVIRONMENT') || !nconf.get('PORT') || !nconf.get('CLOUDAMQP_AUTH') || !nconf.get('LOGZIO_TOKEN') || !nconf.get('ACCESS_KEY_ID') || !nconf.get('SECRET_ACCESS_KEY')) {
+    console.error('ENVIRONMENT, PORT, CLOUDAMQP_AUTH, LOGZIO_TOKEN, ACCESS_KEY_ID and/or SECRET_ACCESS_KEY are not set');
     process.exit(1);
 }
 
-
-
-let config = {
-    default: {
-        cloudamqpConnectionString: `amqp://${nconf.get('CLOUDAMQP_AUTH')}@red-rhino.rmq.cloudamqp.com/cnn-towncrier`,
-        gnsTaskIntervalMS: (nconf.get('GNS_TASK_INTERVAL_MS')) ? parseInt(nconf.get('GNS_TASK_INTERVAL_MS')) : 1000 * 60 * 30, // 30 minutes
-        lsdHosts: 'lsd-prod-pub-cop.turner.com,lsd-prod-pub-56m.turner.com',
-        exchangeName: 'cnn-town-crier-ref',
-        queueNameArticles: `cnn-google-newsstand-articles-${nconf.get('ENVIRONMENT').toLowerCase()}`,
-        queueNameVideos: `cnn-google-newsstand-videos-${nconf.get('ENVIRONMENT').toLowerCase()}`,
-        routingKeysArticles: ['cnn.article'],
-        routingKeysVideos: ['cnn.video']
-    },
-    prod: {
-        cloudamqpConnectionString: `amqp://${nconf.get('CLOUDAMQP_AUTH')}@red-rhino.rmq.cloudamqp.com/cnn-towncrier`,
-        exchangeName: 'cnn-town-crier-prod',
-        queueNameArticles: 'cnn-google-newsstand-articles-prod'
-    }
-};
-
+let blackList = [
+        /\/studentnews\//,
+        /\/videos\/spanish\//,
+        /fast-facts\/index.html$/,
+        /\/applenews-live.*/,
+        /cnn.com\/\d{4}\/\d{2}\/\d{2}\/cnn-info/ // https://regex101.com/r/yT0jX6/1
+    ],
+    config = {
+        default: {
+            cloudamqpConnectionString: `amqp://${nconf.get('CLOUDAMQP_AUTH')}@red-rhino.rmq.cloudamqp.com/cnn-towncrier`,
+            gnsBlackList: (nconf.get('GNS_BLACK_LIST')) ? JSON.parse(nconf.get('GNS_BLACK_LIST')) : blackList,
+            gnsTaskIntervalMS: (nconf.get('GNS_TASK_INTERVAL_MS')) ? parseInt(nconf.get('GNS_TASK_INTERVAL_MS')) : 1000 * 60 * 30, // 30 minutes
+            lsdHosts: 'lsd-prod-pub-cop.turner.com,lsd-prod-pub-56m.turner.com',
+            exchangeName: 'cnn-town-crier-ref',
+            queueNameArticles: `cnn-google-newsstand-articles-${nconf.get('ENVIRONMENT').toLowerCase()}`,
+            queueNameVideos: `cnn-google-newsstand-videos-${nconf.get('ENVIRONMENT').toLowerCase()}`,
+            routingKeysArticles: ['cnn.article', 'money.article'],
+            routingKeysVideos: ['cnn.video'],
+            adbpTrackingURL: 'https://smetrics.cnn.com/b/ss/cnnoffsitedev',
+            gnsTurnOnElectionModule: (nconf.get('GNS_ENABLE_ELECTION_STORY')) ? nconf.get('GNS_ENABLE_ELECTION_STORY') : false,
+            gnsElectionModuleTest: (nconf.get('GNS_ELECTION_MODULE_TEST')) ? nconf.get('GNS_ELECTION_MODULE_TEST') : false,
+            gnsElectionSlug: (nconf.get('GNS_ELECTION_SLUG')) ? nconf.get('GNS_ELECTION_SLUG') : 'what-is-the-hatch-act',
+            gnsElectionCaption: (nconf.get('GNS_ELECTION_CAPTION')) ? nconf.get('GNS_ELECTION_CAPTION') : 'A candidate needs 270 Electoral College votes to win the presidency. These modules show the total Electoral College votes and when a state has a projected winner (Maine and Nebraska allow Electoral College votes to be split). Not all candidates are listed. All party representation can be seen in the full results. CNN will broadcast a projected winner only after an extensive review of data from a number of sources.',
+            gnsElectionTitle: (nconf.get('GNS_ELECTION_TITLE')) ? nconf.get('GNS_ELECTION_TITLE') : '<h3 class="style-id:presResultsHeader"><span class="style-id:presResultsHeader">Presidential Results</span></h3>',
+            gnsElectionStoryConstantUpdate: (nconf.get('GNS_ELECTION_STORY_CONSTANT_UPDATE')) ? nconf.get('GNS_ELECTION_STORY_CONSTANT_UPDATE') : false,
+            gnsElectionStoryConstantUpdateURL: (nconf.get('GNS_ELECTION_STORY_CONSTANT_UPDATE_URL')) ? nconf.get('GNS_ELECTION_STORY_CONSTANT_UPDATE_URL') : 'http://www.cnn.com/2016/10/28/politics/trump-bus-denmark-trnd/index.html',
+            gnsElectionModuleLowerHeader: (nconf.get('GNS_ELECTION_LOWER_HEADER')) ? nconf.get('GNS_ELECTION_LOWER_HEADER') : 'Election Day Highlights',
+            gnsElectionModuleLink1: (nconf.get('GNS_ELECTION_MODULE_LINK_1')) ? nconf.get('GNS_ELECTION_MODULE_LINK_1') : '<p class="style-id:electionLinks"><a class="style-id:electionLink" href="http://www.cnn.com/election/results">Full&nbsp;Election&nbsp;Results</a> | <a class="style-id:electionLink" href="http://www.cnn.com/election/president">Presidential</a> | <a class="style-id:electionLink" href="http://www.cnn.com/election/senate">Senate</a></p>',
+            gnsElectionModuleLink2: (nconf.get('GNS_ELECTION_MODULE_LINK_2')) ? nconf.get('GNS_ELECTION_MODULE_LINK_2') : '<p class="style-id:electionLinks2"><a class="style-id:electionLink" href="http://www.cnn.com/election/house">House</a> | <a class="style-id:electionLink" href="http://www.cnn.com/election/governor">Governer</a> | <a class="style-id:electionLink" href="http://www.cnn.com/election/ballot-measures">Ballot&nbsp;Measures</a> | <a class="style-id:electionLink" href="http://www.cnn.com/election/results/exit-polls">Exit&nbsp;Polls</a> | <a class="style-id:electionLink" href="http://www.cnn.com/election/results/states">States</a></p>',
+            gnsElectiomImgEnv: (nconf.get('GNS_ELECTION_IMG_ENV')) ? nconf.get('GNS_ELECTION_IMG_ENV') : nconf.get('ENVIRONMENT'),
+            hypatia: {
+                timeout: (process.env.HYPATIA_TIMEOUT) ? parseInt(process.env.HYPATIA_TIMEOUT) : 1000 * 5
+            },
+            aws: {
+                accessKeyId: nconf.get('ACCESS_KEY_ID'),
+                secretAccessKey: nconf.get('SECRET_ACCESS_KEY'),
+                region: 'us-east-1',
+                bucket: 'registry.api.cnn.io'
+            },
+            logConfig: (typeof process.env.CUSTOMER === 'undefined') ? null : {logzio: {tag: `cnn-google-newsstand-${nconf.get('ENVIRONMENT').toLowerCase()}`}}
+        },
+        prod: {
+            cloudamqpConnectionString: `amqp://${nconf.get('CLOUDAMQP_AUTH')}@red-rhino.rmq.cloudamqp.com/cnn-towncrier`,
+            exchangeName: 'cnn-town-crier-prod',
+            queueNameArticles: 'cnn-google-newsstand-articles-prod',
+            queueNameVideos: 'cnn-google-newsstand-videos-prod',
+            adbpTrackingURL: 'https://smetrics.cnn.com/b/ss/cnn-adbp-offsite-domestic'
+        }
+    };
 
 
 // load the correct config based on environment
@@ -64,6 +109,7 @@ switch (nconf.get('ENVIRONMENT').toLowerCase()) {
     case 'prod':
         nconf.defaults(config.prod);
         break;
+
 
     default:
         nconf.defaults(config.default);
