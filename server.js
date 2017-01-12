@@ -21,6 +21,57 @@ const hapi = require('cnn-hapi'),
     pkg = require('./package.json'),
     healthCheck = require('./tasks/healthcheck.js');
 
+global.gnsHealthStatus = {
+    status: 201,
+    testMode: config.get('gnsMonitoringTest'),
+    sectionFeeds: {
+        us: {
+            status: 201,
+            generateFeed: {status: 'Pending'}
+        },
+        world: {
+            status: 201,
+            generateFeed: {status: 'Pending'}
+        },
+        politics: {
+            status: 201,
+            generateFeed: {status: 'Pending'}
+        },
+        entertainment: {
+            status: 201,
+            generateFeed: {status: 'Pending'}
+        },
+        tech: {
+            status: 201,
+            generateFeed: {status: 'Pending'}
+        },
+        latest: {
+            status: 201,
+            generateFeed: {status: 'Pending'}
+        },
+        money: {
+            status: 201,
+            generateFeed: {status: 'Pending'}
+        },
+        health: {
+            status: 201,
+            generateFeed: {status: 'Pending'}
+        },
+        opinions: {
+            status: 201,
+            generateFeed: {status: 'Pending'}
+        },
+        videos: {
+            status: 201,
+            generateFeed: {status: 'Pending'}
+        },
+        elections: {
+            status: 201,
+            generateFeed: {status: 'Pending'}
+        }
+    }
+};
+
 let server = module.exports = hapi({
     directory: __dirname,
     port: process.env.PORT,
@@ -64,6 +115,6 @@ server.start(function () {
     console.log(`    PORT: ${config.get('PORT')}`);
     console.log(`    GNS_TASK_INTERVAL_MS: ${config.get('GNS_TASK_INTERVAL_MS')}`);
 
-    // require('./tasks/google-newsstand-articles.js');
-    // require('./tasks/google-newsstand-videos.js');
+    require('./tasks/google-newsstand-articles.js');
+    require('./tasks/google-newsstand-videos.js');
 });
