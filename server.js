@@ -97,9 +97,11 @@ server.route({
     method: 'GET',
     path: '/_healthcheck',
     handler: function healthcheckHandler(request, reply) {
-        let checks = healthCheck.getStatus();
+        let checks = healthCheck.getStatus(),
+            responseCode = checks.checks[0].status;
+
         checks.version = pkg.version;
-        reply(checks);
+        reply(checks).code(responseCode);
     },
     config: {
         description: 'Healthcheck',
