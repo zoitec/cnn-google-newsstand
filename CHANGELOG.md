@@ -1,6 +1,25 @@
 # CNN Google Newsstand Changelog
 
 
+
+## 2017-1-13, Version 1.6.0, @zoitec
+
+### Notable changes
+
+- Implement deep monitoring for feed status using cnn-health.
+
+### Known issues
+
+See https://github.com/cnnlabs/cnn-google-newsstand/labels/defect for complete and
+current list of known issues.
+
+### Commits
+
+* [[`f65343c5df`](https://github.com/jamsyoung/cnn-google-newsstand/commit/f65343c5df)] - CNNGNS-14 ENABLE DEEP MONITORING FOR GNS (#12) (sean joseph)
+
+
+
+
 ## 2016-12-12, Version 1.5.1, @zoitec
 
 ### Notable changes
