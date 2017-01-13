@@ -1,6 +1,25 @@
 # CNN Google Newsstand Changelog
 
 
+## 2017-1-13, Version 1.6.1, @zoitec
+
+### Notable changes
+
+- Fix deep monitoring check for test mode logic.
+
+### Known issues
+
+See https://github.com/cnnlabs/cnn-google-newsstand/labels/defect for complete and
+current list of known issues.
+
+### Commits
+
+
+* [[`d4b9f38d63`](https://github.com/jamsyoung/cnn-google-newsstand/commit/d4b9f38d63)] - CNNGNS-14 (#13) (sean joseph)
+TBSC02Q710PG8WM:cnn-google-newsstand sjoseph$
+
+
+
 
 ## 2017-1-13, Version 1.6.0, @zoitec
 
