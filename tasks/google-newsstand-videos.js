@@ -130,6 +130,10 @@ setInterval(() => {
             }
         );
     } else {
+        gnsHealthStatus.sectionFeeds.videos.status = 200;
+        gnsHealthStatus.sectionFeeds.videos.valid = true;
+        gnsHealthStatus.sectionFeeds.videos.generateFeed.status = 'No updates';
+        gnsHealthStatus.sectionFeeds.videos.generateFeed.lastUpdate = moment().toISOString();
         debugLog('no updates');
         log.debug('Generate videos Feed: no updates');
     }
