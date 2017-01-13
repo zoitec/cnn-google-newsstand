@@ -101,7 +101,7 @@ server.route({
             responseCode = checks.checks[0].status;
 
         checks.version = pkg.version;
-        reply(checks).code(responseCode);
+        reply(checks);
     },
     config: {
         description: 'Healthcheck',
