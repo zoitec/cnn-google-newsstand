@@ -38,6 +38,7 @@ nconf.env([
     'GNS_ELECTION_LOWER_HEADER',
     'GNS_ELECTION_MODULE_LINK_1',
     'GNS_ELECTION_MODULE_LINK_2',
+    'GNS_MONITORING_TEST',
     'HYPATIA_TIMEOUT',
     'ACCESS_KEY_ID',
     'SECRET_ACCESS_KEY',
@@ -83,6 +84,7 @@ let blackList = [
             gnsElectionModuleLink1: (nconf.get('GNS_ELECTION_MODULE_LINK_1')) ? nconf.get('GNS_ELECTION_MODULE_LINK_1') : '<p class="style-id:electionLinks"><a class="style-id:electionLink" href="http://www.cnn.com/election/results">Full&nbsp;Election&nbsp;Results</a> | <a class="style-id:electionLink" href="http://www.cnn.com/election/president">Presidential</a> | <a class="style-id:electionLink" href="http://www.cnn.com/election/senate">Senate</a></p>',
             gnsElectionModuleLink2: (nconf.get('GNS_ELECTION_MODULE_LINK_2')) ? nconf.get('GNS_ELECTION_MODULE_LINK_2') : '<p class="style-id:electionLinks2"><a class="style-id:electionLink" href="http://www.cnn.com/election/house">House</a> | <a class="style-id:electionLink" href="http://www.cnn.com/election/governor">Governer</a> | <a class="style-id:electionLink" href="http://www.cnn.com/election/ballot-measures">Ballot&nbsp;Measures</a> | <a class="style-id:electionLink" href="http://www.cnn.com/election/results/exit-polls">Exit&nbsp;Polls</a> | <a class="style-id:electionLink" href="http://www.cnn.com/election/results/states">States</a></p>',
             gnsElectiomImgEnv: (nconf.get('GNS_ELECTION_IMG_ENV')) ? nconf.get('GNS_ELECTION_IMG_ENV') : nconf.get('ENVIRONMENT'),
+            gnsMonitoringTest: (nconf.get('GNS_MONITORING_TEST')) ? nconf.get('GNS_MONITORING_TEST') : false,
             hypatia: {
                 timeout: (process.env.HYPATIA_TIMEOUT) ? parseInt(process.env.HYPATIA_TIMEOUT) : 1000 * 5
             },

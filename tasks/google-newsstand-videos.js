@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+/* global gnsHealthStatus*/
 'use strict';
 
 const request = require('request'),
@@ -24,7 +25,8 @@ const request = require('request'),
     cloudamqpConnectionString = config.get('cloudamqpConnectionString'),
     fg = new FeedGenerator(),
     logConfig = config.get('logConfig'),
-    log = require('cnn-logger')(logConfig);
+    log = require('cnn-logger')(logConfig),
+    moment = require('moment');
 
 
 
@@ -93,6 +95,7 @@ function postToLSD(data) {
 
 
 setInterval(() => {
+    gnsHealthStatus.sectionFeeds.videos = {status: 201, valid: false, generateFeed: {status: 'processing'}};
     debugLog('Generate videos Feed interval fired');
     log.debug('Generate videos Feed interval fired');
     debugLog(fg.urls);
@@ -105,6 +108,12 @@ setInterval(() => {
 
                 postToLSD(rssFeed);
 
+                // update health check status
+                gnsHealthStatus.sectionFeeds.videos.status = 200;
+                gnsHealthStatus.sectionFeeds.videos.valid = true;
+                gnsHealthStatus.sectionFeeds.videos.generateFeed.status = 'success';
+                gnsHealthStatus.sectionFeeds.videos.generateFeed.lastUpdate = moment().toISOString();
+
                 // post to LSD endpoint
                 fg.urls = 'clear';
                 debugLog(fg.urls);
@@ -112,11 +121,19 @@ setInterval(() => {
 
             // failure
             (error) => {
+                gnsHealthStatus.sectionFeeds.videos.status = 500;
+                gnsHealthStatus.sectionFeeds.videos.valid = false;
+                gnsHealthStatus.sectionFeeds.videos.generateFeed.status = 'failed';
+                gnsHealthStatus.sectionFeeds.videos.generateFeed.failedAt = moment().toISOString();
                 console.log(error);
                 log.error(error);
             }
         );
     } else {
+        gnsHealthStatus.sectionFeeds.videos.status = 200;
+        gnsHealthStatus.sectionFeeds.videos.valid = true;
+        gnsHealthStatus.sectionFeeds.videos.generateFeed.status = 'No updates';
+        gnsHealthStatus.sectionFeeds.videos.generateFeed.lastUpdate = moment().toISOString();
         debugLog('no updates');
         log.debug('Generate videos Feed: no updates');
     }
