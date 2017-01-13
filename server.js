@@ -18,7 +18,59 @@
 
 const hapi = require('cnn-hapi'),
     config = require('./config.js'),
-    pkg = require('./package.json');
+    pkg = require('./package.json'),
+    healthCheck = require('./tasks/healthcheck.js');
+
+global.gnsHealthStatus = {
+    status: 201,
+    testMode: config.get('gnsMonitoringTest'),
+    sectionFeeds: {
+        us: {
+            status: 201,
+            generateFeed: {status: 'Pending'}
+        },
+        world: {
+            status: 201,
+            generateFeed: {status: 'Pending'}
+        },
+        politics: {
+            status: 201,
+            generateFeed: {status: 'Pending'}
+        },
+        entertainment: {
+            status: 201,
+            generateFeed: {status: 'Pending'}
+        },
+        tech: {
+            status: 201,
+            generateFeed: {status: 'Pending'}
+        },
+        latest: {
+            status: 201,
+            generateFeed: {status: 'Pending'}
+        },
+        money: {
+            status: 201,
+            generateFeed: {status: 'Pending'}
+        },
+        health: {
+            status: 201,
+            generateFeed: {status: 'Pending'}
+        },
+        opinions: {
+            status: 201,
+            generateFeed: {status: 'Pending'}
+        },
+        videos: {
+            status: 201,
+            generateFeed: {status: 'Pending'}
+        },
+        elections: {
+            status: 201,
+            generateFeed: {status: 'Pending'}
+        }
+    }
+};
 
 let server = module.exports = hapi({
     directory: __dirname,
@@ -45,7 +97,11 @@ server.route({
     method: 'GET',
     path: '/_healthcheck',
     handler: function healthcheckHandler(request, reply) {
-        reply(pkg);
+        let checks = healthCheck.getStatus(),
+            responseCode = checks.checks[0].status;
+
+        checks.version = pkg.version;
+        reply(checks).code(responseCode);
     },
     config: {
         description: 'Healthcheck',

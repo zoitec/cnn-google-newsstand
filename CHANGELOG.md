@@ -1,5 +1,60 @@
 # CNN Google Newsstand Changelog
 
+
+
+## 2017-1-13, Version 1.6.0, @zoitec
+
+### Notable changes
+
+- Implement deep monitoring for feed status using cnn-health.
+
+### Known issues
+
+See https://github.com/cnnlabs/cnn-google-newsstand/labels/defect for complete and
+current list of known issues.
+
+### Commits
+
+* [[`f65343c5df`](https://github.com/jamsyoung/cnn-google-newsstand/commit/f65343c5df)] - CNNGNS-14 ENABLE DEEP MONITORING FOR GNS (#12) (sean joseph)
+
+
+
+
+## 2016-12-12, Version 1.5.1, @zoitec
+
+### Notable changes
+
+- Integrate CNN Logger, Add Money, and Tech sections to GNS.
+
+### Known issues
+
+See https://github.com/cnnlabs/cnn-google-newsstand/labels/defect for complete and
+current list of known issues.
+
+### Commits
+
+* [[`d6ca20a`](https://github.com/jamsyoung/cnn-google-newsstand/commit/d6ca20a)] - Add Money, and Tech sections to GNS (sean joseph)
+
+* [[`77bf9eb`](https://github.com/jamsyoung/cnn-google-newsstand/commit/77bf9eb)] - Integrate CNN Logger (Matthew Parangot)
+
+
+
+## 2016-11-08, Version 1.5.0, @jamsyoung
+
+### Notable changes
+
+- Integrate configurable timeout for content-retriever.
+
+### Known issues
+
+See https://github.com/cnnlabs/cnn-google-newsstand/labels/defect for complete and
+current list of known issues.
+
+### Commits
+
+* [[`ac05a0d`](https://github.com/jamsyoung/cnn-google-newsstand/commit/ac05a0d)] - Integrate configurable timeout for content-retriever. (James Young)
+
+
 ## 2016-11-03, Version 1.4.0, @zoitec
 
 ### Notable changes

@@ -1,6 +1,6 @@
 {
   "name": "cnn-google-newsstand",
-  "version": "1.5.0",
+  "version": "1.6.0",
   "description": "CNN Google Newsstand",
   "main": "server.js",
   "directories": {
@@ -36,12 +36,15 @@
     "aws-sdk": "2.6.12",
     "cnn-content-retriever": "1.2.0",
     "cnn-hapi": "0.6.4",
+    "cnn-health": "0.2.0",
+    "cnn-logger": "1.0.0",
     "debug": "2.2.0",
     "moment": "2.14.1",
     "moment-timezone": "0.5.4",
     "nconf": "0.8.4",
     "request": "2.73.0",
-    "underscore": "1.8.3"
+    "underscore": "1.8.3",
+    "xml2js": "0.4.17"
   },
   "devDependencies": {
     "chai": "3.5.0",
