@@ -1,6 +1,62 @@
 # CNN Google Newsstand Changelog
 
 
+## 2017-1-19, Version 1.6.2, @zoitec
+
+### Notable changes
+
+- Fix deep monitoring check for test mode logic.
+
+### Known issues
+
+See https://github.com/cnnlabs/cnn-google-newsstand/labels/defect for complete and
+current list of known issues.
+
+### Commits
+
+
+* [[`0b3ad66272`](https://github.com/jamsyoung/cnn-google-newsstand/commit/0b3ad66272)] - CNNGNS-66  Set thumbnail image for stories with image pageTop to be the same (#14) (sean joseph)
+
+
+
+## 2017-1-13, Version 1.6.1, @zoitec
+
+### Notable changes
+
+- Fix deep monitoring check for test mode logic.
+
+### Known issues
+
+See https://github.com/cnnlabs/cnn-google-newsstand/labels/defect for complete and
+current list of known issues.
+
+### Commits
+
+
+* [[`d4b9f38d63`](https://github.com/jamsyoung/cnn-google-newsstand/commit/d4b9f38d63)] - CNNGNS-14 (#13) (sean joseph)
+TBSC02Q710PG8WM:cnn-google-newsstand sjoseph$
+
+
+
+
+## 2017-1-13, Version 1.6.0, @zoitec
+
+### Notable changes
+
+- Implement deep monitoring for feed status using cnn-health.
+
+### Known issues
+
+See https://github.com/cnnlabs/cnn-google-newsstand/labels/defect for complete and
+current list of known issues.
+
+### Commits
+
+* [[`f65343c5df`](https://github.com/jamsyoung/cnn-google-newsstand/commit/f65343c5df)] - CNNGNS-14 ENABLE DEEP MONITORING FOR GNS (#12) (sean joseph)
+
+
+
+
 ## 2016-12-12, Version 1.5.1, @zoitec
 
 ### Notable changes

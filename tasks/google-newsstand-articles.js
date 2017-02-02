@@ -14,11 +14,13 @@
  * limitations under the License.
  */
 
+/* global gnsHealthStatus*/
 'use strict';
 
 const request = require('request'),
     AWS = require('aws-sdk'),
     _ = require('underscore'),
+    moment = require('moment'),
     maxKeys = 1000,
     FeedGenerator = require('../lib/feed-generator.js'),
     amqp = require('amqplib/callback_api'),
@@ -387,6 +389,8 @@ function postToLSD(data, feedName) {
 setInterval(() => {
     debugLog('Generate latest Feed interval fired');
     log.debug('Generate latest Feed interval fired');
+    gnsHealthStatus.sectionFeeds.latest = {status: 201, valid: false, generateFeed: {status: 'processing'}};
+    console.log('inside latest: ', gnsHealthStatus.sectionFeeds.latest);
 
     if ((enableElectionStory === true || enableElectionStory === 'true')  && s3Images) {
         let constantElectionStoryUpdate = config.get('gnsElectionStoryConstantUpdate'),
@@ -430,12 +434,19 @@ setInterval(() => {
                 );
             });
         } else {
+
             latestFG.processContent().then(
                 // success
                 (rssFeed) => {
                     console.log(rssFeed);
 
                     postToLSD(rssFeed, 'latest');
+
+                    // update health check status
+                    gnsHealthStatus.sectionFeeds.latest.status = 200;
+                    gnsHealthStatus.sectionFeeds.latest.valid = true;
+                    gnsHealthStatus.sectionFeeds.latest.generateFeed.status = 'success';
+                    gnsHealthStatus.sectionFeeds.latest.generateFeed.lastUpdate = moment().toISOString();
 
                     // post to LSD endpoint
                     latestFG.urls = 'clear';
@@ -444,12 +455,21 @@ setInterval(() => {
 
                 // failure
                 (error) => {
+                    gnsHealthStatus.sectionFeeds.latest.status = 500;
+                    gnsHealthStatus.sectionFeeds.latest.valid = false;
+                    gnsHealthStatus.sectionFeeds.latest.generateFeed.status = 'failed';
+                    gnsHealthStatus.sectionFeeds.latest.generateFeed.failedAt = moment().toISOString();
+
                     console.log(error);
                     log.error(error);
                 }
             );
         }
     } else {
+        gnsHealthStatus.sectionFeeds.latest.status = 200;
+        gnsHealthStatus.sectionFeeds.latest.valid = true;
+        gnsHealthStatus.sectionFeeds.latest.generateFeed.status = 'No updates';
+        gnsHealthStatus.sectionFeeds.latest.generateFeed.lastUpdate = moment().toISOString();
         debugLog('no updates');
         log.debug('Generate latest Feed: no updates');
     }
@@ -458,6 +478,7 @@ setInterval(() => {
 setInterval(() => {
     debugLog('Generate entertainment Feed interval fired');
     log.debug('Generate entertainment Feed interval fired');
+    gnsHealthStatus.sectionFeeds.entertainment = {status: 201, valid: false, generateFeed: {status: 'processing'}};
 
     if (entertainmentFG.urls && entertainmentFG.urls.length > 0) {
         entertainmentFG.processContent().then(
@@ -467,6 +488,12 @@ setInterval(() => {
 
                 postToLSD(rssFeed, 'entertainment');
 
+                // update health check status
+                gnsHealthStatus.sectionFeeds.entertainment.status = 200;
+                gnsHealthStatus.sectionFeeds.entertainment.valid = true;
+                gnsHealthStatus.sectionFeeds.entertainment.generateFeed.status = 'success';
+                gnsHealthStatus.sectionFeeds.entertainment.generateFeed.lastUpdate = moment().toISOString();
+
                 // post to LSD endpoint
                 entertainmentFG.urls = 'clear';
                 debugLog(entertainmentFG.urls);
@@ -474,11 +501,19 @@ setInterval(() => {
 
             // failure
             (error) => {
+                gnsHealthStatus.sectionFeeds.entertainment.status = 500;
+                gnsHealthStatus.sectionFeeds.entertainment.valid = false;
+                gnsHealthStatus.sectionFeeds.entertainment.generateFeed.status = 'failed';
+                gnsHealthStatus.sectionFeeds.entertainment.generateFeed.failedAt = moment().toISOString();
                 console.log(error);
                 log.error(error);
             }
         );
     } else {
+        gnsHealthStatus.sectionFeeds.entertainment.status = 200;
+        gnsHealthStatus.sectionFeeds.entertainment.valid = false;
+        gnsHealthStatus.sectionFeeds.entertainment.generateFeed.status = 'No updates';
+        gnsHealthStatus.sectionFeeds.entertainment.generateFeed.failedAt = moment().toISOString();
         debugLog('no updates');
         log.debug('Generate entertainment Feed: no updates');
     }
@@ -487,6 +522,7 @@ setInterval(() => {
 setInterval(() => {
     debugLog('Generate health Feed interval fired');
     log.debug('Generate health Feed interval fired');
+    gnsHealthStatus.sectionFeeds.health = {status: 201, valid: false, generateFeed: {status: 'processing'}};
 
     if (healthFG.urls && healthFG.urls.length > 0) {
         healthFG.processContent().then(
@@ -496,6 +532,12 @@ setInterval(() => {
 
                 postToLSD(rssFeed, 'health');
 
+                // update health check status
+                gnsHealthStatus.sectionFeeds.health.status = 200;
+                gnsHealthStatus.sectionFeeds.health.valid = true;
+                gnsHealthStatus.sectionFeeds.health.generateFeed.status = 'success';
+                gnsHealthStatus.sectionFeeds.health.generateFeed.lastUpdate = moment().toISOString();
+
                 // post to LSD endpoint
                 healthFG.urls = 'clear';
                 debugLog(healthFG.urls);
@@ -503,11 +545,19 @@ setInterval(() => {
 
             // failure
             (error) => {
+                gnsHealthStatus.sectionFeeds.health.status = 500;
+                gnsHealthStatus.sectionFeeds.health.valid = false;
+                gnsHealthStatus.sectionFeeds.health.generateFeed.status = 'failed';
+                gnsHealthStatus.sectionFeeds.health.generateFeed.failedAt = moment().toISOString();
                 console.log(error);
                 log.error(error);
             }
         );
     } else {
+        gnsHealthStatus.sectionFeeds.health.status = 200;
+        gnsHealthStatus.sectionFeeds.health.valid = true;
+        gnsHealthStatus.sectionFeeds.health.generateFeed.status = 'No updates';
+        gnsHealthStatus.sectionFeeds.health.generateFeed.lastUpdate = moment().toISOString();
         debugLog('no updates');
         log.debug('Generate health Feed: no updates');
     }
@@ -516,6 +566,7 @@ setInterval(() => {
 setInterval(() => {
     debugLog('Generate opinions Feed interval fired');
     log.debug('Generate opinions Feed interval fired');
+    gnsHealthStatus.sectionFeeds.opinions = {status: 201, valid: false, generateFeed: {status: 'processing'}};
 
     if (opinionsFG.urls && opinionsFG.urls.length > 0) {
         opinionsFG.processContent().then(
@@ -525,6 +576,12 @@ setInterval(() => {
 
                 postToLSD(rssFeed, 'opinions');
 
+                // update health check status
+                gnsHealthStatus.sectionFeeds.opinions.status = 200;
+                gnsHealthStatus.sectionFeeds.opinions.valid = true;
+                gnsHealthStatus.sectionFeeds.opinions.generateFeed.status = 'success';
+                gnsHealthStatus.sectionFeeds.opinions.generateFeed.lastUpdate = moment().toISOString();
+
                 // post to LSD endpoint
                 opinionsFG.urls = 'clear';
                 debugLog(opinionsFG.urls);
@@ -532,11 +589,19 @@ setInterval(() => {
 
             // failure
             (error) => {
+                gnsHealthStatus.sectionFeeds.opinions.status = 500;
+                gnsHealthStatus.sectionFeeds.opinions.valid = false;
+                gnsHealthStatus.sectionFeeds.opinions.generateFeed.status = 'failed';
+                gnsHealthStatus.sectionFeeds.opinions.generateFeed.failedAt = moment().toISOString();
                 console.log(error);
                 log.error(error);
             }
         );
     } else {
+        gnsHealthStatus.sectionFeeds.opinions.status = 200;
+        gnsHealthStatus.sectionFeeds.opinions.valid = true;
+        gnsHealthStatus.sectionFeeds.opinions.generateFeed.status = 'No updates';
+        gnsHealthStatus.sectionFeeds.opinions.generateFeed.lastUpdate = moment().toISOString();
         debugLog('no updates');
         log.debug('Generate opinions Feed: no updates');
     }
@@ -545,6 +610,7 @@ setInterval(() => {
 setInterval(() => {
     debugLog('Generate politics Feed interval fired');
     log.debug('Generate politics Feed interval fired');
+    gnsHealthStatus.sectionFeeds.politics = {status: 201, valid: false, generateFeed: {status: 'processing'}};
 
     if ((enableElectionStory === true || enableElectionStory === 'true')  && s3Images) {
         let constantElectionStoryUpdate = config.get('gnsElectionStoryConstantUpdate'),
@@ -576,6 +642,12 @@ setInterval(() => {
 
                         postToLSD(rssFeed, 'politics');
 
+                        // update health check status
+                        gnsHealthStatus.sectionFeeds.politics.status = 200;
+                        gnsHealthStatus.sectionFeeds.politics.valid = true;
+                        gnsHealthStatus.sectionFeeds.politics.generateFeed.status = 'success';
+                        gnsHealthStatus.sectionFeeds.politics.generateFeed.lastUpdate = moment().toISOString();
+
                         // post to LSD endpoint
                         politicsFG.urls = 'clear';
                         debugLog(politicsFG.urls);
@@ -583,6 +655,10 @@ setInterval(() => {
 
                     // failure
                     (error) => {
+                        gnsHealthStatus.sectionFeeds.politics.status = 500;
+                        gnsHealthStatus.sectionFeeds.politics.valid = false;
+                        gnsHealthStatus.sectionFeeds.politics.generateFeed.status = 'failed';
+                        gnsHealthStatus.sectionFeeds.politics.generateFeed.failedAt = moment().toISOString();
                         console.log(error);
                         log.error(error);
                     }
@@ -596,6 +672,12 @@ setInterval(() => {
 
                     postToLSD(rssFeed, 'politics');
 
+                    // update health check status
+                    gnsHealthStatus.sectionFeeds.politics.status = 200;
+                    gnsHealthStatus.sectionFeeds.politics.valid = true;
+                    gnsHealthStatus.sectionFeeds.politics.generateFeed.status = 'success';
+                    gnsHealthStatus.sectionFeeds.politics.generateFeed.lastUpdate = moment().toISOString();
+
                     // post to LSD endpoint
                     politicsFG.urls = 'clear';
                     debugLog(politicsFG.urls);
@@ -603,12 +685,21 @@ setInterval(() => {
 
                 // failure
                 (error) => {
+                    gnsHealthStatus.sectionFeeds.politics.status = 500;
+                    gnsHealthStatus.sectionFeeds.politics.valid = false;
+                    gnsHealthStatus.sectionFeeds.politics.generateFeed.status = 'failed';
+                    gnsHealthStatus.sectionFeeds.politics.generateFeed.failedAt = moment().toISOString();
                     console.log(error);
                     log.error(error);
                 }
             );
         }
     } else {
+        // update health check status
+        gnsHealthStatus.sectionFeeds.politics.status = 200;
+        gnsHealthStatus.sectionFeeds.politics.valid = true;
+        gnsHealthStatus.sectionFeeds.politics.generateFeed.status = 'No updates';
+        gnsHealthStatus.sectionFeeds.politics.generateFeed.lastUpdate = moment().toISOString();
         debugLog('no updates');
         log.debug('Generate politics Feed: no updates');
     }
@@ -617,6 +708,7 @@ setInterval(() => {
 setInterval(() => {
     debugLog('Generate tech Feed interval fired');
     log.debug('Generate tech Feed interval fired');
+    gnsHealthStatus.sectionFeeds.tech = {status: 201, valid: false, generateFeed: {status: 'processing'}};
 
     if (techFG.urls && techFG.urls.length > 0) {
         techFG.processContent().then(
@@ -626,6 +718,12 @@ setInterval(() => {
 
                 postToLSD(rssFeed, 'tech');
 
+                // update health check status
+                gnsHealthStatus.sectionFeeds.tech.status = 200;
+                gnsHealthStatus.sectionFeeds.tech.valid = true;
+                gnsHealthStatus.sectionFeeds.tech.generateFeed.status = 'success';
+                gnsHealthStatus.sectionFeeds.tech.generateFeed.lastUpdate = moment().toISOString();
+
                 // post to LSD endpoint
                 techFG.urls = 'clear';
                 debugLog(techFG.urls);
@@ -633,11 +731,19 @@ setInterval(() => {
 
             // failure
             (error) => {
+                gnsHealthStatus.sectionFeeds.tech.status = 500;
+                gnsHealthStatus.sectionFeeds.tech.valid = false;
+                gnsHealthStatus.sectionFeeds.tech.generateFeed.status = 'failed';
+                gnsHealthStatus.sectionFeeds.tech.generateFeed.failedAt = moment().toISOString();
                 console.log(error);
                 log.error(error);
             }
         );
     } else {
+        gnsHealthStatus.sectionFeeds.tech.status = 200;
+        gnsHealthStatus.sectionFeeds.tech.valid = true;
+        gnsHealthStatus.sectionFeeds.tech.generateFeed.status = 'No updates';
+        gnsHealthStatus.sectionFeeds.tech.generateFeed.lastUpdate = moment().toISOString();
         debugLog('no updates');
         log.debug('Generate tech Feed: no updates');
     }
@@ -646,6 +752,7 @@ setInterval(() => {
 setInterval(() => {
     debugLog('Generate us Feed interval fired');
     log.debug('Generate us Feed interval fired');
+    gnsHealthStatus.sectionFeeds.us = {status: 201, valid: false, generateFeed: {status: 'processing'}};
 
     if (usFG.urls && usFG.urls.length > 0) {
         usFG.processContent().then(
@@ -655,6 +762,12 @@ setInterval(() => {
 
                 postToLSD(rssFeed, 'us');
 
+                // update health check status
+                gnsHealthStatus.sectionFeeds.us.status = 200;
+                gnsHealthStatus.sectionFeeds.us.valid = true;
+                gnsHealthStatus.sectionFeeds.us.generateFeed.status = 'success';
+                gnsHealthStatus.sectionFeeds.us.generateFeed.lastUpdate = moment().toISOString();
+
                 // post to LSD endpoint
                 usFG.urls = 'clear';
                 debugLog(usFG.urls);
@@ -662,11 +775,19 @@ setInterval(() => {
 
             // failure
             (error) => {
+                gnsHealthStatus.sectionFeeds.us.status = 500;
+                gnsHealthStatus.sectionFeeds.us.valid = false;
+                gnsHealthStatus.sectionFeeds.us.generateFeed.status = 'failed';
+                gnsHealthStatus.sectionFeeds.us.generateFeed.failedAt = moment().toISOString();
                 console.log(error);
                 log.error(error);
             }
         );
     } else {
+        gnsHealthStatus.sectionFeeds.us.status = 200;
+        gnsHealthStatus.sectionFeeds.us.valid = true;
+        gnsHealthStatus.sectionFeeds.us.generateFeed.status = 'No updates';
+        gnsHealthStatus.sectionFeeds.us.generateFeed.lastUpdate = moment().toISOString();
         debugLog('no updates');
         log.debug('Generate us Feed: no updates');
     }
@@ -675,6 +796,7 @@ setInterval(() => {
 setInterval(() => {
     debugLog('Generate world Feed interval fired');
     log.debug('Generate world Feed interval fired');
+    gnsHealthStatus.sectionFeeds.world = {status: 201, valid: false, generateFeed: {status: 'processing'}};
 
     if (worldFG.urls && worldFG.urls.length > 0) {
         worldFG.processContent().then(
@@ -684,6 +806,12 @@ setInterval(() => {
 
                 postToLSD(rssFeed, 'world');
 
+                 // update health check status
+                gnsHealthStatus.sectionFeeds.world.status = 200;
+                gnsHealthStatus.sectionFeeds.world.valid = true;
+                gnsHealthStatus.sectionFeeds.world.generateFeed.status = 'success';
+                gnsHealthStatus.sectionFeeds.world.generateFeed.lastUpdate = moment().toISOString();
+
                 // post to LSD endpoint
                 worldFG.urls = 'clear';
                 debugLog(worldFG.urls);
@@ -691,11 +819,19 @@ setInterval(() => {
 
             // failure
             (error) => {
+                gnsHealthStatus.sectionFeeds.world.status = 500;
+                gnsHealthStatus.sectionFeeds.world.valid = false;
+                gnsHealthStatus.sectionFeeds.world.generateFeed.status = 'failed';
+                gnsHealthStatus.sectionFeeds.world.generateFeed.failedAt = moment().toISOString();
                 console.log(error);
                 log.error(error);
             }
         );
     } else {
+        gnsHealthStatus.sectionFeeds.world.status = 200;
+        gnsHealthStatus.sectionFeeds.world.valid = true;
+        gnsHealthStatus.sectionFeeds.world.generateFeed.status = 'No updates';
+        gnsHealthStatus.sectionFeeds.world.generateFeed.lastUpdate = moment().toISOString();
         debugLog('no updates');
         log.debug('Generate world Feed: no updates');
     }
@@ -703,6 +839,7 @@ setInterval(() => {
 
 setInterval(() => {
     debugLog('Generate money Feed interval fired');
+    gnsHealthStatus.sectionFeeds.money = {status: 201, valid: false, generateFeed: {status: 'processing'}};
 
     if (moneyFG.urls && moneyFG.urls.length > 0) {
         moneyFG.processContent().then(
@@ -712,6 +849,12 @@ setInterval(() => {
 
                 postToLSD(rssFeed, 'money');
 
+                // update health check status
+                gnsHealthStatus.sectionFeeds.money.status = 200;
+                gnsHealthStatus.sectionFeeds.money.valid = true;
+                gnsHealthStatus.sectionFeeds.money.generateFeed.status = 'success';
+                gnsHealthStatus.sectionFeeds.money.generateFeed.lastUpdate = moment().toISOString();
+
                 // post to LSD endpoint
                 moneyFG.urls = 'clear';
                 debugLog(moneyFG.urls);
@@ -719,10 +862,19 @@ setInterval(() => {
 
             // failure
             (error) => {
+                gnsHealthStatus.sectionFeeds.money.status = 500;
+                gnsHealthStatus.sectionFeeds.money.valid = false;
+                gnsHealthStatus.sectionFeeds.money.generateFeed.status = 'failed';
+                gnsHealthStatus.sectionFeeds.money.generateFeed.failedAt = moment().toISOString();
                 console.log(error);
             }
         );
     } else {
+        // update health check status
+        gnsHealthStatus.sectionFeeds.money.status = 200;
+        gnsHealthStatus.sectionFeeds.money.valid = true;
+        gnsHealthStatus.sectionFeeds.money.generateFeed.status = 'No updates';
+        gnsHealthStatus.sectionFeeds.money.generateFeed.lastUpdate = moment().toISOString();
         debugLog('no updates');
     }
 }, config.get('gnsTaskIntervalMS'));
@@ -730,6 +882,7 @@ setInterval(() => {
 setInterval(() => {
     debugLog('Generate election Feed interval fired');
     log.debug('Generate election Feed interval fired');
+    gnsHealthStatus.sectionFeeds.elections = {status: 201, valid: false, generateFeed: {status: 'processing'}};
 
     if ((enableElectionStory === true || enableElectionStory === 'true')
         || (config.get('gnsElectionModuleTest') === true || config.get('gnsElectionModuleTest') === 'true')
@@ -766,6 +919,12 @@ setInterval(() => {
 
                         postToLSD(rssFeed, '2016-elections');
 
+                        // update health check status
+                        gnsHealthStatus.sectionFeeds.elections.status = 200;
+                        gnsHealthStatus.sectionFeeds.elections.valid = true;
+                        gnsHealthStatus.sectionFeeds.elections.generateFeed.status = 'success';
+                        gnsHealthStatus.sectionFeeds.elections.generateFeed.lastUpdate = moment().toISOString();
+
                         // post to LSD endpoint
                         electionsFG.urls = 'clear';
                         debugLog(electionsFG.urls);
@@ -773,6 +932,10 @@ setInterval(() => {
 
                     // failure
                     (error) => {
+                        gnsHealthStatus.sectionFeeds.elections.status = 500;
+                        gnsHealthStatus.sectionFeeds.elections.valid = false;
+                        gnsHealthStatus.sectionFeeds.elections.generateFeed.status = 'failed';
+                        gnsHealthStatus.sectionFeeds.elections.generateFeed.failedAt = moment().toISOString();
                         console.log(error);
                         log.error(error);
                     }
@@ -786,6 +949,12 @@ setInterval(() => {
 
                     postToLSD(rssFeed, '2016-elections');
 
+                    // update health check status
+                    gnsHealthStatus.sectionFeeds.elections.status = 200;
+                    gnsHealthStatus.sectionFeeds.elections.valid = true;
+                    gnsHealthStatus.sectionFeeds.elections.generateFeed.status = 'success';
+                    gnsHealthStatus.sectionFeeds.elections.generateFeed.lastUpdate = moment().toISOString();
+
                     // post to LSD endpoint
                     electionsFG.urls = 'clear';
                     debugLog(electionsFG.urls);
@@ -793,12 +962,21 @@ setInterval(() => {
 
                 // failure
                 (error) => {
+                    gnsHealthStatus.sectionFeeds.elections.status = 500;
+                    gnsHealthStatus.sectionFeeds.elections.valid = false;
+                    gnsHealthStatus.sectionFeeds.elections.generateFeed.status = 'failed';
+                    gnsHealthStatus.sectionFeeds.elections.generateFeed.failedAt = moment().toISOString();
                     console.log(error);
                     log.error(error);
                 }
             );
         }
     } else {
+        // update health check status
+        gnsHealthStatus.sectionFeeds.elections.status = 200;
+        gnsHealthStatus.sectionFeeds.elections.valid = true;
+        gnsHealthStatus.sectionFeeds.elections.generateFeed.status = 'No updates';
+        gnsHealthStatus.sectionFeeds.elections.generateFeed.lastUpdate = moment().toISOString();
         debugLog('no updates');
         log.debug('Generate election Feed: no updates');
     }
