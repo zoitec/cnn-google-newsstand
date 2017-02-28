@@ -26,6 +26,7 @@ nconf.env([
     'CLOUDAMQP_AUTH',
     'ENVIRONMENT',
     'GNS_BLACK_LIST',
+    'GNS_GENERIC_THUMB_IMAGE',
     'GNS_TASK_INTERVAL_MS',
     'GNS_ENABLE_ELECTION_STORY',
     'GNS_ELECTION_MODULE_TEST',
@@ -85,6 +86,7 @@ let blackList = [
             gnsElectionModuleLink2: (nconf.get('GNS_ELECTION_MODULE_LINK_2')) ? nconf.get('GNS_ELECTION_MODULE_LINK_2') : '<p class="style-id:electionLinks2"><a class="style-id:electionLink" href="http://www.cnn.com/election/house">House</a> | <a class="style-id:electionLink" href="http://www.cnn.com/election/governor">Governer</a> | <a class="style-id:electionLink" href="http://www.cnn.com/election/ballot-measures">Ballot&nbsp;Measures</a> | <a class="style-id:electionLink" href="http://www.cnn.com/election/results/exit-polls">Exit&nbsp;Polls</a> | <a class="style-id:electionLink" href="http://www.cnn.com/election/results/states">States</a></p>',
             gnsElectiomImgEnv: (nconf.get('GNS_ELECTION_IMG_ENV')) ? nconf.get('GNS_ELECTION_IMG_ENV') : nconf.get('ENVIRONMENT'),
             gnsMonitoringTest: (nconf.get('GNS_MONITORING_TEST')) ? nconf.get('GNS_MONITORING_TEST') : false,
+            gnsGenericThumbImage: (nconf.get('GNS_GENERIC_THUMB_IMAGE')) ? nconf.get('GNS_GENERIC_THUMB_IMAGE') : 'http://i2.cdn.turner.com/cnnnext/dam/assets/150325082152-social-gfx-cnn-logo-super-169.jpg',
             hypatia: {
                 timeout: (process.env.HYPATIA_TIMEOUT) ? parseInt(process.env.HYPATIA_TIMEOUT) : 1000 * 5
             },
