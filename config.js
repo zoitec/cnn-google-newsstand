@@ -51,8 +51,8 @@ nconf.env([
 
 
 // These are required to be set to start up
-if (!nconf.get('ENVIRONMENT') || !nconf.get('PORT') || !nconf.get('CLOUDAMQP_AUTH') || !nconf.get('LOGZIO_TOKEN') || !nconf.get('ACCESS_KEY_ID') || !nconf.get('SECRET_ACCESS_KEY')) {
-    console.error('ENVIRONMENT, PORT, CLOUDAMQP_AUTH, LOGZIO_TOKEN, ACCESS_KEY_ID and/or SECRET_ACCESS_KEY are not set');
+if (!nconf.get('ENVIRONMENT') || !nconf.get('PORT') || !nconf.get('CLOUDAMQP_AUTH') || !nconf.get('LOGZIO_TOKEN') || !nconf.get('ACCESS_KEY_ID') || !nconf.get('SECRET_ACCESS_KEY') || !nconf.get('DYNA_IMAGE_AUTH')) {
+    console.error('ENVIRONMENT, PORT, CLOUDAMQP_AUTH, LOGZIO_TOKEN, ACCESS_KEY_ID, DYNA_IMAGE_AUTH and/or SECRET_ACCESS_KEY are not set');
     process.exit(1);
 }
 
@@ -66,7 +66,6 @@ let blackList = [
     config = {
         default: {
             cloudamqpConnectionString: `amqp://${nconf.get('CLOUDAMQP_AUTH')}@red-rhino.rmq.cloudamqp.com/cnn-towncrier`,
-            dynaImageAuth: (nconf.get('DYNA_IMAGE_AUTH')) ? nconf.get('DYNA_IMAGE_AUTH') : '',
             gnsBlackList: (nconf.get('GNS_BLACK_LIST')) ? JSON.parse(nconf.get('GNS_BLACK_LIST')) : blackList,
             gnsTaskIntervalMS: (nconf.get('GNS_TASK_INTERVAL_MS')) ? parseInt(nconf.get('GNS_TASK_INTERVAL_MS')) : 1000 * 60 * 30, // 30 minutes
             lsdHosts: 'lsd-prod-pub-cop.turner.com,lsd-prod-pub-56m.turner.com',
@@ -88,7 +87,7 @@ let blackList = [
             gnsElectionModuleLink2: (nconf.get('GNS_ELECTION_MODULE_LINK_2')) ? nconf.get('GNS_ELECTION_MODULE_LINK_2') : '<p class="style-id:electionLinks2"><a class="style-id:electionLink" href="http://www.cnn.com/election/house">House</a> | <a class="style-id:electionLink" href="http://www.cnn.com/election/governor">Governer</a> | <a class="style-id:electionLink" href="http://www.cnn.com/election/ballot-measures">Ballot&nbsp;Measures</a> | <a class="style-id:electionLink" href="http://www.cnn.com/election/results/exit-polls">Exit&nbsp;Polls</a> | <a class="style-id:electionLink" href="http://www.cnn.com/election/results/states">States</a></p>',
             gnsElectiomImgEnv: (nconf.get('GNS_ELECTION_IMG_ENV')) ? nconf.get('GNS_ELECTION_IMG_ENV') : nconf.get('ENVIRONMENT'),
             gnsMonitoringTest: (nconf.get('GNS_MONITORING_TEST')) ? nconf.get('GNS_MONITORING_TEST') : false,
-            gnsGenericThumbImage: (nconf.get('GNS_GENERIC_THUMB_IMAGE')) ? nconf.get('GNS_GENERIC_THUMB_IMAGE') : 'http://i2.cdn.turner.com/cnnnext/dam/assets/150325082152-social-gfx-cnn-logo-super-169.jpg',
+            gnsGenericThumbImage: (nconf.get('GNS_GENERIC_THUMB_IMAGE')) ? nconf.get('GNS_GENERIC_THUMB_IMAGE') : 'http://www.cnn.com/partners/google/gns/default-exlarge-169.jpg',
             hypatia: {
                 timeout: (process.env.HYPATIA_TIMEOUT) ? parseInt(process.env.HYPATIA_TIMEOUT) : 1000 * 5
             },
