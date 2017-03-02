@@ -50,8 +50,8 @@ nconf.env([
 
 
 // These are required to be set to start up
-if (!nconf.get('ENVIRONMENT') || !nconf.get('PORT') || !nconf.get('CLOUDAMQP_AUTH') || !nconf.get('LOGZIO_TOKEN') || !nconf.get('ACCESS_KEY_ID') || !nconf.get('SECRET_ACCESS_KEY')) {
-    console.error('ENVIRONMENT, PORT, CLOUDAMQP_AUTH, LOGZIO_TOKEN, ACCESS_KEY_ID and/or SECRET_ACCESS_KEY are not set');
+if (!nconf.get('ENVIRONMENT') || !nconf.get('PORT') || !nconf.get('CLOUDAMQP_AUTH') || !nconf.get('LOGZIO_TOKEN') || !nconf.get('ACCESS_KEY_ID') || !nconf.get('SECRET_ACCESS_KEY') || !nconf.get('DYNA_IMAGE_AUTH')) {
+    console.error('ENVIRONMENT, PORT, CLOUDAMQP_AUTH, LOGZIO_TOKEN, ACCESS_KEY_ID, DYNA_IMAGE_AUTH and/or SECRET_ACCESS_KEY are not set');
     process.exit(1);
 }
 
