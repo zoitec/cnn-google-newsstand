@@ -24,6 +24,7 @@ const nconf = require('nconf');
 // whitelist environment variables
 nconf.env([
     'CLOUDAMQP_AUTH',
+    'DYNAIMAGE_AUTH',
     'ENVIRONMENT',
     'GNS_BLACK_LIST',
     'GNS_TASK_INTERVAL_MS',
@@ -49,8 +50,8 @@ nconf.env([
 
 
 // These are required to be set to start up
-if (!nconf.get('ENVIRONMENT') || !nconf.get('PORT') || !nconf.get('CLOUDAMQP_AUTH') || !nconf.get('LOGZIO_TOKEN') || !nconf.get('ACCESS_KEY_ID') || !nconf.get('SECRET_ACCESS_KEY')) {
-    console.error('ENVIRONMENT, PORT, CLOUDAMQP_AUTH, LOGZIO_TOKEN, ACCESS_KEY_ID and/or SECRET_ACCESS_KEY are not set');
+if (!nconf.get('ENVIRONMENT') || !nconf.get('PORT') || !nconf.get('CLOUDAMQP_AUTH') || !nconf.get('LOGZIO_TOKEN') || !nconf.get('ACCESS_KEY_ID') || !nconf.get('SECRET_ACCESS_KEY') || !nconf.get('DYNAIMAGE_AUTH')) {
+    console.error('ENVIRONMENT, PORT, CLOUDAMQP_AUTH, LOGZIO_TOKEN, ACCESS_KEY_ID, DYNAIMAGE_AUTH and/or SECRET_ACCESS_KEY are not set');
     process.exit(1);
 }
 
