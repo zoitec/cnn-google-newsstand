@@ -38,17 +38,19 @@ nconf.env([
     'GNS_ELECTION_LOWER_HEADER',
     'GNS_ELECTION_MODULE_LINK_1',
     'GNS_ELECTION_MODULE_LINK_2',
+    'GNS_MONITORING_TEST',
     'HYPATIA_TIMEOUT',
     'ACCESS_KEY_ID',
     'SECRET_ACCESS_KEY',
-    'PORT'
+    'PORT',
+    'LOGZIO_TOKEN'
 ]);
 
 
 
 // These are required to be set to start up
-if (!nconf.get('ENVIRONMENT') || !nconf.get('PORT') || !nconf.get('CLOUDAMQP_AUTH') || !nconf.get('ACCESS_KEY_ID') || !nconf.get('SECRET_ACCESS_KEY')) {
-    console.error('ENVIRONMENT, PORT, CLOUDAMQP_AUTH, ACCESS_KEY_ID and/or SECRET_ACCESS_KEY are not set');
+if (!nconf.get('ENVIRONMENT') || !nconf.get('PORT') || !nconf.get('CLOUDAMQP_AUTH') || !nconf.get('LOGZIO_TOKEN') || !nconf.get('ACCESS_KEY_ID') || !nconf.get('SECRET_ACCESS_KEY')) {
+    console.error('ENVIRONMENT, PORT, CLOUDAMQP_AUTH, LOGZIO_TOKEN, ACCESS_KEY_ID and/or SECRET_ACCESS_KEY are not set');
     process.exit(1);
 }
 
@@ -68,7 +70,7 @@ let blackList = [
             exchangeName: 'cnn-town-crier-ref',
             queueNameArticles: `cnn-google-newsstand-articles-${nconf.get('ENVIRONMENT').toLowerCase()}`,
             queueNameVideos: `cnn-google-newsstand-videos-${nconf.get('ENVIRONMENT').toLowerCase()}`,
-            routingKeysArticles: ['cnn.article'],
+            routingKeysArticles: ['cnn.article', 'money.article'],
             routingKeysVideos: ['cnn.video'],
             adbpTrackingURL: 'https://smetrics.cnn.com/b/ss/cnnoffsitedev',
             gnsTurnOnElectionModule: (nconf.get('GNS_ENABLE_ELECTION_STORY')) ? nconf.get('GNS_ENABLE_ELECTION_STORY') : false,
@@ -82,6 +84,7 @@ let blackList = [
             gnsElectionModuleLink1: (nconf.get('GNS_ELECTION_MODULE_LINK_1')) ? nconf.get('GNS_ELECTION_MODULE_LINK_1') : '<p class="style-id:electionLinks"><a class="style-id:electionLink" href="http://www.cnn.com/election/results">Full&nbsp;Election&nbsp;Results</a> | <a class="style-id:electionLink" href="http://www.cnn.com/election/president">Presidential</a> | <a class="style-id:electionLink" href="http://www.cnn.com/election/senate">Senate</a></p>',
             gnsElectionModuleLink2: (nconf.get('GNS_ELECTION_MODULE_LINK_2')) ? nconf.get('GNS_ELECTION_MODULE_LINK_2') : '<p class="style-id:electionLinks2"><a class="style-id:electionLink" href="http://www.cnn.com/election/house">House</a> | <a class="style-id:electionLink" href="http://www.cnn.com/election/governor">Governer</a> | <a class="style-id:electionLink" href="http://www.cnn.com/election/ballot-measures">Ballot&nbsp;Measures</a> | <a class="style-id:electionLink" href="http://www.cnn.com/election/results/exit-polls">Exit&nbsp;Polls</a> | <a class="style-id:electionLink" href="http://www.cnn.com/election/results/states">States</a></p>',
             gnsElectiomImgEnv: (nconf.get('GNS_ELECTION_IMG_ENV')) ? nconf.get('GNS_ELECTION_IMG_ENV') : nconf.get('ENVIRONMENT'),
+            gnsMonitoringTest: (nconf.get('GNS_MONITORING_TEST')) ? nconf.get('GNS_MONITORING_TEST') : false,
             hypatia: {
                 timeout: (process.env.HYPATIA_TIMEOUT) ? parseInt(process.env.HYPATIA_TIMEOUT) : 1000 * 5
             },
@@ -90,7 +93,8 @@ let blackList = [
                 secretAccessKey: nconf.get('SECRET_ACCESS_KEY'),
                 region: 'us-east-1',
                 bucket: 'registry.api.cnn.io'
-            }
+            },
+            logConfig: (typeof process.env.CUSTOMER === 'undefined') ? null : {logzio: {tag: `cnn-google-newsstand-${nconf.get('ENVIRONMENT').toLowerCase()}`}}
         },
         prod: {
             cloudamqpConnectionString: `amqp://${nconf.get('CLOUDAMQP_AUTH')}@red-rhino.rmq.cloudamqp.com/cnn-towncrier`,
