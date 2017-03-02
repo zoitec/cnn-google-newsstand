@@ -24,6 +24,7 @@ const nconf = require('nconf');
 // whitelist environment variables
 nconf.env([
     'CLOUDAMQP_AUTH',
+    'DYNA_IMAGE_AUTH',
     'ENVIRONMENT',
     'GNS_BLACK_LIST',
     'GNS_TASK_INTERVAL_MS',
