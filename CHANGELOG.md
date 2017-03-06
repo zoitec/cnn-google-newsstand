@@ -1,20 +1,27 @@
 # CNN Google Newsstand Changelog
 
 
+## 2017-3-2, Version 1.7.0, @jamsyoung
+
+### Notable changes
+- Dynaimge bearer token
+
+### Commits
+* [[`a73ed5f847`](https://github.com/jamsyoung/cnn-google-newsstand/commit/a73ed5f847)] - **(SEMVER-MINOR)** Release/cnngns 76 dyna (#17) (sean joseph) [#17](https://github.com/jamsyoung/cnn-google-newsstand/pull/17)
+* [[`50ec456244`](https://github.com/jamsyoung/cnn-google-newsstand/commit/50ec456244)] - **(SEMVER-MINOR)** CNNGNS-76 - Add a bearer token to dynaimage registration post requests (#16) (sean joseph) [#16](https://github.com/jamsyoung/cnn-google-newsstand/pull/16)
+
+
+
 ## 2017-1-19, Version 1.6.2, @zoitec
 
 ### Notable changes
-
 - Fix deep monitoring check for test mode logic.
 
 ### Known issues
-
 See https://github.com/cnnlabs/cnn-google-newsstand/labels/defect for complete and
 current list of known issues.
 
 ### Commits
-
-
 * [[`0b3ad66272`](https://github.com/jamsyoung/cnn-google-newsstand/commit/0b3ad66272)] - CNNGNS-66  Set thumbnail image for stories with image pageTop to be the same (#14) (sean joseph)
 
 
