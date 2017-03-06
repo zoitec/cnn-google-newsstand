@@ -87,7 +87,7 @@ let blackList = [
             gnsElectionModuleLink2: (nconf.get('GNS_ELECTION_MODULE_LINK_2')) ? nconf.get('GNS_ELECTION_MODULE_LINK_2') : '<p class="style-id:electionLinks2"><a class="style-id:electionLink" href="http://www.cnn.com/election/house">House</a> | <a class="style-id:electionLink" href="http://www.cnn.com/election/governor">Governer</a> | <a class="style-id:electionLink" href="http://www.cnn.com/election/ballot-measures">Ballot&nbsp;Measures</a> | <a class="style-id:electionLink" href="http://www.cnn.com/election/results/exit-polls">Exit&nbsp;Polls</a> | <a class="style-id:electionLink" href="http://www.cnn.com/election/results/states">States</a></p>',
             gnsElectiomImgEnv: (nconf.get('GNS_ELECTION_IMG_ENV')) ? nconf.get('GNS_ELECTION_IMG_ENV') : nconf.get('ENVIRONMENT'),
             gnsMonitoringTest: (nconf.get('GNS_MONITORING_TEST')) ? nconf.get('GNS_MONITORING_TEST') : false,
-            gnsGenericThumbImage: (nconf.get('GNS_GENERIC_THUMB_IMAGE')) ? nconf.get('GNS_GENERIC_THUMB_IMAGE') : 'http://www.cnn.com/partners/google/gns/default-exlarge-169.jpg',
+            gnsGenericThumbImage: (nconf.get('GNS_GENERIC_THUMB_IMAGE')) ? nconf.get('GNS_GENERIC_THUMB_IMAGE') : 'http://www.cnn.com/partners/google/gns/default-exlarge-169.png',
             hypatia: {
                 timeout: (process.env.HYPATIA_TIMEOUT) ? parseInt(process.env.HYPATIA_TIMEOUT) : 1000 * 5
             },
