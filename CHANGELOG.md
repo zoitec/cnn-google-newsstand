@@ -1,5 +1,15 @@
 # CNN Google Newsstand Changelog
 
+## 2017-3-9, Version 1.7.1, @zoitec
+
+### Notable changes
+- Added default image when no cuts object
+- Fixed undefined message appearing for some captions
+
+### Commits
+* [[`9a1d4db`](https://github.com/jamsyoung/cnn-google-newsstand/commit/9a1d4db)] - **(SEMVER-MINOR)** Release/CNNGNS-74 Default Cuts Image (#17) (sean joseph) [#15](https://github.com/cnnlabs/cnn-google-newsstand/pull/15)
+* [[`0bd26cd`](https://github.com/jamsyoung/cnn-google-newsstand/commit/0bd26cd)] - **(SEMVER-MINOR)** CNNGNS-75 - Fixing undefined caption message (#16) (sean joseph) [#15](https://github.com/cnnlabs/cnn-google-newsstand/pull/15)
+
 
 ## 2017-3-2, Version 1.7.0, @jamsyoung
 
