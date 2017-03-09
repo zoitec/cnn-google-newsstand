@@ -97,8 +97,7 @@ server.route({
     method: 'GET',
     path: '/_healthcheck',
     handler: function healthcheckHandler(request, reply) {
-        let checks = healthCheck.getStatus(),
-            responseCode = checks.checks[0].status;
+        let checks = healthCheck.getStatus();
 
         checks.version = pkg.version;
         reply(checks);
