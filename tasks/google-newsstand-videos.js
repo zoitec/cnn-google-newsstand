@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+/* global gnsHealthStatus*/
 'use strict';
 
 const request = require('request'),
@@ -22,7 +23,10 @@ const request = require('request'),
     debugLog = require('debug')('cnn-google-newsstand:Task:google-newsstand-videos'),
     config = require('../config.js'),
     cloudamqpConnectionString = config.get('cloudamqpConnectionString'),
-    fg = new FeedGenerator();
+    fg = new FeedGenerator(),
+    logConfig = config.get('logConfig'),
+    log = require('cnn-logger')(logConfig),
+    moment = require('moment');
 
 
 
@@ -46,7 +50,9 @@ amqp.connect(cloudamqpConnectionString, (error, connection) => {
                 queueName.queue,
                 (message) => {
                     debugLog(`AMQP Message: ${message.fields.routingKey}: ${message.content.toString()}`);
+                    log.debug(`AMQP Message: ${message.fields.routingKey}: ${message.content.toString()}`);
                     debugLog(`Adding url to fg: ${JSON.parse(message.content.toString()).url} -> ${fg.urls}`);
+                    log.debug(`Adding url to fg: ${JSON.parse(message.content.toString()).url} -> ${fg.urls}`);
                     fg.urls = JSON.parse(message.content.toString()).url;
                     channel.ack(message);
                 },
@@ -59,10 +65,12 @@ amqp.connect(cloudamqpConnectionString, (error, connection) => {
 
 
 function postToLSD(data) {
-    let endpoint = '/cnn/content/google-newsstand/videos.xml',
+    let suffix = (config.get('ENVIRONMENT') === 'prod') ? '' : `-${config.get('ENVIRONMENT')}`,
+        endpoint = `/cnn/content/google-newsstand/videos${suffix}.xml`,
         hosts = config.get('lsdHosts');
 
     debugLog('postToLSD() called');
+    log.debug('postToLSD() called');
     // debugLog(data);
 
     hosts.split(',').forEach((host) => {
@@ -74,8 +82,10 @@ function postToLSD(data) {
         (error/* , response, body*/) => {
             if (error) {
                 debugLog(error.stack);
+                log.error(error.stack);
             } else {
                 debugLog(`Successfully uploaded data to ${hosts} at ${endpoint}`);
+                log.debug(`Successfully uploaded data to ${hosts} at ${endpoint}`);
                 // debugLog(body);
             }
         });
@@ -85,7 +95,9 @@ function postToLSD(data) {
 
 
 setInterval(() => {
-    debugLog('Generate Feed interval fired');
+    gnsHealthStatus.sectionFeeds.videos = {status: 201, valid: false, generateFeed: {status: 'processing'}};
+    debugLog('Generate videos Feed interval fired');
+    log.debug('Generate videos Feed interval fired');
     debugLog(fg.urls);
 
     if (fg.urls && fg.urls.length > 0) {
@@ -96,6 +108,12 @@ setInterval(() => {
 
                 postToLSD(rssFeed);
 
+                // update health check status
+                gnsHealthStatus.sectionFeeds.videos.status = 200;
+                gnsHealthStatus.sectionFeeds.videos.valid = true;
+                gnsHealthStatus.sectionFeeds.videos.generateFeed.status = 'success';
+                gnsHealthStatus.sectionFeeds.videos.generateFeed.lastUpdate = moment().toISOString();
+
                 // post to LSD endpoint
                 fg.urls = 'clear';
                 debugLog(fg.urls);
@@ -103,10 +121,20 @@ setInterval(() => {
 
             // failure
             (error) => {
+                gnsHealthStatus.sectionFeeds.videos.status = 500;
+                gnsHealthStatus.sectionFeeds.videos.valid = false;
+                gnsHealthStatus.sectionFeeds.videos.generateFeed.status = 'failed';
+                gnsHealthStatus.sectionFeeds.videos.generateFeed.failedAt = moment().toISOString();
                 console.log(error);
+                log.error(error);
             }
         );
     } else {
+        gnsHealthStatus.sectionFeeds.videos.status = 200;
+        gnsHealthStatus.sectionFeeds.videos.valid = true;
+        gnsHealthStatus.sectionFeeds.videos.generateFeed.status = 'No updates';
+        gnsHealthStatus.sectionFeeds.videos.generateFeed.lastUpdate = moment().toISOString();
         debugLog('no updates');
+        log.debug('Generate videos Feed: no updates');
     }
 }, config.get('gnsTaskIntervalMS'));

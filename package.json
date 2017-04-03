@@ -1,6 +1,6 @@
 {
   "name": "cnn-google-newsstand",
-  "version": "1.0.5",
+  "version": "1.7.1",
   "description": "CNN Google Newsstand",
   "main": "server.js",
   "directories": {
@@ -14,7 +14,8 @@
     "generate-coverage": "ENVIRONMENT=local PORT=5000 istanbul cover _mocha -- test/unit -r test/mocha-setup.js && open coverage/lcov-report/index.html",
     "generate-dockerfile": "tools/generate-dockerfile.sh",
     "generate-docs": "rm -rf docs && esdoc -c .esdoc.json",
-    "start": "DEBUG=cnn-google-newsstand* GNS_TASK_INTERVAL_MS=300000 ENVIRONMENT=local PORT=5000 node $(jq -r .main package.json)",
+    "start": "DEBUG=cnn-google-newsstand* node server.js",
+    "start-local": "DEBUG=cnn-google-newsstand* GNS_TASK_INTERVAL_MS=300000 ENVIRONMENT=local PORT=5000 node $(jq -r .main package.json)",
     "start-static-debug": "DEBUG=cnn-google-newsstand*,cnn-content-* ENVIRONMENT=local PORT=5000 node tasks/generate-static-feed.js",
     "start-static": "ENVIRONMENT=local PORT=5000 node tasks/generate-static-feed.js",
     "test": "eslint . && test/validate-json-files.sh && ENVIRONMENT=local PORT=5000 mocha test/unit -r test/mocha-setup.js",
@@ -32,13 +33,18 @@
   "dependencies": {
     "amqplib": "0.4.2",
     "async": "2.0.0",
+    "aws-sdk": "2.6.12",
     "cnn-content-retriever": "1.2.0",
     "cnn-hapi": "0.6.4",
+    "cnn-health": "0.2.0",
+    "cnn-logger": "1.0.0",
     "debug": "2.2.0",
     "moment": "2.14.1",
     "moment-timezone": "0.5.4",
     "nconf": "0.8.4",
-    "request": "2.73.0"
+    "request": "2.73.0",
+    "underscore": "1.8.3",
+    "xml2js": "0.4.17"
   },
   "devDependencies": {
     "chai": "3.5.0",
