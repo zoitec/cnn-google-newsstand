@@ -1,5 +1,14 @@
 # CNN Google Newsstand Changelog
 
+## 2017-4-3, Version 1.7.2, @zoitec
+
+### Notable changes
+- moved blacklist to docker env variable
+
+
+### Commits
+* [[`7920f3c`](https://github.com/jamsyoung/cnn-google-newsstand/commit/7920f3c)] - **(SEMVER-MINOR)** Release/CNNSP-429 Move blacklist to docker env variabl (#2) (sean joseph) [#2](https://github.com/cnnlabs/cnn-google-newsstand/pull/2)
+
 ## 2017-3-9, Version 1.7.1, @zoitec
 
 ### Notable changes
