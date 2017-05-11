@@ -1,5 +1,20 @@
 # CNN Google Newsstand Changelog
 
+
+
+## 2017-5-4, Version 1.7.3, @zoitec
+
+### Notable changes
+- Filter out live blogs
+
+
+### Commits
+* [[`1328bd180c`](https://github.com/jamsyoung/cnn-google-newsstand/commit/1328bd180c)] - filtering out articles that are non type of story.. ie live blog (#23) (sean joseph)
+
+
+
+
+
 ## 2017-4-3, Version 1.7.2, @zoitec
 
 ### Notable changes
@@ -8,6 +23,9 @@
 
 ### Commits
 * [[`7920f3c`](https://github.com/jamsyoung/cnn-google-newsstand/commit/7920f3c)] - **(SEMVER-MINOR)** Release/CNNSP-429 Move blacklist to docker env variabl (#2) (sean joseph) [#2](https://github.com/cnnlabs/cnn-google-newsstand/pull/2)
+
+
+
 
 ## 2017-3-9, Version 1.7.1, @zoitec
 
@@ -116,6 +134,9 @@ current list of known issues.
 ### Commits
 
 * [[`ac05a0d`](https://github.com/jamsyoung/cnn-google-newsstand/commit/ac05a0d)] - Integrate configurable timeout for content-retriever. (James Young)
+
+
+
 
 
 ## 2016-11-03, Version 1.4.0, @zoitec
