@@ -139,6 +139,7 @@ amqp.connect(cloudamqpConnectionString, (error, connection) => {
                         // CNN CONTENT
                         case 'cnn.article':
                         case 'cnn.video':
+                        case 'cnn.gallery':
                             processCNNMessage(message);
                             break;
                         // MONEY CONTENT
