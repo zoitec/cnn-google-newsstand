@@ -14,6 +14,7 @@
     "generate-coverage": "ENVIRONMENT=local PORT=5000 istanbul cover _mocha -- test/unit -r test/mocha-setup.js && open coverage/lcov-report/index.html",
     "generate-dockerfile": "tools/generate-dockerfile.sh",
     "generate-docs": "rm -rf docs && esdoc -c .esdoc.json",
+    "process-quiz": "CONSOLE_LOGLEVEL=silly ENVIRONMENT=prod PORT=5000 node ./resources/quizzes.js",
     "start": "DEBUG=cnn-google-newsstand* node server.js",
     "start-local": "DEBUG=cnn-google-newsstand* GNS_TASK_INTERVAL_MS=300000 ENVIRONMENT=local PORT=5000 node $(jq -r .main package.json)",
     "start-static-debug": "DEBUG=cnn-google-newsstand*,cnn-content-* ENVIRONMENT=local PORT=5000 node tasks/generate-static-feed.js",
