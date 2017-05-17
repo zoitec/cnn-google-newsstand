@@ -2,6 +2,25 @@
 
 
 
+## 2017-5-15, Version 1.7.5, @zoitec
+
+### Notable changes
+- subscribe to cnn.gallery queue messages
+
+* [[`60e2b6e7fa`](https://github.com/jamsyoung/cnn-google-newsstand/commit/60e2b6e7fa)] - CNNGNS-61 - Stand Alone Galleries in GNS (#18) (sean joseph)
+
+
+
+## 2017-5-15, Version 1.7.4, @zoitec
+
+### Notable changes
+- Enable stand alone galleries
+
+* [[`60e2b6e7fa`](https://github.com/jamsyoung/cnn-google-newsstand/commit/60e2b6e7fa)] - CNNGNS-61 - Stand Alone Galleries in GNS (#18) (sean joseph)
+
+
+
+
 ## 2017-5-4, Version 1.7.3, @zoitec
 
 ### Notable changes
