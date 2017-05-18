@@ -470,7 +470,6 @@ setInterval(() => {
         gnsHealthStatus.sectionFeeds.latest.status = 200;
         gnsHealthStatus.sectionFeeds.latest.valid = true;
         gnsHealthStatus.sectionFeeds.latest.generateFeed.status = 'No updates';
-        gnsHealthStatus.sectionFeeds.latest.generateFeed.lastUpdate = moment().toISOString();
         debugLog('no updates');
         log.debug('Generate latest Feed: no updates');
     }
@@ -514,7 +513,6 @@ setInterval(() => {
         gnsHealthStatus.sectionFeeds.entertainment.status = 200;
         gnsHealthStatus.sectionFeeds.entertainment.valid = false;
         gnsHealthStatus.sectionFeeds.entertainment.generateFeed.status = 'No updates';
-        gnsHealthStatus.sectionFeeds.entertainment.generateFeed.failedAt = moment().toISOString();
         debugLog('no updates');
         log.debug('Generate entertainment Feed: no updates');
     }
@@ -558,7 +556,6 @@ setInterval(() => {
         gnsHealthStatus.sectionFeeds.health.status = 200;
         gnsHealthStatus.sectionFeeds.health.valid = true;
         gnsHealthStatus.sectionFeeds.health.generateFeed.status = 'No updates';
-        gnsHealthStatus.sectionFeeds.health.generateFeed.lastUpdate = moment().toISOString();
         debugLog('no updates');
         log.debug('Generate health Feed: no updates');
     }
@@ -602,7 +599,6 @@ setInterval(() => {
         gnsHealthStatus.sectionFeeds.opinions.status = 200;
         gnsHealthStatus.sectionFeeds.opinions.valid = true;
         gnsHealthStatus.sectionFeeds.opinions.generateFeed.status = 'No updates';
-        gnsHealthStatus.sectionFeeds.opinions.generateFeed.lastUpdate = moment().toISOString();
         debugLog('no updates');
         log.debug('Generate opinions Feed: no updates');
     }
@@ -700,7 +696,6 @@ setInterval(() => {
         gnsHealthStatus.sectionFeeds.politics.status = 200;
         gnsHealthStatus.sectionFeeds.politics.valid = true;
         gnsHealthStatus.sectionFeeds.politics.generateFeed.status = 'No updates';
-        gnsHealthStatus.sectionFeeds.politics.generateFeed.lastUpdate = moment().toISOString();
         debugLog('no updates');
         log.debug('Generate politics Feed: no updates');
     }
@@ -744,7 +739,6 @@ setInterval(() => {
         gnsHealthStatus.sectionFeeds.tech.status = 200;
         gnsHealthStatus.sectionFeeds.tech.valid = true;
         gnsHealthStatus.sectionFeeds.tech.generateFeed.status = 'No updates';
-        gnsHealthStatus.sectionFeeds.tech.generateFeed.lastUpdate = moment().toISOString();
         debugLog('no updates');
         log.debug('Generate tech Feed: no updates');
     }
@@ -788,7 +782,6 @@ setInterval(() => {
         gnsHealthStatus.sectionFeeds.us.status = 200;
         gnsHealthStatus.sectionFeeds.us.valid = true;
         gnsHealthStatus.sectionFeeds.us.generateFeed.status = 'No updates';
-        gnsHealthStatus.sectionFeeds.us.generateFeed.lastUpdate = moment().toISOString();
         debugLog('no updates');
         log.debug('Generate us Feed: no updates');
     }
@@ -832,7 +825,6 @@ setInterval(() => {
         gnsHealthStatus.sectionFeeds.world.status = 200;
         gnsHealthStatus.sectionFeeds.world.valid = true;
         gnsHealthStatus.sectionFeeds.world.generateFeed.status = 'No updates';
-        gnsHealthStatus.sectionFeeds.world.generateFeed.lastUpdate = moment().toISOString();
         debugLog('no updates');
         log.debug('Generate world Feed: no updates');
     }
@@ -875,7 +867,6 @@ setInterval(() => {
         gnsHealthStatus.sectionFeeds.money.status = 200;
         gnsHealthStatus.sectionFeeds.money.valid = true;
         gnsHealthStatus.sectionFeeds.money.generateFeed.status = 'No updates';
-        gnsHealthStatus.sectionFeeds.money.generateFeed.lastUpdate = moment().toISOString();
         debugLog('no updates');
     }
 }, config.get('gnsTaskIntervalMS'));
@@ -977,7 +968,6 @@ setInterval(() => {
         gnsHealthStatus.sectionFeeds.elections.status = 200;
         gnsHealthStatus.sectionFeeds.elections.valid = true;
         gnsHealthStatus.sectionFeeds.elections.generateFeed.status = 'No updates';
-        gnsHealthStatus.sectionFeeds.elections.generateFeed.lastUpdate = moment().toISOString();
         debugLog('no updates');
         log.debug('Generate election Feed: no updates');
     }
