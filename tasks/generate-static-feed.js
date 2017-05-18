@@ -37,7 +37,7 @@ const  request = require('request'),
     enableElectionStory = config.get('gnsTurnOnElectionModule'),
     logConfig = config.get('logConfig'),
     log = require('cnn-logger')(logConfig),
-    POST_TO_LSD = true; // <---- TODO - SET THIS TO THE PROPER VALUE BASED ON WHAT YOU ARE WANTING TO DO
+    POST_TO_LSD = false; // <---- TODO - SET THIS TO THE PROPER VALUE BASED ON WHAT YOU ARE WANTING TO DO
 
 let s3Images = undefined;
 
@@ -264,7 +264,9 @@ if (enableElectionStory === true || enableElectionStory === 'true') {
 }
 
 fg.urls = [
-    'http://money.cnn.com/2017/05/18/technology/fcc-net-neutrality-vote/index.html'
+    'http://www.cnn.com/2014/01/25/showbiz/gallery/bachelor-where-are-they-now/index.html'
+    // 'http://www.cnn.com/2016/08/08/opinions/mcmullin-mormon-hope-for-conservatives-stanley/index.html'
+ //   'http://www.cnn.com/2016/08/08/sport/aly-raisman-parents-olympics-trnd/index.html' // page top image
     // 'http://www.cnn.com/2016/08/08/sport/office-olympics-for-the-rest-of-us-trnd/index.html' // page top video
     // 'http://www.cnn.com/2016/08/08/sport/aly-raisman-parents-olympics-trnd/index.html' // page top image
 //    'http://www.cnn.com/2016/08/08/sport/office-olympics-for-the-rest-of-us-trnd/index.html', // page top video
