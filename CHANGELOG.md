@@ -2,6 +2,18 @@
 
 
 
+
+## 2017-5-18, Version 1.7.8, @zoitec
+
+### Notable changes
+- Fix Stale Tech section
+
+
+* [[`b96d6435a9`](https://github.com/jamsyoung/cnn-google-newsstand/commit/b96d6435a9)] - Feature/cnngns 61 (#27) (sean joseph)
+
+
+
+
 ## 2017-5-18, Version 1.7.7, @zoitec
 
 ### Notable changes
