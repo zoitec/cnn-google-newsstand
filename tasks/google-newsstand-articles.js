@@ -34,7 +34,9 @@ const request = require('request'),
     moneyFG = new FeedGenerator(),
     opinionsFG = new FeedGenerator(),
     politicsFG = new FeedGenerator(),
+    styleFG = new FeedGenerator(),
     techFG = new FeedGenerator(),
+    travelFG = new FeedGenerator(),
     usFG = new FeedGenerator(),
     worldFG = new FeedGenerator(),
     enableElectionStory = config.get('gnsTurnOnElectionModule'),
@@ -69,6 +71,18 @@ function processCNNMessage(message) {
     if (/\/opinions|opinion\//.test(JSON.parse(message.content.toString()).url)) {
         debugLog(`Adding url to opinions feed: ${JSON.parse(message.content.toString()).url}`);
         opinionsFG.urls = JSON.parse(message.content.toString()).url;
+        mappedToASection = true;
+    }
+
+    if (/\/architecture|arts|autos|design|fashion|luxury\//.test(JSON.parse(message.content.toString()).url)) {
+        debugLog(`Adding url to tech feed: ${JSON.parse(message.content.toString()).url}`);
+        styleFG.urls = JSON.parse(message.content.toString()).url;
+        mappedToASection = true;
+    }
+
+    if (/\/travel\//.test(JSON.parse(message.content.toString()).url)) {
+        debugLog(`Adding url to tech feed: ${JSON.parse(message.content.toString()).url}`);
+        travelFG.urls = JSON.parse(message.content.toString()).url;
         mappedToASection = true;
     }
 
@@ -970,5 +984,87 @@ setInterval(() => {
         gnsHealthStatus.sectionFeeds.elections.generateFeed.status = 'No updates';
         debugLog('no updates');
         log.debug('Generate election Feed: no updates');
+    }
+}, config.get('gnsTaskIntervalMS'));
+
+setInterval(() => {
+    debugLog('Generate Style Feed interval fired');
+    gnsHealthStatus.sectionFeeds.style = {status: 201, valid: false, generateFeed: {status: 'processing'}};
+
+    if (styleFG.urls && styleFG.urls.length > 0) {
+        styleFG.processContent().then(
+            // success
+            (rssFeed) => {
+                console.log(rssFeed);
+
+                postToLSD(rssFeed, 'style');
+
+                // update health check status
+                gnsHealthStatus.sectionFeeds.style.status = 200;
+                gnsHealthStatus.sectionFeeds.style.valid = true;
+                gnsHealthStatus.sectionFeeds.style.generateFeed.status = 'success';
+                gnsHealthStatus.sectionFeeds.style.generateFeed.lastUpdate = moment().toISOString();
+
+                // post to LSD endpoint
+                styleFG.urls = 'clear';
+                debugLog(styleFG.urls);
+            },
+
+            // failure
+            (error) => {
+                gnsHealthStatus.sectionFeeds.style.status = 500;
+                gnsHealthStatus.sectionFeeds.style.valid = false;
+                gnsHealthStatus.sectionFeeds.style.generateFeed.status = 'failed';
+                gnsHealthStatus.sectionFeeds.style.generateFeed.failedAt = moment().toISOString();
+                console.log(error);
+            }
+        );
+    } else {
+        // update health check status
+        gnsHealthStatus.sectionFeeds.style.status = 200;
+        gnsHealthStatus.sectionFeeds.style.valid = true;
+        gnsHealthStatus.sectionFeeds.style.generateFeed.status = 'No updates';
+        debugLog('no updates');
+    }
+}, config.get('gnsTaskIntervalMS'));
+
+setInterval(() => {
+    debugLog('Generate travel Feed interval fired');
+    gnsHealthStatus.sectionFeeds.travel = {status: 201, valid: false, generateFeed: {status: 'processing'}};
+
+    if (travelFG.urls && travelFG.urls.length > 0) {
+        travelFG.processContent().then(
+            // success
+            (rssFeed) => {
+                console.log(rssFeed);
+
+                postToLSD(rssFeed, 'travel');
+
+                // update health check status
+                gnsHealthStatus.sectionFeeds.travel.status = 200;
+                gnsHealthStatus.sectionFeeds.travel.valid = true;
+                gnsHealthStatus.sectionFeeds.travel.generateFeed.status = 'success';
+                gnsHealthStatus.sectionFeeds.travel.generateFeed.lastUpdate = moment().toISOString();
+
+                // post to LSD endpoint
+                travelFG.urls = 'clear';
+                debugLog(travelFG.urls);
+            },
+
+            // failure
+            (error) => {
+                gnsHealthStatus.sectionFeeds.travel.status = 500;
+                gnsHealthStatus.sectionFeeds.travel.valid = false;
+                gnsHealthStatus.sectionFeeds.travel.generateFeed.status = 'failed';
+                gnsHealthStatus.sectionFeeds.travel.generateFeed.failedAt = moment().toISOString();
+                console.log(error);
+            }
+        );
+    } else {
+        // update health check status
+        gnsHealthStatus.sectionFeeds.travel.status = 200;
+        gnsHealthStatus.sectionFeeds.travel.valid = true;
+        gnsHealthStatus.sectionFeeds.travel.generateFeed.status = 'No updates';
+        debugLog('no updates');
     }
 }, config.get('gnsTaskIntervalMS'));
