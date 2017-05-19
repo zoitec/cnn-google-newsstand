@@ -75,13 +75,13 @@ function processCNNMessage(message) {
     }
 
     if (/\/architecture|arts|autos|design|fashion|luxury\//.test(JSON.parse(message.content.toString()).url)) {
-        debugLog(`Adding url to tech feed: ${JSON.parse(message.content.toString()).url}`);
+        debugLog(`Adding url to style feed: ${JSON.parse(message.content.toString()).url}`);
         styleFG.urls = JSON.parse(message.content.toString()).url;
         mappedToASection = true;
     }
 
     if (/\/travel\//.test(JSON.parse(message.content.toString()).url)) {
-        debugLog(`Adding url to tech feed: ${JSON.parse(message.content.toString()).url}`);
+        debugLog(`Adding url to travel feed: ${JSON.parse(message.content.toString()).url}`);
         travelFG.urls = JSON.parse(message.content.toString()).url;
         mappedToASection = true;
     }
