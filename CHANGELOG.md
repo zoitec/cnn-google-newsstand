@@ -3,6 +3,17 @@
 
 
 
+## 2017-5-19, Version 1.7.9, @zoitec
+
+### Notable changes
+- Adding new Style and Travel section
+
+
+* [[`7b954392b0`](https://github.com/jamsyoung/cnn-google-newsstand/commit/7b954392b0)] - CNNGNS-87 CNNGNS-88 Add Style and Travel Section (#28) (sean joseph)
+
+
+
+
 ## 2017-5-18, Version 1.7.8, @zoitec
 
 ### Notable changes
