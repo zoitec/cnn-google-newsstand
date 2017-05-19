@@ -3,6 +3,28 @@
 
 
 
+## 2017-5-18, Version 1.7.8, @zoitec
+
+### Notable changes
+- Fix Stale Tech section
+
+
+* [[`b96d6435a9`](https://github.com/jamsyoung/cnn-google-newsstand/commit/b96d6435a9)] - Feature/cnngns 61 (#27) (sean joseph)
+
+
+
+
+## 2017-5-18, Version 1.7.7, @zoitec
+
+### Notable changes
+- Fix markup for Gallery RSS Items
+
+
+* [[`6d63737a94`](https://github.com/jamsyoung/cnn-google-newsstand/commit/6d63737a94)] - CNNGNS- fix gallery rss items (#26) (sean joseph)
+
+
+
+
 ## 2017-5-17, Version 1.7.6, @zoitec
 
 ### Notable changes
