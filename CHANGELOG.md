@@ -2,6 +2,17 @@
 
 
 
+## 2017-5-22, Version 1.8.0, @zoitec
+
+### Notable changes
+- Fixing gallery footer and media image
+
+
+* [[`7444983f78`](https://github.com/jamsyoung/cnn-google-newsstand/commit/7444983f78)] - fixing merge conflicts (Sean Joseph)
+* [[`ee8c673b4a`](https://github.com/jamsyoung/cnn-google-newsstand/commit/ee8c673b4a)] - CNNGNS-87 fix double captions (#30) (sean joseph)
+* [[`8ffee7ba82`](https://github.com/jamsyoung/cnn-google-newsstand/commit/8ffee7ba82)] - fixing gallery image (Sean Joseph)
+* [[`0a7c126932`](https://github.com/jamsyoung/cnn-google-newsstand/commit/0a7c126932)] - CNNGNS-61 - using correct footer go galleries (#29) (sean joseph)
+
 
 ## 2017-5-19, Version 1.7.9, @zoitec
 
