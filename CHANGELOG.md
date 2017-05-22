@@ -5,7 +5,7 @@
 ## 2017-5-22, Version 1.8.0, @zoitec
 
 ### Notable changes
-- Fixing gallery footer and media image
+- Fixing gallery footer and media image captions
 
 
 * [[`7444983f78`](https://github.com/jamsyoung/cnn-google-newsstand/commit/7444983f78)] - fixing merge conflicts (Sean Joseph)
