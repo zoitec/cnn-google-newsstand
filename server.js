@@ -68,6 +68,14 @@ global.gnsHealthStatus = {
         elections: {
             status: 201,
             generateFeed: {status: 'Pending'}
+        },
+        style: {
+            status: 201,
+            generateFeed: {status: 'Pending'}
+        },
+        travel: {
+            status: 201,
+            generateFeed: {status: 'Pending'}
         }
     }
 };
