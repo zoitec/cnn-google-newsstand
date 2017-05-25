@@ -57,6 +57,7 @@
     "istanbul": "0.4.4",
     "jq-cli-wrapper": "0.3.0",
     "jsonlint": "1.6.2",
+    "lsd-api": "git+ssh://git@bitbucket.org:vgtf/lsd-api.git",
     "mocha": "2.5.3",
     "nock": "8.0.0",
     "npm-check-updates": "2.7.1"
