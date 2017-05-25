@@ -80,7 +80,7 @@ function processCNNMessage(message) {
         mappedToASection = true;
     }
 
-    if (/\/travel\//.test(JSON.parse(message.content.toString()).url)) {
+    if (/\/travel|aviation|hotels\//.test(JSON.parse(message.content.toString()).url)) {
         debugLog(`Adding url to travel feed: ${JSON.parse(message.content.toString()).url}`);
         travelFG.urls = JSON.parse(message.content.toString()).url;
         mappedToASection = true;
