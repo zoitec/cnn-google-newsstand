@@ -264,7 +264,8 @@ if (enableElectionStory === true || enableElectionStory === 'true') {
 }
 
 fg.urls = [
-    'http://www.cnn.com/2014/01/25/showbiz/gallery/bachelor-where-are-they-now/index.html'
+    'http://www.cnn.com/2017/06/02/travel/frank-lloyd-wright-turns-150-architecture-tour-us-midwest/index.html' //page top gallery
+   // 'http://www.cnn.com/2014/01/25/showbiz/gallery/bachelor-where-are-they-now/index.html' // stand alone gallery
     // 'http://www.cnn.com/2016/08/08/opinions/mcmullin-mormon-hope-for-conservatives-stanley/index.html'
  //   'http://www.cnn.com/2016/08/08/sport/aly-raisman-parents-olympics-trnd/index.html' // page top image
     // 'http://www.cnn.com/2016/08/08/sport/office-olympics-for-the-rest-of-us-trnd/index.html' // page top video
@@ -280,7 +281,7 @@ fg.urls = [
     // 'http://www.cnn.com/2016/07/18/travel/national-seashore-lakeshore-towns-nps100/index.html'
     // 'http://www.cnn.com/2016/08/15/us/gabby-douglas-natalie-hawkins-new-day/index.html', // twitter embeds
     // 'http://www.cnn.com/2015/10/13/politics/democratic-debate-2016-instagram/index.html' // ig embeds
-    // 'http://www.cnn.com/2016/09/05/hotels/presidential-hotel-suites/index.html' // page top gallery
+    //'http://www.cnn.com/2016/09/05/hotels/presidential-hotel-suites/index.html' // page top gallery
 //     'http://www.cnn.com/2016/08/16/opinions/larry-wilmore-cancellation-obeidallah/index.html' // editors note  / image / video
 //    'http://www.cnn.com/2016/08/19/entertainment/amy-schumer-charlie-rose/index.html', // youtube
 //    'http://www.cnn.com/2015/10/14/politics/democratic-debate-in-gifs-vines-clinton-sanders-reaction/index.html' // vine
