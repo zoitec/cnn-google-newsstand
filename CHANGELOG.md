@@ -2,6 +2,16 @@
 
 
 
+## 2017-6-08, Version 1.9.0, @zoitec
+
+### Notable changes
+- Fixing gallery footer and media image captions
+
+* [[`cfa6a3262d`](https://github.com/jamsyoung/cnn-google-newsstand/commit/cfa6a3262d)] - CNNGNS-48 Inline Galleries in GNS (#33) (sean joseph)
+
+
+
+
 ## 2017-5-22, Version 1.8.0, @zoitec
 
 ### Notable changes
