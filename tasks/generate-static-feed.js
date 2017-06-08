@@ -264,40 +264,41 @@ if (enableElectionStory === true || enableElectionStory === 'true') {
 }
 
 fg.urls = [
-    'http://www.cnn.com/2014/01/25/showbiz/gallery/bachelor-where-are-they-now/index.html'
+    'http://www.cnn.com/2017/06/02/travel/frank-lloyd-wright-turns-150-architecture-tour-us-midwest/index.html' //  page top gallery
+    // 'http://www.cnn.com/2014/01/25/showbiz/gallery/bachelor-where-are-they-now/index.html' // stand alone gallery
     // 'http://www.cnn.com/2016/08/08/opinions/mcmullin-mormon-hope-for-conservatives-stanley/index.html'
- //   'http://www.cnn.com/2016/08/08/sport/aly-raisman-parents-olympics-trnd/index.html' // page top image
+    // 'http://www.cnn.com/2016/08/08/sport/aly-raisman-parents-olympics-trnd/index.html' // page top image
     // 'http://www.cnn.com/2016/08/08/sport/office-olympics-for-the-rest-of-us-trnd/index.html' // page top video
     // 'http://www.cnn.com/2016/08/08/sport/aly-raisman-parents-olympics-trnd/index.html' // page top image
-//    'http://www.cnn.com/2016/08/08/sport/office-olympics-for-the-rest-of-us-trnd/index.html', // page top video
+    // 'http://www.cnn.com/2016/08/08/sport/office-olympics-for-the-rest-of-us-trnd/index.html', // page top video
     // 'http://www.cnn.com/2016/08/09/health/parent-acts-teaching-kids-empathy/index.html' // page top video collection
     // 'http://www.cnn.com/2016/07/27/us/freddie-gray-verdict-baltimore-officers/index.html' // page top video collection / inline video / inline images
     // 'http://www.cnn.com/2016/08/15/opinions/is-trump-getting-ready-to-lose-stanley/index.html'
     // 'http://www.cnn.com/2016/08/15/health/parents-life-expectancy-heart-health/index.html' //
     // 'http://www.cnn.com/2016/08/10/politics/trump-second-amendment/index.html'//
-    //  'http://www.cnn.com/2016/07/22/architecture/leaning-house-jakarta-architecture/index.html',
+    // 'http://www.cnn.com/2016/07/22/architecture/leaning-house-jakarta-architecture/index.html',
     // 'http://www.cnn.com/2016/07/19/sport/jockey-horse-diets/index.html',
     // 'http://www.cnn.com/2016/07/18/travel/national-seashore-lakeshore-towns-nps100/index.html'
     // 'http://www.cnn.com/2016/08/15/us/gabby-douglas-natalie-hawkins-new-day/index.html', // twitter embeds
     // 'http://www.cnn.com/2015/10/13/politics/democratic-debate-2016-instagram/index.html' // ig embeds
     // 'http://www.cnn.com/2016/09/05/hotels/presidential-hotel-suites/index.html' // page top gallery
-//     'http://www.cnn.com/2016/08/16/opinions/larry-wilmore-cancellation-obeidallah/index.html' // editors note  / image / video
-//    'http://www.cnn.com/2016/08/19/entertainment/amy-schumer-charlie-rose/index.html', // youtube
-//    'http://www.cnn.com/2015/10/14/politics/democratic-debate-in-gifs-vines-clinton-sanders-reaction/index.html' // vine
-//    'http://www.cnn.com/2016/01/05/politics/primary-conflicts-2016/index.html' // vimeo
+    // 'http://www.cnn.com/2016/08/16/opinions/larry-wilmore-cancellation-obeidallah/index.html' // editors note  / image / video
+    // 'http://www.cnn.com/2016/08/19/entertainment/amy-schumer-charlie-rose/index.html', // youtube
+    // 'http://www.cnn.com/2015/10/14/politics/democratic-debate-in-gifs-vines-clinton-sanders-reaction/index.html' // vine
+    // 'http://www.cnn.com/2016/01/05/politics/primary-conflicts-2016/index.html' // vimeo
     // videos
     // 'http://www.cnn.com/videos/politics/2016/09/20/who-stole-naked-trump-moos-pkg-erin.cnn'
-//    'http://www.cnn.com/videos/us/2016/09/01/midway-atoll-plastic-island-obama-visits-wildlife-refuge-marine-reserve-orig.cnn'
-//    'http://www.cnn.com/videos/entertainment/2016/08/30/chance-the-rapper-beyonce-mtv-vma-orig-vstan.cnn',
-//    'http://www.cnn.com/videos/us/2016/09/01/houston-crosswalks-vandalized-pkg.ktrk'
+    // 'http://www.cnn.com/videos/us/2016/09/01/midway-atoll-plastic-island-obama-visits-wildlife-refuge-marine-reserve-orig.cnn'
+    // 'http://www.cnn.com/videos/entertainment/2016/08/30/chance-the-rapper-beyonce-mtv-vma-orig-vstan.cnn',
+    // 'http://www.cnn.com/videos/us/2016/09/01/houston-crosswalks-vandalized-pkg.ktrk'
     // 'http://www.cnn.com/2016/09/20/politics/gun-control-law-court/index.html'
     // 'http://www.cnn.com/2016/09/26/opinions/clinton-needs-obama-bernstein-opinion/index.html'
-//    'http://www.cnn.com/2014/06/09/world/boko-haram-fast-facts/index.html'
-   // 'http://www.cnn.com/videos/us/2016/09/01/houston-crosswalks-vandalized-pkg.ktrk'
-   // 'http://www.cnn.com/2016/09/20/politics/gun-control-law-court/index.html',
-   // 'http://ref.next.cnn.com/2016/10/12/politics/test-election-day-2016-highlights/index.html'
+    // 'http://www.cnn.com/2014/06/09/world/boko-haram-fast-facts/index.html'
+    // 'http://www.cnn.com/videos/us/2016/09/01/houston-crosswalks-vandalized-pkg.ktrk'
+    // 'http://www.cnn.com/2016/09/20/politics/gun-control-law-court/index.html',
+    // 'http://ref.next.cnn.com/2016/10/12/politics/test-election-day-2016-highlights/index.html'
     // 'http://www.cnn.com/2016/09/26/opinions/clinton-needs-obama-bernstein-opinion/index.html',
-//    'http://www.cnn.com/2016/10/28/politics/donald-trump-election-2016/index.html'
+    // 'http://www.cnn.com/2016/10/28/politics/donald-trump-election-2016/index.html'
 ];
 
 if (fg.urls && fg.urls.length > 0) {
