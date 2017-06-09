@@ -264,6 +264,7 @@ if (enableElectionStory === true || enableElectionStory === 'true') {
 }
 
 fg.urls = [
+    //  'http://www.cnn.com/2017/06/09/design/gallery/thom-browne/index.html'
     'http://www.cnn.com/2017/06/02/travel/frank-lloyd-wright-turns-150-architecture-tour-us-midwest/index.html' //  page top gallery
     // 'http://www.cnn.com/2014/01/25/showbiz/gallery/bachelor-where-are-they-now/index.html' // stand alone gallery
     // 'http://www.cnn.com/2016/08/08/opinions/mcmullin-mormon-hope-for-conservatives-stanley/index.html'
