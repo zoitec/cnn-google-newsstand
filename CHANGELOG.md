@@ -2,6 +2,17 @@
 
 
 
+
+## 2017-6-09, Version 1.9.1, @zoitec
+
+### Notable changes
+- Fixing gallery caption bug
+
+* [[`cb5dee660d`](https://github.com/jamsyoung/cnn-google-newsstand/commit/cb5dee660d)] - CNNGNS-48 Adding enable flag and fix production error when gallery caption is undefined (#34) (sean joseph)
+
+
+
+
 ## 2017-6-08, Version 1.9.0, @zoitec
 
 ### Notable changes
