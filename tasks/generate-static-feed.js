@@ -328,7 +328,6 @@ if (fg.urls && fg.urls.length > 0) {
                     console.log(rssFeed);
 
                     if (POST_TO_LSD) {
-console.log('about to post to LSD');
                         postToLSD(rssFeed);
                     }
 
@@ -354,7 +353,6 @@ console.log('about to post to LSD');
                 console.log(rssFeed);
 
                 if (POST_TO_LSD) {
-    console.log('about to post to LSD');
                     postToLSD(rssFeed);
                 }
 
