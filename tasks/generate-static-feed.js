@@ -37,7 +37,7 @@ const  request = require('request'),
     enableElectionStory = config.get('gnsTurnOnElectionModule'),
     logConfig = config.get('logConfig'),
     log = require('cnn-logger')(logConfig),
-    POST_TO_LSD = true; // <---- TODO - SET THIS TO THE PROPER VALUE BASED ON WHAT YOU ARE WANTING TO DO
+    POST_TO_LSD = false; // <---- TODO - SET THIS TO THE PROPER VALUE BASED ON WHAT YOU ARE WANTING TO DO
 
 let s3Images = undefined;
 
