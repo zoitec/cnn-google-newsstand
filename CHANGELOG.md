@@ -2,6 +2,18 @@
 
 
 
+## 2017-6-09, Version 1.10.0, @zoitec
+
+### Notable changes
+- Adding video template type for analytics team
+
+
+
+
+* [[`c4728da4e6`](https://github.com/jamsyoung/cnn-google-newsstand/commit/c4728da4e6)] - CNNGNS-85 Setting correct templateType based on the presence of a video (#35) (sean joseph)
+
+
+
 
 ## 2017-6-09, Version 1.9.1, @zoitec
 
