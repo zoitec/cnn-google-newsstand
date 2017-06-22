@@ -2,6 +2,18 @@
 
 
 
+
+## 2017-6-22, Version 1.10.1, @zoitec
+
+### Notable changes
+- fix to allow videos
+
+
+* [[`af8de9c9a1`](https://github.com/jamsyoung/cnn-google-newsstand/commit/af8de9c9a1)] - fix to allow videos (Sean Joseph)
+
+
+
+
 ## 2017-6-09, Version 1.10.0, @zoitec
 
 ### Notable changes
