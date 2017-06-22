@@ -44,7 +44,7 @@ let s3Images = undefined;
 function postToLSD(data) {
 
     let suffix = (config.get('ENVIRONMENT') === 'prod') ? '' : `-${config.get('ENVIRONMENT')}`,
-        endpoint = `/cnn/content/google-newsstand/test-not-public${suffix}.xml`,  // <---- TODO - SET THIS TO THE CORRECT ENDPOINT BEFORE RUNNING
+        endpoint = `/cnn/content/google-newsstand/test-not-public-inline-gallery${suffix}.xml`,  // <---- TODO - SET THIS TO THE CORRECT ENDPOINT BEFORE RUNNING
         hosts = config.get('lsdHosts');
 
     debugLog('postToLSD() called');
