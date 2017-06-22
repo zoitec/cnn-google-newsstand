@@ -44,7 +44,7 @@ let s3Images = undefined;
 function postToLSD(data) {
 
     let suffix = (config.get('ENVIRONMENT') === 'prod') ? '' : `-${config.get('ENVIRONMENT')}`,
-        endpoint = `/cnn/content/google-newsstand/test-not-public-inline-gallery${suffix}.xml`,  // <---- TODO - SET THIS TO THE CORRECT ENDPOINT BEFORE RUNNING
+        endpoint = `/cnn/content/google-newsstand/test-not-public-${suffix}.xml`,  // <---- TODO - SET THIS TO THE CORRECT ENDPOINT BEFORE RUNNING
         hosts = config.get('lsdHosts');
 
     debugLog('postToLSD() called');
@@ -265,8 +265,8 @@ if (enableElectionStory === true || enableElectionStory === 'true') {
 
 fg.urls = [
     //  'http://www.cnn.com/2017/06/09/design/gallery/thom-browne/index.html'
-    'http://www.cnn.com/travel/article/frank-lloyd-wright-turns-150-architecture-tour-us-midwest/index.html', //  page top gallery
-    'http://www.cnn.com/2017/06/16/entertainment/tupac-all-eyez-on-me/index.html' // page top gallery
+    'http://www.cnn.com/travel/article/frank-lloyd-wright-turns-150-architecture-tour-us-midwest/index.html'//  page top gallery
+    // 'http://www.cnn.com/2017/06/16/entertainment/tupac-all-eyez-on-me/index.html' // page top gallery
     // 'http://www.cnn.com/2014/01/25/showbiz/gallery/bachelor-where-are-they-now/index.html' // stand alone gallery
     // 'http://www.cnn.com/2016/08/08/opinions/mcmullin-mormon-hope-for-conservatives-stanley/index.html'
     // 'http://www.cnn.com/2016/08/08/sport/aly-raisman-parents-olympics-trnd/index.html' // page top image
