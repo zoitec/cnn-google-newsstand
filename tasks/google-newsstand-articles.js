@@ -74,7 +74,8 @@ function processCNNMessage(message) {
         mappedToASection = true;
     }
 
-    if (/\/architecture|arts|autos|design|fashion|luxury\//.test(JSON.parse(message.content.toString()).url)) {
+    // https://regex101.com/r/mpdbJ2/1
+    if (/\/architecture|arts|autos|design|fashion|luxury|style\//.test(JSON.parse(message.content.toString()).url)) {
         debugLog(`Adding url to style feed: ${JSON.parse(message.content.toString()).url}`);
         styleFG.urls = JSON.parse(message.content.toString()).url;
         mappedToASection = true;
