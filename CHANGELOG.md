@@ -2,6 +2,16 @@
 
 
 
+## 2017-8-14, Version 1.11.1, @khowen
+
+### Notable changes
+- Update style section regex for style URL changes
+
+### Commits
+* * [[`9b9da8807c`](https://github.com/jamsyoung/cnn-google-newsstand/commit/9b9da8807c)] - **(SEMVER-MINOR)** **google-newsstand-articles**: update style URL regex (Katie Owen) [#43](https://github.com/jamsyoung/cnn-google-newsstand/pull/43)
+
+
+
 
 ## 2017-6-22, Version 1.10.1, @zoitec
 
