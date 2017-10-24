@@ -57,7 +57,7 @@ if (!nconf.get('ENVIRONMENT') || !nconf.get('PORT') || !nconf.get('CLOUDAMQP_AUT
     process.exit(1);
 }
 
-let blackList = '\\/studentnews\\/,\\/videos\\/spanish\\/,fast-facts\\/index.html$,\\/applenews-live.*,\\/cnn.com\\/\\d{4}\\/\\d{2}\\/\\d{2}\\/cnn-info,\\/vr\\/',
+let blackList = '\\/studentnews\\/,\\/videos\\/spanish\\/,fast-facts\\/index.html$,\\/applenews-live.*,\\/cnn.com\\/\\d{4}\\/\\d{2}\\/\\d{2}\\/cnn-info,\\/vr\\/,\\/cnn-underscored\\/',
     config = {
         default: {
             cloudamqpConnectionString: `amqp://${nconf.get('CLOUDAMQP_AUTH')}@red-rhino.rmq.cloudamqp.com/cnn-towncrier`,
