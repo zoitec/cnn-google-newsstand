@@ -2,6 +2,113 @@
 
 
 
+## 2017-6-09, Version 1.10.0, @zoitec
+
+### Notable changes
+- Adding video template type for analytics team
+
+
+
+
+* [[`c4728da4e6`](https://github.com/jamsyoung/cnn-google-newsstand/commit/c4728da4e6)] - CNNGNS-85 Setting correct templateType based on the presence of a video (#35) (sean joseph)
+
+
+
+
+## 2017-6-09, Version 1.9.1, @zoitec
+
+### Notable changes
+- Fixing gallery caption bug
+
+* [[`cb5dee660d`](https://github.com/jamsyoung/cnn-google-newsstand/commit/cb5dee660d)] - CNNGNS-48 Adding enable flag and fix production error when gallery caption is undefined (#34) (sean joseph)
+
+
+
+
+## 2017-6-08, Version 1.9.0, @zoitec
+
+### Notable changes
+- Fixing gallery footer and media image captions
+
+* [[`cfa6a3262d`](https://github.com/jamsyoung/cnn-google-newsstand/commit/cfa6a3262d)] - CNNGNS-48 Inline Galleries in GNS (#33) (sean joseph)
+
+
+
+
+## 2017-5-22, Version 1.8.0, @zoitec
+
+### Notable changes
+- Fixing gallery footer and media image captions
+
+
+* [[`7444983f78`](https://github.com/jamsyoung/cnn-google-newsstand/commit/7444983f78)] - fixing merge conflicts (Sean Joseph)
+* [[`ee8c673b4a`](https://github.com/jamsyoung/cnn-google-newsstand/commit/ee8c673b4a)] - CNNGNS-87 fix double captions (#30) (sean joseph)
+* [[`8ffee7ba82`](https://github.com/jamsyoung/cnn-google-newsstand/commit/8ffee7ba82)] - fixing gallery image (Sean Joseph)
+* [[`0a7c126932`](https://github.com/jamsyoung/cnn-google-newsstand/commit/0a7c126932)] - CNNGNS-61 - using correct footer go galleries (#29) (sean joseph)
+
+
+## 2017-5-19, Version 1.7.9, @zoitec
+
+### Notable changes
+- Adding new Style and Travel section
+
+
+* [[`7b954392b0`](https://github.com/jamsyoung/cnn-google-newsstand/commit/7b954392b0)] - CNNGNS-87 CNNGNS-88 Add Style and Travel Section (#28) (sean joseph)
+
+
+
+
+## 2017-5-18, Version 1.7.8, @zoitec
+
+### Notable changes
+- Fix Stale Tech section
+
+
+* [[`b96d6435a9`](https://github.com/jamsyoung/cnn-google-newsstand/commit/b96d6435a9)] - Feature/cnngns 61 (#27) (sean joseph)
+
+
+
+
+## 2017-5-18, Version 1.7.7, @zoitec
+
+### Notable changes
+- Fix markup for Gallery RSS Items
+
+
+* [[`6d63737a94`](https://github.com/jamsyoung/cnn-google-newsstand/commit/6d63737a94)] - CNNGNS- fix gallery rss items (#26) (sean joseph)
+
+
+
+
+## 2017-5-17, Version 1.7.6, @zoitec
+
+### Notable changes
+- subscribe to cnn.gallery queue messages
+
+* [[`ff26620a47`](https://github.com/jamsyoung/cnn-google-newsstand/commit/ff26620a47)] - CNNGNS-61 Add gallery to the allow list (#25) (sean joseph)
+
+
+
+
+## 2017-5-15, Version 1.7.5, @zoitec
+
+### Notable changes
+- subscribe to cnn.gallery queue messages
+
+* [[`60e2b6e7fa`](https://github.com/jamsyoung/cnn-google-newsstand/commit/60e2b6e7fa)] - CNNGNS-61 - Stand Alone Galleries in GNS (#18) (sean joseph)
+
+
+
+## 2017-5-15, Version 1.7.4, @zoitec
+
+### Notable changes
+- Enable stand alone galleries
+
+* [[`60e2b6e7fa`](https://github.com/jamsyoung/cnn-google-newsstand/commit/60e2b6e7fa)] - CNNGNS-61 - Stand Alone Galleries in GNS (#18) (sean joseph)
+
+
+
+
 ## 2017-5-4, Version 1.7.3, @zoitec
 
 ### Notable changes
@@ -14,11 +121,12 @@
 
 
 
-
 ## 2017-4-3, Version 1.7.2, @zoitec
 
 ### Notable changes
 - moved blacklist to docker env variable
+
+
 
 
 ### Commits
@@ -38,6 +146,8 @@
 * [[`0bd26cd`](https://github.com/jamsyoung/cnn-google-newsstand/commit/0bd26cd)] - **(SEMVER-MINOR)** CNNGNS-75 - Fixing undefined caption message (#16) (sean joseph) [#15](https://github.com/cnnlabs/cnn-google-newsstand/pull/15)
 
 
+
+
 ## 2017-3-2, Version 1.7.0, @jamsyoung
 
 ### Notable changes
@@ -46,6 +156,7 @@
 ### Commits
 * [[`a73ed5f847`](https://github.com/jamsyoung/cnn-google-newsstand/commit/a73ed5f847)] - **(SEMVER-MINOR)** Release/cnngns 76 dyna (#17) (sean joseph) [#17](https://github.com/jamsyoung/cnn-google-newsstand/pull/17)
 * [[`50ec456244`](https://github.com/jamsyoung/cnn-google-newsstand/commit/50ec456244)] - **(SEMVER-MINOR)** CNNGNS-76 - Add a bearer token to dynaimage registration post requests (#16) (sean joseph) [#16](https://github.com/jamsyoung/cnn-google-newsstand/pull/16)
+
 
 
 
@@ -60,6 +171,7 @@ current list of known issues.
 
 ### Commits
 * [[`0b3ad66272`](https://github.com/jamsyoung/cnn-google-newsstand/commit/0b3ad66272)] - CNNGNS-66  Set thumbnail image for stories with image pageTop to be the same (#14) (sean joseph)
+
 
 
 

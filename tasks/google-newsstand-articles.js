@@ -34,7 +34,9 @@ const request = require('request'),
     moneyFG = new FeedGenerator(),
     opinionsFG = new FeedGenerator(),
     politicsFG = new FeedGenerator(),
+    styleFG = new FeedGenerator(),
     techFG = new FeedGenerator(),
+    travelFG = new FeedGenerator(),
     usFG = new FeedGenerator(),
     worldFG = new FeedGenerator(),
     enableElectionStory = config.get('gnsTurnOnElectionModule'),
@@ -69,6 +71,18 @@ function processCNNMessage(message) {
     if (/\/opinions|opinion\//.test(JSON.parse(message.content.toString()).url)) {
         debugLog(`Adding url to opinions feed: ${JSON.parse(message.content.toString()).url}`);
         opinionsFG.urls = JSON.parse(message.content.toString()).url;
+        mappedToASection = true;
+    }
+
+    if (/\/architecture|arts|autos|design|fashion|luxury\//.test(JSON.parse(message.content.toString()).url)) {
+        debugLog(`Adding url to style feed: ${JSON.parse(message.content.toString()).url}`);
+        styleFG.urls = JSON.parse(message.content.toString()).url;
+        mappedToASection = true;
+    }
+
+    if (/\/travel|aviation|hotels\//.test(JSON.parse(message.content.toString()).url)) {
+        debugLog(`Adding url to travel feed: ${JSON.parse(message.content.toString()).url}`);
+        travelFG.urls = JSON.parse(message.content.toString()).url;
         mappedToASection = true;
     }
 
@@ -139,6 +153,7 @@ amqp.connect(cloudamqpConnectionString, (error, connection) => {
                         // CNN CONTENT
                         case 'cnn.article':
                         case 'cnn.video':
+                        case 'cnn.gallery':
                             processCNNMessage(message);
                             break;
                         // MONEY CONTENT
@@ -469,7 +484,6 @@ setInterval(() => {
         gnsHealthStatus.sectionFeeds.latest.status = 200;
         gnsHealthStatus.sectionFeeds.latest.valid = true;
         gnsHealthStatus.sectionFeeds.latest.generateFeed.status = 'No updates';
-        gnsHealthStatus.sectionFeeds.latest.generateFeed.lastUpdate = moment().toISOString();
         debugLog('no updates');
         log.debug('Generate latest Feed: no updates');
     }
@@ -513,7 +527,6 @@ setInterval(() => {
         gnsHealthStatus.sectionFeeds.entertainment.status = 200;
         gnsHealthStatus.sectionFeeds.entertainment.valid = false;
         gnsHealthStatus.sectionFeeds.entertainment.generateFeed.status = 'No updates';
-        gnsHealthStatus.sectionFeeds.entertainment.generateFeed.failedAt = moment().toISOString();
         debugLog('no updates');
         log.debug('Generate entertainment Feed: no updates');
     }
@@ -557,7 +570,6 @@ setInterval(() => {
         gnsHealthStatus.sectionFeeds.health.status = 200;
         gnsHealthStatus.sectionFeeds.health.valid = true;
         gnsHealthStatus.sectionFeeds.health.generateFeed.status = 'No updates';
-        gnsHealthStatus.sectionFeeds.health.generateFeed.lastUpdate = moment().toISOString();
         debugLog('no updates');
         log.debug('Generate health Feed: no updates');
     }
@@ -601,7 +613,6 @@ setInterval(() => {
         gnsHealthStatus.sectionFeeds.opinions.status = 200;
         gnsHealthStatus.sectionFeeds.opinions.valid = true;
         gnsHealthStatus.sectionFeeds.opinions.generateFeed.status = 'No updates';
-        gnsHealthStatus.sectionFeeds.opinions.generateFeed.lastUpdate = moment().toISOString();
         debugLog('no updates');
         log.debug('Generate opinions Feed: no updates');
     }
@@ -699,7 +710,6 @@ setInterval(() => {
         gnsHealthStatus.sectionFeeds.politics.status = 200;
         gnsHealthStatus.sectionFeeds.politics.valid = true;
         gnsHealthStatus.sectionFeeds.politics.generateFeed.status = 'No updates';
-        gnsHealthStatus.sectionFeeds.politics.generateFeed.lastUpdate = moment().toISOString();
         debugLog('no updates');
         log.debug('Generate politics Feed: no updates');
     }
@@ -743,7 +753,6 @@ setInterval(() => {
         gnsHealthStatus.sectionFeeds.tech.status = 200;
         gnsHealthStatus.sectionFeeds.tech.valid = true;
         gnsHealthStatus.sectionFeeds.tech.generateFeed.status = 'No updates';
-        gnsHealthStatus.sectionFeeds.tech.generateFeed.lastUpdate = moment().toISOString();
         debugLog('no updates');
         log.debug('Generate tech Feed: no updates');
     }
@@ -787,7 +796,6 @@ setInterval(() => {
         gnsHealthStatus.sectionFeeds.us.status = 200;
         gnsHealthStatus.sectionFeeds.us.valid = true;
         gnsHealthStatus.sectionFeeds.us.generateFeed.status = 'No updates';
-        gnsHealthStatus.sectionFeeds.us.generateFeed.lastUpdate = moment().toISOString();
         debugLog('no updates');
         log.debug('Generate us Feed: no updates');
     }
@@ -831,7 +839,6 @@ setInterval(() => {
         gnsHealthStatus.sectionFeeds.world.status = 200;
         gnsHealthStatus.sectionFeeds.world.valid = true;
         gnsHealthStatus.sectionFeeds.world.generateFeed.status = 'No updates';
-        gnsHealthStatus.sectionFeeds.world.generateFeed.lastUpdate = moment().toISOString();
         debugLog('no updates');
         log.debug('Generate world Feed: no updates');
     }
@@ -874,7 +881,6 @@ setInterval(() => {
         gnsHealthStatus.sectionFeeds.money.status = 200;
         gnsHealthStatus.sectionFeeds.money.valid = true;
         gnsHealthStatus.sectionFeeds.money.generateFeed.status = 'No updates';
-        gnsHealthStatus.sectionFeeds.money.generateFeed.lastUpdate = moment().toISOString();
         debugLog('no updates');
     }
 }, config.get('gnsTaskIntervalMS'));
@@ -976,8 +982,89 @@ setInterval(() => {
         gnsHealthStatus.sectionFeeds.elections.status = 200;
         gnsHealthStatus.sectionFeeds.elections.valid = true;
         gnsHealthStatus.sectionFeeds.elections.generateFeed.status = 'No updates';
-        gnsHealthStatus.sectionFeeds.elections.generateFeed.lastUpdate = moment().toISOString();
         debugLog('no updates');
         log.debug('Generate election Feed: no updates');
+    }
+}, config.get('gnsTaskIntervalMS'));
+
+setInterval(() => {
+    debugLog('Generate Style Feed interval fired');
+    gnsHealthStatus.sectionFeeds.style = {status: 201, valid: false, generateFeed: {status: 'processing'}};
+
+    if (styleFG.urls && styleFG.urls.length > 0) {
+        styleFG.processContent().then(
+            // success
+            (rssFeed) => {
+                console.log(rssFeed);
+
+                postToLSD(rssFeed, 'style');
+
+                // update health check status
+                gnsHealthStatus.sectionFeeds.style.status = 200;
+                gnsHealthStatus.sectionFeeds.style.valid = true;
+                gnsHealthStatus.sectionFeeds.style.generateFeed.status = 'success';
+                gnsHealthStatus.sectionFeeds.style.generateFeed.lastUpdate = moment().toISOString();
+
+                // post to LSD endpoint
+                styleFG.urls = 'clear';
+                debugLog(styleFG.urls);
+            },
+
+            // failure
+            (error) => {
+                gnsHealthStatus.sectionFeeds.style.status = 500;
+                gnsHealthStatus.sectionFeeds.style.valid = false;
+                gnsHealthStatus.sectionFeeds.style.generateFeed.status = 'failed';
+                gnsHealthStatus.sectionFeeds.style.generateFeed.failedAt = moment().toISOString();
+                console.log(error);
+            }
+        );
+    } else {
+        // update health check status
+        gnsHealthStatus.sectionFeeds.style.status = 200;
+        gnsHealthStatus.sectionFeeds.style.valid = true;
+        gnsHealthStatus.sectionFeeds.style.generateFeed.status = 'No updates';
+        debugLog('no updates');
+    }
+}, config.get('gnsTaskIntervalMS'));
+
+setInterval(() => {
+    debugLog('Generate travel Feed interval fired');
+    gnsHealthStatus.sectionFeeds.travel = {status: 201, valid: false, generateFeed: {status: 'processing'}};
+
+    if (travelFG.urls && travelFG.urls.length > 0) {
+        travelFG.processContent().then(
+            // success
+            (rssFeed) => {
+                console.log(rssFeed);
+
+                postToLSD(rssFeed, 'travel');
+
+                // update health check status
+                gnsHealthStatus.sectionFeeds.travel.status = 200;
+                gnsHealthStatus.sectionFeeds.travel.valid = true;
+                gnsHealthStatus.sectionFeeds.travel.generateFeed.status = 'success';
+                gnsHealthStatus.sectionFeeds.travel.generateFeed.lastUpdate = moment().toISOString();
+
+                // post to LSD endpoint
+                travelFG.urls = 'clear';
+                debugLog(travelFG.urls);
+            },
+
+            // failure
+            (error) => {
+                gnsHealthStatus.sectionFeeds.travel.status = 500;
+                gnsHealthStatus.sectionFeeds.travel.valid = false;
+                gnsHealthStatus.sectionFeeds.travel.generateFeed.status = 'failed';
+                gnsHealthStatus.sectionFeeds.travel.generateFeed.failedAt = moment().toISOString();
+                console.log(error);
+            }
+        );
+    } else {
+        // update health check status
+        gnsHealthStatus.sectionFeeds.travel.status = 200;
+        gnsHealthStatus.sectionFeeds.travel.valid = true;
+        gnsHealthStatus.sectionFeeds.travel.generateFeed.status = 'No updates';
+        debugLog('no updates');
     }
 }, config.get('gnsTaskIntervalMS'));
