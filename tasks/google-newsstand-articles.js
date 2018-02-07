@@ -39,6 +39,7 @@ const request = require('request'),
     travelFG = new FeedGenerator(),
     usFG = new FeedGenerator(),
     worldFG = new FeedGenerator(),
+    winterOlympics2018FG = new FeedGenerator(),
     enableElectionStory = config.get('gnsTurnOnElectionModule'),
     logConfig = config.get('logConfig'),
     log = require('cnn-logger')(logConfig);
@@ -107,6 +108,12 @@ function processCNNMessage(message) {
     if (JSON.parse(message.content.toString()).branding && JSON.parse(message.content.toString()).branding === '2016-elections') {
         debugLog(`Adding url to election feed: ${JSON.parse(message.content.toString()).url}`);
         electionsFG.urls = JSON.parse(message.content.toString()).url;
+        mappedToASection = true;
+    }
+
+    if (JSON.parse(message.content.toString()).branding && JSON.parse(message.content.toString()).branding === 'winter-olympics') {
+        debugLog(`Adding url to winter Olympics 2018 feed: ${JSON.parse(message.content.toString()).url}`);
+        winterOlympics2018FG.urls = JSON.parse(message.content.toString()).url;
         mappedToASection = true;
     }
 
@@ -1065,6 +1072,47 @@ setInterval(() => {
         gnsHealthStatus.sectionFeeds.travel.status = 200;
         gnsHealthStatus.sectionFeeds.travel.valid = true;
         gnsHealthStatus.sectionFeeds.travel.generateFeed.status = 'No updates';
+        debugLog('no updates');
+    }
+}, config.get('gnsTaskIntervalMS'));
+
+setInterval(() => {
+    debugLog('Generate winter olympics Feed interval fired');
+    gnsHealthStatus.sectionFeeds.winterOlympics2018FG = {status: 201, valid: false, generateFeed: {status: 'processing'}};
+
+    if (winterOlympics2018FG.urls && winterOlympics2018FG.urls.length > 0) {
+        winterOlympics2018FG.processContent().then(
+            // success
+            (rssFeed) => {
+                console.log(rssFeed);
+
+                postToLSD(rssFeed, 'winter-olympics-2018');
+
+                // update health check status
+                gnsHealthStatus.sectionFeeds.winterOlympics2018FG.status = 200;
+                gnsHealthStatus.sectionFeeds.winterOlympics2018FG.valid = true;
+                gnsHealthStatus.sectionFeeds.winterOlympics2018FG.generateFeed.status = 'success';
+                gnsHealthStatus.sectionFeeds.winterOlympics2018FG.generateFeed.lastUpdate = moment().toISOString();
+
+                // post to LSD endpoint
+                winterOlympics2018FG.urls = 'clear';
+                debugLog(winterOlympics2018FG.urls);
+            },
+
+            // failure
+            (error) => {
+                gnsHealthStatus.sectionFeeds.winterOlympics2018FG.status = 500;
+                gnsHealthStatus.sectionFeeds.winterOlympics2018FG.valid = false;
+                gnsHealthStatus.sectionFeeds.winterOlympics2018FG.generateFeed.status = 'failed';
+                gnsHealthStatus.sectionFeeds.winterOlympics2018FG.generateFeed.failedAt = moment().toISOString();
+                console.log(error);
+            }
+        );
+    } else {
+        // update health check status
+        gnsHealthStatus.sectionFeeds.winterOlympics2018FG.status = 200;
+        gnsHealthStatus.sectionFeeds.winterOlympics2018FG.valid = true;
+        gnsHealthStatus.sectionFeeds.winterOlympics2018FG.generateFeed.status = 'No updates';
         debugLog('no updates');
     }
 }, config.get('gnsTaskIntervalMS'));

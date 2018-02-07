@@ -76,6 +76,10 @@ global.gnsHealthStatus = {
         travel: {
             status: 201,
             generateFeed: {status: 'Pending'}
+        },
+        winterOlympics2018: {
+            status: 201,
+            generateFeed: {status: 'Pending'}
         }
     }
 };
