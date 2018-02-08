@@ -87,7 +87,7 @@ let blackList = '\\/studentnews\\/,\\/videos\\/spanish\\/,fast-facts\\/index.htm
             gnsGenericThumbImage: (nconf.get('GNS_GENERIC_THUMB_IMAGE')) ? nconf.get('GNS_GENERIC_THUMB_IMAGE') : 'http://www.cnn.com/partners/google/gns/default-exlarge-169.png',
             hypatia: {
                 timeout: (process.env.HYPATIA_TIMEOUT) ? parseInt(process.env.HYPATIA_TIMEOUT) : 1000 * 5,
-                host: `${process.env.HYPATIA_HOST || 'https://hypatia.api.cnn.com'}/`
+                host: (process.env.HYPATIA_HOST) ? process.env.HYPATIA_HOST :  'https://hypatia.api.cnn.com/'
             },
             aws: {
                 accessKeyId: nconf.get('ACCESS_KEY_ID'),
