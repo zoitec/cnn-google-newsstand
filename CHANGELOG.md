@@ -1,5 +1,16 @@
 # CNN Google Newsstand Changelog
 
+## 2018-02-09, Version 1.12.1, @sjoseph
+
+### Notable changes
+- Added Winter Olympics 2018 feed
+- Updated content retriever version 3.0.0
+
+### Commits
+* [[`c15be80b37`](https://github.com/jamsyoung/cnn-google-newsstand/commit/c15be80b37)] - CNNGNS-100 & CNNGNS-101 Winter Olympics and Content Retriever (#58) (sean joseph) [#58](https://github.com/cnnlabs/cnn-google-newsstand/pull/58)
+
+
+
 
 ## 2017-10-24, Version 1.12.0, @khowen
 
