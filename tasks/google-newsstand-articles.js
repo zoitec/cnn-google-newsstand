@@ -385,7 +385,7 @@ function postToLSD(data, feedName) {
 
     debugLog('postToLSD() called');
     log.debug('postToLSD() called');
-    // debugLog(data);
+
 
     hosts.split(',').forEach((host) => {
         request.post({
@@ -400,7 +400,7 @@ function postToLSD(data, feedName) {
             } else {
                 debugLog(`Successfully uploaded data to ${hosts} at ${endpoint}`);
                 log.debug(`Successfully uploaded data to ${hosts} at ${endpoint}`);
-                // debugLog(body);
+
             }
         });
     });
