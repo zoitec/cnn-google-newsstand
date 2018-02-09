@@ -43,6 +43,7 @@ nconf.env([
     'GNS_ENABLE_INLINE_GALLERIES',
     'GNS_MONITORING_TEST',
     'HYPATIA_TIMEOUT',
+    'HYPATIA_HOST',
     'ACCESS_KEY_ID',
     'SECRET_ACCESS_KEY',
     'PORT',
@@ -57,7 +58,7 @@ if (!nconf.get('ENVIRONMENT') || !nconf.get('PORT') || !nconf.get('CLOUDAMQP_AUT
     process.exit(1);
 }
 
-let blackList = '\\/studentnews\\/,\\/videos\\/spanish\\/,fast-facts\\/index.html$,\\/applenews-live.*,\\/cnn.com\\/\\d{4}\\/\\d{2}\\/\\d{2}\\/cnn-info,\\/vr\\/',
+let blackList = '\\/studentnews\\/,\\/videos\\/spanish\\/,fast-facts\\/index.html$,\\/applenews-live.*,\\/cnn.com\\/\\d{4}\\/\\d{2}\\/\\d{2}\\/cnn-info,\\/vr\\/,\\/cnn-underscored\\/',
     config = {
         default: {
             cloudamqpConnectionString: `amqp://${nconf.get('CLOUDAMQP_AUTH')}@red-rhino.rmq.cloudamqp.com/cnn-towncrier`,
@@ -85,7 +86,8 @@ let blackList = '\\/studentnews\\/,\\/videos\\/spanish\\/,fast-facts\\/index.htm
             gnsMonitoringTest: (nconf.get('GNS_MONITORING_TEST')) ? nconf.get('GNS_MONITORING_TEST') : false,
             gnsGenericThumbImage: (nconf.get('GNS_GENERIC_THUMB_IMAGE')) ? nconf.get('GNS_GENERIC_THUMB_IMAGE') : 'http://www.cnn.com/partners/google/gns/default-exlarge-169.png',
             hypatia: {
-                timeout: (process.env.HYPATIA_TIMEOUT) ? parseInt(process.env.HYPATIA_TIMEOUT) : 1000 * 5
+                timeout: (process.env.HYPATIA_TIMEOUT) ? parseInt(process.env.HYPATIA_TIMEOUT) : 1000 * 5,
+                host: (process.env.HYPATIA_HOST) ? process.env.HYPATIA_HOST :  'https://hypatia.api.cnn.com/'
             },
             aws: {
                 accessKeyId: nconf.get('ACCESS_KEY_ID'),

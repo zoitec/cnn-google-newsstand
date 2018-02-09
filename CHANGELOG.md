@@ -1,5 +1,48 @@
 # CNN Google Newsstand Changelog
 
+## 2018-02-09, Version 1.12.1, @sjoseph
+
+### Notable changes
+- Added Winter Olympics 2018 feed
+- Updated content retriever version 3.0.0
+
+### Commits
+* [[`c15be80b37`](https://github.com/jamsyoung/cnn-google-newsstand/commit/c15be80b37)] - CNNGNS-100 & CNNGNS-101 Winter Olympics and Content Retriever (#58) (sean joseph) [#58](https://github.com/cnnlabs/cnn-google-newsstand/pull/58)
+
+
+
+
+## 2017-10-24, Version 1.12.0, @khowen
+
+### Notable changes
+- Add blacklisted section
+
+### Commits
+* [[`1b4a461490`](https://github.com/jamsyoung/cnn-google-newsstand/commit/1b4a461490)] - **(SEMVER-MINOR)** **config**: add blacklisted section (Katie Owen) [#51](https://github.com/jamsyoung/cnn-google-newsstand/pull/51)
+
+
+
+
+## 2017-8-14, Version 1.11.1, @khowen
+
+### Notable changes
+- Update style section regex for style URL changes
+
+### Commits
+* [[`9b9da8807c`](https://github.com/jamsyoung/cnn-google-newsstand/commit/9b9da8807c)] - **(SEMVER-MINOR)** **google-newsstand-articles**: update style URL regex (Katie Owen) [#43](https://github.com/jamsyoung/cnn-google-newsstand/pull/43)
+
+
+
+
+## 2017-6-22, Version 1.10.1, @zoitec
+
+### Notable changes
+- fix to allow videos
+
+
+* [[`af8de9c9a1`](https://github.com/jamsyoung/cnn-google-newsstand/commit/af8de9c9a1)] - fix to allow videos (Sean Joseph)
+
+
 
 
 ## 2017-6-09, Version 1.10.0, @zoitec
